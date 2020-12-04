@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+</head>
+<body>
+<form method="post" action="/menu" id="myform"></form>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Quiz Maker</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <!--            -->
+            <!--            -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+            </li>
+        </ul>
+        <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-5">
+                            <i class="fas fa-envelope prefix grey-text"></i>
+                            <input form="myform" type="text" id="defaultForm-userName" name="username" class="form-control validate">
+                            <label data-error="wrong" data-success="right" for="defaultForm-userName">Your Username</label>
+                        </div>
+
+                        <div class="md-form mb-4">
+                            <i class="fas fa-lock prefix grey-text"></i>
+                            <input form="myform" type="password" id="defaultForm-pass" name="password" class="form-control validate">
+                            <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <input type="submit" form="myform" class="btn btn-default" value="Login"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Login</a>
+        </div>
+    </div>
+</nav>
+<form method="post" action="/sign-up"  style="margin: auto;">
+    <label for="userName">User Name:</label>
+    <input type="text" name="userName" id="userName" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required>
+    <br>
+    <label for="firstName">First Name:</label>
+    <input type="text" name="firstName" id="firstName" required>
+    <br>
+    <label for="lastName">Last Name:</label>
+    <input type="text" name="lastName" id="lastName" required>
+    <br>
+    <label for="nationalCode">NationalCode:</label>
+    <input id="nationalCode" type="text" name="nationalCode"/><br>
+    <br>
+    <label for="studentCode">Student Code:</label>
+    <input id="studentCode" type="text" name="studentCode"/><br>
+    <br>
+    <input type="submit" value="Create Drug">
+    <input type="reset" value="Reset Fields">
+</form>
+</body>
+</html>

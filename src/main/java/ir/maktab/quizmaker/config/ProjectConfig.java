@@ -46,12 +46,13 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/menu")
                 .permitAll()
                 .successHandler(myAuthenticationSuccessHandler())
-                .failureUrl("/#")
+                .failureUrl("/menu")
                 .and()
                 .logout()
                 .logoutSuccessUrl("/menu");
 
-
+//TODO Login Failure A Page That Shows Reason That U Didn't Log In!
+        //TODO CRUD Teacher And Allowing By Admin
 
 
         http.authorizeRequests()

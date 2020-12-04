@@ -21,14 +21,15 @@ public class UserService {
         return userRepository.findByUserName(username);
     }
 
-    public void save(User user) {
+    public User save(User user) {
 
         user.setPassword(
                 this.passwordEncoder.encode(
                         user.getPassword()
                 )
         );
-        System.out.println("saved user");
+        return userRepository.save(user);
+//        System.out.println("saved user");
     }
 
     public boolean editPassword(String password,String userName) {

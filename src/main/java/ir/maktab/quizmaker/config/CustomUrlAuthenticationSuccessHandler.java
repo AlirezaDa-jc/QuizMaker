@@ -7,8 +7,6 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -50,6 +48,7 @@ public class CustomUrlAuthenticationSuccessHandler implements AuthenticationSucc
         Map<String, String> roleTargetUrlMap = new HashMap<>();
 //        roleTargetUrlMap.put("ROLE_USER", "/homepage.html");
         roleTargetUrlMap.put("ROLE_ADMIN", "/admin/view");
+        roleTargetUrlMap.put("ROLE_STUDENT", "/student");
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {

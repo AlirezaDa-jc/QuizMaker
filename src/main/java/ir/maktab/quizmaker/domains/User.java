@@ -12,12 +12,20 @@ import javax.persistence.Entity;
 @Entity
 public class User extends BaseEntity<Long> {
 
-    protected String role;
-    protected String userName;
-    protected String password;
-
+    private String role;
+    private String userName;
+    private String password;
+    private boolean isAllowed = false;
     public String getRole() {
         return role;
+    }
+
+    public boolean isAllowed() {
+        return isAllowed;
+    }
+
+    public void setAllowed(boolean allowed) {
+        isAllowed = allowed;
     }
 
     public void setRole(String role) {
