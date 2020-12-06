@@ -93,4 +93,9 @@ public class Course extends BaseEntity<Long> {
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
+
+    public void addStudent(Student student) {
+        students.add(student);
+        student.addCourse(this);
+    }
 }

@@ -2,10 +2,7 @@ package ir.maktab.quizmaker.domains;
 
 import ir.maktab.quizmaker.base.domains.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,12 +11,17 @@ import java.util.List;
  */
 @Entity
 public class Student extends BaseEntity<Long> {
+    @Column(nullable = false,unique = true)
     private int studentCode;
+
     private String firstName;
+
     private String lastName;
+
+    @Column(nullable = false,unique = true)
     private long nationalCode;
 
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "students")
     private List<Course> courses = new LinkedList<>();
 
     @OneToOne
@@ -73,5 +75,9 @@ public class Student extends BaseEntity<Long> {
     public void setUser(User user) {
         this.user = user;
         user.setStudent(this);
+    }
+
+    public void addCourse(Course course) {
+        courses.add(course);
     }
 }

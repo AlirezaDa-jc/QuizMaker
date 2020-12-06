@@ -39,4 +39,8 @@ public class StudentService {
     public List<Student> findAllByLastNameContains(String lastName) {
         return studentRepository.findAllByLastNameContains(lastName);
     }
+
+    public List<Student> findAll() {
+        return studentRepository.findAll();
+    }
 }

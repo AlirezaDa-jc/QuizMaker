@@ -24,6 +24,7 @@ import java.util.Collection;
  */
 
 @Controller
+@RequestMapping("menu")
 public class MenuController {
     @Autowired
     private StudentService studentService;
@@ -33,7 +34,7 @@ public class MenuController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("menu")
+    @GetMapping
     public String showMenu() {
         SimpleGrantedAuthority anonymous = new SimpleGrantedAuthority("ROLE_ANONYMOUS");
         SimpleGrantedAuthority admin = new SimpleGrantedAuthority("ROLE_ADMIN");
@@ -43,7 +44,7 @@ public class MenuController {
         if (authorities.contains(anonymous))
             return "menu";
         else if(authorities.contains(admin))
-            return "redirect:/admin/view";
+            return "redirect:/admin/students";
         //TODO
         return "Piaz";
     }

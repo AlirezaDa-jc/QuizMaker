@@ -2,6 +2,7 @@ package ir.maktab.quizmaker.domains;
 
 import ir.maktab.quizmaker.base.domains.BaseEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -14,7 +15,9 @@ import javax.persistence.OneToOne;
 public class User extends BaseEntity<Long> {
 
     private String role;
+    @Column(nullable = false,unique = true)
     private String userName;
+    @Column(nullable = false)
     private String password;
     private boolean isAllowed = false;
 

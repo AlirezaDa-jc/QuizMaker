@@ -33,7 +33,7 @@
             <td><p th:text="${teacher.lastName}"> Last Name </p></td>
             <td><p th:text="${teacher.nationalCode}"> National Code </p></td>
 
-            <td><a th:href="@{/admin/assign-course/__${teacher.id}__}">Assign To A Course</a></td>
+            <td><a th:href="@{/admin/assign-course-user/__${teacher.user.id}__}">Assign To A Course</a></td>
 
         </tr>
     </table>

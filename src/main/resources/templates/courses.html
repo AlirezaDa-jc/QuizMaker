@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Assign Course</title>
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
 </head>
 <body>
 
@@ -30,14 +32,22 @@
             <td><p th:text="${course.subject.name}"> First Name </p></td>
             <td><p th:text="${course.startDate}"> Last Name </p></td>
             <td><p th:text="${course.endDate}"> National Code </p></td>
-            >
 
-            <td><a th:href="@{/admin/assign-course-to-teacher/__${course.id}__}">Assign To This Course</a></td>
+            <td><a th:href="@{/admin/assign-course-by-role/__${course.id}__}">Assign To This Course</a></td>
 
         </tr>
 
     </table>
 </div>
 
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

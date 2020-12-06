@@ -11,6 +11,7 @@ import ir.maktab.quizmaker.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +39,7 @@ public class AdminController {
     @Autowired
     private CourseService courseService;
 
-    private Teacher tempTeacher;
+    private User tempUser;
 
 
     @GetMapping("allow-user")
@@ -76,7 +77,7 @@ public class AdminController {
                         findAllByFirstNameContains(firstName);
                 users.addAll(allByFirstName);
             }
-            if(!lastName.equals("")){
+            if (!lastName.equals("")) {
                 List<Teacher> allByLastName = teacherService.findAllByLastNameContains(lastName);
                 users.addAll(allByLastName);
             }
@@ -93,7 +94,7 @@ public class AdminController {
                 List<Student> allByFirstNameLikeOrLastNameLike = studentService.findAllByFirstNameContains(firstName);
                 users.addAll(allByFirstNameLikeOrLastNameLike);
             }
-            if(!lastName.equals("")){
+            if (!lastName.equals("")) {
                 List<Student> allByLastName = studentService.findAllByLastNameContains(lastName);
                 users.addAll(allByLastName);
             }
@@ -108,30 +109,63 @@ public class AdminController {
     }
 
     @GetMapping("teachers")
-    public String sendListOfTeachers(Model model){
-        model.addAttribute("teachers",teacherService.findAll());
+    public String sendListOfTeachers(Model model) {
+        model.addAttribute("teachers", teacherService.findAll());
         return "list-teachers";
     }
 
-    @GetMapping("assign-course/{id}")
-    public String sendListOfCourses(@PathVariable Long id,Model model){
-        tempTeacher=teacherService.findById(id);
-        model.addAttribute("courses",courseService.findAllWithoutTeacher());
+    @GetMapping("students")
+    public String sendListOfStudentss(Model model) {
+        model.addAttribute("students", studentService.findAll());
+        return "list-students";
+    }
+
+
+    @GetMapping("assign-course-user/{id}")
+    public String sendListOfCourses(@PathVariable Long id, Model model) {
+        tempUser = userService.findById(id);
+        if(tempUser.getTeacher()!=null){
+            model.addAttribute("courses", courseService.findAllWithoutTeacher());
+        }else {
+            model.addAttribute("courses",courseService.findAllWithoutThisStudent(tempUser.getStudent()));
+        }
         return "courses";
     }
 
-    @GetMapping("assign-course-to-teacher/{id}")
-    public String assignCourse(@PathVariable Long id,Model model){
-        Course byId = courseService.findById(id);
-        byId.setTeacher(tempTeacher);
-        //TODO Home Of Admin
-        courseService.save(byId);
-        tempTeacher.getUser().setAllowed(true);
-        teacherService.save(tempTeacher);
-        model.addAttribute("teachers", teacherService.getForbiddenTeachers());
-        return "list-teachers";
+    @GetMapping("assign-course-by-role/{id}")
+    public String assignCourse(@PathVariable Long id, Model model) throws Exception {
+        Course course = courseService.findById(id);
+        Teacher teacher = tempUser.getTeacher();
+        Student student = tempUser.getStudent();
+        if (teacher != null) {
+            course.setTeacher(teacher);
+            //TODO Home Of Admin
+            courseService.save(course);
+            teacher.getUser().setAllowed(true);
+            teacherService.save(teacher);
+            model.addAttribute("teachers", teacherService.findAll());
+
+            return "list-teachers";
+        }else if(student != null) {
+            course.addStudent(student);
+            courseService.save(course);
+            student.getUser().setAllowed(true);
+            studentService.save(student);
+            model.addAttribute("students",studentService.findAll());
+
+            return "list-students";
+        }
+        throw new Exception("500 , Server Encountered An Error!");
+
+//        model.addAttribute("message","500 , Server Encountered A Problem!");
+//        return "exception";
     }
 
+    @ExceptionHandler(Exception.class)
+    public String handle(Exception ex, Model model){
+        model.addAttribute("message",ex.getMessage());
+        return "admin-exception";
+    }
 //    @GetMapping("students")
     //TODO
 
