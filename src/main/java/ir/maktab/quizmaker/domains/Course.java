@@ -23,7 +23,7 @@ public class Course extends BaseEntity<Long> {
 
     @ManyToOne
     @JoinColumn(name = "teacherid")
-    private User teacher;
+    private Teacher teacher;
 
     @OneToMany(mappedBy = "course", orphanRemoval = true)
     private List<Exam> exams = new LinkedList<>();
@@ -43,6 +43,15 @@ public class Course extends BaseEntity<Long> {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+        teacher.addCourse(this);
     }
 
     public String getStartDate() {
@@ -67,14 +76,6 @@ public class Course extends BaseEntity<Long> {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
-    }
-
-    public User getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(User teacher) {
-        this.teacher = teacher;
     }
 
     public List<Exam> getExams() {

@@ -2,10 +2,7 @@ package ir.maktab.quizmaker.domains;
 
 import ir.maktab.quizmaker.base.domains.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,26 +10,20 @@ import java.util.List;
  * @author Alireza.d.a
  */
 @Entity
-public class Student extends BaseEntity<Long> {
-    private int studentCode;
+public class Teacher extends BaseEntity<Long> {
     private String firstName;
     private String lastName;
     private long nationalCode;
-
-    @ManyToMany(mappedBy = "students")
-    private List<Course> courses = new LinkedList<>();
 
     @OneToOne
     @JoinColumn(name = "userid")
     private User user;
 
-    public int getStudentCode() {
-        return studentCode;
-    }
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "teacher", orphanRemoval = true)
+    private List<Course> courses = new LinkedList<>();
 
-    public void setStudentCode(int studentCode) {
-        this.studentCode = studentCode;
-    }
+    @OneToMany(mappedBy = "teacher", orphanRemoval = true)
+    private List<Question> questions = new LinkedList<>();
 
     public String getFirstName() {
         return firstName;
@@ -58,6 +49,15 @@ public class Student extends BaseEntity<Long> {
         this.nationalCode = nationalCode;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+        user.setTeacher(this);
+    }
+
     public List<Course> getCourses() {
         return courses;
     }
@@ -66,12 +66,15 @@ public class Student extends BaseEntity<Long> {
         this.courses = courses;
     }
 
-    public User getUser() {
-        return user;
+    public List<Question> getQuestions() {
+        return questions;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-        user.setStudent(this);
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public void addCourse(Course course) {
+        courses.add(course);
     }
 }

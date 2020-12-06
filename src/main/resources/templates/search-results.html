@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<body>
+<!--Bar TODO-->
+
+<div class="table-bordered " style="margin: auto">
+
+    <table class="table">
+
+        <tr><th colspan="5">Users</th></tr>
+        <tr>
+            <th>User Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>National Code</th>
+            <th>Role</th>
+
+        </tr>
+
+
+
+        <tr th:if="${users.isEmpty()}">
+            <td colspan="5">There Are No Users! Change Search Filters</td>
+        </tr>
+
+        <tr th:each="user : ${users}">
+
+            <td><p th:text="${user.user.userName}"> User Name </p></td>
+            <td><p th:text="${user.firstName}"> First Name </p></td>
+            <td><p th:text="${user.lastName}"> Last Name </p></td>
+            <td><p th:text="${user.nationalCode}"> National Code </p></td>
+            <td><p th:text="${user.user.getRole()}"> Role </p></td>
+
+        </tr>
+
+
+    </table>
+</div>
+
+
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</body>
+</html>

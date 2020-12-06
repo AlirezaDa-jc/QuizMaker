@@ -3,6 +3,7 @@ package ir.maktab.quizmaker.domains;
 import ir.maktab.quizmaker.base.domains.BaseEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 
 /**
@@ -16,6 +17,29 @@ public class User extends BaseEntity<Long> {
     private String userName;
     private String password;
     private boolean isAllowed = false;
+
+    @OneToOne(mappedBy = "user")
+    private Teacher teacher;
+
+    @OneToOne(mappedBy = "user")
+    private Student student;
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
     public String getRole() {
         return role;
     }

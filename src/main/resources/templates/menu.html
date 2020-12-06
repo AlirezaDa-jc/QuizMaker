@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
@@ -7,8 +7,9 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
+
 <form method="post" action="/menu" id="myform"></form>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixedNav">
     <a class="navbar-brand" href="#">Quiz Maker</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -31,6 +32,12 @@
              aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <p class="error" th:if="${loginError}">Wrong user or password</p>
+                        <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     <div class="modal-header text-center">
                         <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -59,8 +66,7 @@
         </div>
 
         <div class="text-center">
-            <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Launch
-                Modal Login Form</a>
+            <a class="btn btn-default btn-rounded mb-4" data-target="#modalLoginForm" data-toggle="modal" href="">Login</a>
         </div>
     </div>
 </nav>

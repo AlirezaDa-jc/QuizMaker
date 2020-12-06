@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Assign Course</title>
+</head>
+<body>
+
+<div class="table-bordered " style="margin: auto">
+
+    <table class="table">
+
+        <tr><th colspan="4">Teachers</th></tr>
+        <tr>
+            <th>Subject</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+
+        </tr>
+
+
+
+        <tr th:if="${courses.isEmpty()}">
+            <td colspan="4">There Are No Courses</td>
+        </tr>
+
+        <tr th:each="course : ${courses}">
+
+            <td><p th:text="${course.subject.name}"> First Name </p></td>
+            <td><p th:text="${course.startDate}"> Last Name </p></td>
+            <td><p th:text="${course.endDate}"> National Code </p></td>
+            >
+
+            <td><a th:href="@{/admin/assign-course-to-teacher/__${course.id}__}">Assign To This Course</a></td>
+
+        </tr>
+
+    </table>
+</div>
+
+</body>
+</html>

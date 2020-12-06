@@ -4,7 +4,10 @@ import ir.maktab.quizmaker.base.domains.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Alireza.d.a
@@ -18,6 +21,11 @@ public class Question extends BaseEntity<Long> {
     private boolean isPublic;
 
     @ManyToOne
+    @JoinColumn(name = "teacherid")
+    private Teacher teacher;
+
+
+    @ManyToOne
     @JoinColumn(name = "courseid")
     private Course course;
 
@@ -25,10 +33,29 @@ public class Question extends BaseEntity<Long> {
     @JoinColumn(name = "subjectid")
     private Subject subject;
 
+    @ManyToMany(mappedBy = "questions")
+    private List<Exam> exams = new LinkedList<>();
+
 //    private Blob Baraye Image . Sakhtan !
 
 //    private List<String> options = new LinkedList<>();
 
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
+    public List<Exam> getExams() {
+        return exams;
+    }
+
+    public void setExams(List<Exam> exams) {
+        this.exams = exams;
+    }
 
     public String getTitle() {
         return title;

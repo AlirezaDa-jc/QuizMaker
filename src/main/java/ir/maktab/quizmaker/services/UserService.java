@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author Alireza.d.a
  */
@@ -17,6 +20,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public List<User> findAllByUsernameLike(String username) {
+        return userRepository.findAllByUserNameContains(username);
+    }
     public User findByUsername(String username) {
         return userRepository.findByUserName(username);
     }
@@ -29,7 +35,6 @@ public class UserService {
                 )
         );
         return userRepository.save(user);
-//        System.out.println("saved user");
     }
 
     public boolean editPassword(String password,String userName) {
@@ -38,5 +43,18 @@ public class UserService {
         byUserName.setPassword(encodedPassword);
         userRepository.save(byUserName);
         return true;
+    }
+
+    public List<User> getNotAllowedUsers() {
+        List<User> all = userRepository.findAll();
+        return all.stream()
+                .filter(user -> !user.isAllowed())
+                .collect(Collectors.toList());
+    }
+
+    public User allowUser(Long id) {
+        User user = userRepository.findById(id).get();
+        user.setAllowed(true);
+        return userRepository.save(user);
     }
 }

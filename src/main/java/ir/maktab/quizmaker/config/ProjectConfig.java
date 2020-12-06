@@ -46,7 +46,7 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/menu")
                 .permitAll()
                 .successHandler(myAuthenticationSuccessHandler())
-                .failureUrl("/menu")
+                .failureUrl("/login_error")
                 .and()
                 .logout()
                 .logoutSuccessUrl("/menu");
