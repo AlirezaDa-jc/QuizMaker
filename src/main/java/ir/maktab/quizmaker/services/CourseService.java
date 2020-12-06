@@ -2,11 +2,13 @@ package ir.maktab.quizmaker.services;
 
 import ir.maktab.quizmaker.domains.Course;
 import ir.maktab.quizmaker.domains.Student;
+import ir.maktab.quizmaker.domains.Teacher;
+import ir.maktab.quizmaker.domains.User;
 import ir.maktab.quizmaker.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
  * @author Alireza.d.a
  */
 @Service
-@RequestMapping("course")
+@Transactional
 public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
@@ -42,5 +44,19 @@ public class CourseService {
                 .filter(course -> !course.getStudents()
                         .contains(student))
                 .collect(Collectors.toList());
+    }
+
+    public void saveO(Student student, Course course) {
+        course.addStudent(student);
+        courseRepository.save(course);
+    }
+
+    public Course addUser(Course course, User tempUser) {
+        if(tempUser.getRole().equals("STUDENT")){
+            course.addStudent((Student) tempUser);
+        }else{
+            course.setTeacher((Teacher) tempUser);
+        }
+        return courseRepository.save(course);
     }
 }

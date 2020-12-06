@@ -5,11 +5,51 @@
     <title>List Of Forbidden Users</title>
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidenav a {
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .main {
+            padding-left: 200px ; !important;
+        }
+
+    </style>
 </head>
 <body>
 <!--Bar TODO-->
+<div class="sidenav" id="mySidenav">
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Clients</a>
+    <a href="#">Contact</a>
+</div>
 
-<div class="table-bordered " style="margin: auto">
+<div class="table-bordered main" style="margin: auto">
 
     <table class="table">
 
@@ -34,8 +74,8 @@
             <td><p th:text="${teacher.nationalCode}"> National Code </p></td>
 >
 
-            <td><a th:href="@{/admin/allow-user/__${teacher.user.id}__}">Allow</a></td>
-            <td><a th:href="@{/admin/assign-course-user/__${teacher.user.id}__}">Assign To A Course</a></td>
+            <td><a th:href="@{/admin/allow-user/__${teacher.id}__}">Allow</a></td>
+            <td><a th:href="@{/admin/assign-course-user/__${teacher.id}__}">Assign To A Course</a></td>
 
 
         </tr>
@@ -51,7 +91,9 @@
             <td><p th:text="${student.nationalCode}"> National Code </p></td>
             >
 
-            <td><a th:href="@{/admin/allow-user/__${student.user.id}__}">Allow</a></td>
+            <td><a th:href="@{/admin/allow-user/__${student.id}__}">Allow</a></td>
+            <td><a th:href="@{/admin/assign-course-user/__${student.id}__}">Assign To A Course</a></td>
+
 
         </tr>
 

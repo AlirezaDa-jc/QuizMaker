@@ -1,11 +1,7 @@
 package ir.maktab.quizmaker.domains;
 
-import ir.maktab.quizmaker.base.domains.BaseEntity;
-
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,20 +9,32 @@ import java.util.List;
  * @author Alireza.d.a
  */
 @Entity
-public class Teacher extends BaseEntity<Long> {
+public class Teacher extends User {
+
     private String firstName;
     private String lastName;
     private long nationalCode;
-
-    @OneToOne
-    @JoinColumn(name = "userid")
-    private User user;
 
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)
     private List<Course> courses = new LinkedList<>();
 
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)
     private List<Question> questions = new LinkedList<>();
+
+    @OneToMany(mappedBy = "teacher", orphanRemoval = true)
+    private List<Exam> exams = new LinkedList<>();
+
+    public Teacher() {
+        setRole("TEACHER");
+    }
+
+    public List<Exam> getExams() {
+        return exams;
+    }
+
+    public void setExams(List<Exam> exams) {
+        this.exams = exams;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -52,15 +60,6 @@ public class Teacher extends BaseEntity<Long> {
         this.nationalCode = nationalCode;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-        user.setTeacher(this);
-    }
-
     public List<Course> getCourses() {
         return courses;
     }
@@ -79,5 +78,10 @@ public class Teacher extends BaseEntity<Long> {
 
     public void addCourse(Course course) {
         courses.add(course);
+    }
+
+    public void removeCourse(Course course) {
+        courses.remove(course);
+        course.removeTeacher();
     }
 }

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Teachers</title>
+    <title>List Of Users In This Course</title>
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
     <style>
@@ -41,7 +42,6 @@
     </style>
 </head>
 <body>
-<!--Bar TODO-->
 <div class="sidenav" id="mySidenav">
     <a href="#">About</a>
     <a href="#">Services</a>
@@ -49,11 +49,11 @@
     <a href="#">Contact</a>
 </div>
 
-<div class="table-bordered main" style="margin: auto">
+<div class="table-bordered main " style="margin: auto">
 
     <table class="table">
 
-        <tr><th colspan="5">Teachers</th></tr>
+        <tr><th colspan="5">Teacher</th></tr>
         <tr>
             <th>First Name</th>
             <th>Last Name</th>
@@ -63,22 +63,32 @@
 
 
 
-        <tr th:if="${teachers.isEmpty()}">
-            <td colspan="5">There Are No Forbidden Teachers</td>
+        <tr th:if="${course.teacher==null}">
+            <td colspan="4">There Are No Teachers</td>
         </tr>
 
-        <tr th:each="teacher : ${teachers}">
+        <tr>
 
-            <td><p th:text="${teacher.firstName}"> First Name </p></td>
-            <td><p th:text="${teacher.lastName}"> Last Name </p></td>
-            <td><p th:text="${teacher.nationalCode}"> National Code </p></td>
+            <td><p th:text="${course.teacher.firstName}"> First Name </p></td>
+            <td><p th:text="${course.teacher.lastName}"> Last Name </p></td>
+            <td><p th:text="${course.teacher.nationalCode}"> National Code </p></td>
 
-            <td><a th:href="@{/admin/assign-course-user/__${teacher.id}__}">Assign To A Course</a></td>
+            <td><a th:href="@{/admin/delete-course-user/__${course.teacher.id}__/__${course.id}__}">Delete Teacher</a></td>
 
         </tr>
+
+        <tr th:each="student : ${course.students}">
+
+            <td><p th:text="${student.firstName}"> First Name </p></td>
+            <td><p th:text="${student.lastName}"> Last Name </p></td>
+            <td><p th:text="${student.nationalCode}"> National Code </p></td>
+
+            <td><a th:href="@{/admin/delete-course-user/__${student.id}__/__${course.id}__}">Delete Student</a></td>
+
+        </tr>
+
     </table>
 </div>
-
 
 <script crossorigin="anonymous"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

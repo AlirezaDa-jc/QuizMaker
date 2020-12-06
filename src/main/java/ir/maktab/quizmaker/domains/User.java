@@ -4,14 +4,17 @@ import ir.maktab.quizmaker.base.domains.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 
 /**
  * @author Alireza.d.a
  */
 
+//Inherint
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity<Long> {
 
     private String role;
@@ -21,27 +24,30 @@ public class User extends BaseEntity<Long> {
     private String password;
     private boolean isAllowed = false;
 
-    @OneToOne(mappedBy = "user")
-    private Teacher teacher;
 
-    @OneToOne(mappedBy = "user")
-    private Student student;
+    //*
 
-    public Teacher getTeacher() {
-        return teacher;
-    }
+//    @OneToOne(mappedBy = "user")
+//    private Teacher teacher;
+//
+//    @OneToOne(mappedBy = "user")
+//    private Student student;
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
+//    public Teacher getTeacher() {
+//        return teacher;
+//    }
+//
+//    public void setTeacher(Teacher teacher) {
+//        this.teacher = teacher;
+//    }
+//
+//    public Student getStudent() {
+//        return student;
+//    }
+//
+//    public void setStudent(Student student) {
+//        this.student = student;
+//    }
 
     public String getRole() {
         return role;

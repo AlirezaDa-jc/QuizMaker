@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
-    <title>List Students</title>
+    <title>All Of Courses</title>
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
     <style>
@@ -42,7 +41,6 @@
     </style>
 </head>
 <body>
-<!--Bar TODO-->
 <div class="sidenav" id="mySidenav">
     <a href="#">About</a>
     <a href="#">Services</a>
@@ -53,41 +51,30 @@
 
     <table class="table">
 
-        <tr><th colspan="5">Students</th></tr>
+        <tr><th colspan="4">Course</th></tr>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>National Code</th>
+            <th>Subject</th>
+            <th>Start Date</th>
+            <th>End Date</th>
 
         </tr>
 
 
 
-        <tr th:if="${students.isEmpty()}">
-            <td colspan="5">There Are No Students</td>
+        <tr th:if="${courses.isEmpty()}">
+            <td colspan="5">There Are No Courses</td>
         </tr>
 
-        <tr th:each="student : ${students}">
+        <tr th:each="course : ${courses}">
 
-            <td><p th:text="${student.firstName}"> First Name </p></td>
-            <td><p th:text="${student.lastName}"> Last Name </p></td>
-            <td><p th:text="${student.nationalCode}"> National Code </p></td>
+            <td><p th:text="${course.subject.name}"> Subject </p></td>
+            <td><p th:text="${course.startDate}"> Start Date</p></td>
+            <td><p th:text="${course.endDate}"> End Date </p></td>
 
-            <td><a th:href="@{/admin/assign-course-user/__${student.id}__}">Assign To A Course</a></td>
+            <td><a th:href="@{/admin/course-users/__${course.id}__}">See Users</a></td>
 
         </tr>
     </table>
 </div>
-
-
-<script crossorigin="anonymous"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

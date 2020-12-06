@@ -13,4 +13,5 @@ import java.util.List;
 public interface TeacherRepository  extends JpaRepository<Teacher,Long> {
     List<Teacher> findAllByFirstNameContains(String firstName);
     List<Teacher> findAllByLastNameContains(String lastName);
+    List<Teacher> findAllByUserNameContains(String userName);
 }

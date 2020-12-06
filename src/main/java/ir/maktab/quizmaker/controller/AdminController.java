@@ -17,15 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Alireza.d.a
  */
-//TODO Controller Or Rest?
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -38,8 +34,6 @@ public class AdminController {
 
     @Autowired
     private CourseService courseService;
-
-    private User tempUser;
 
 
     @GetMapping("allow-user")
@@ -65,39 +59,10 @@ public class AdminController {
         String lastName = request.getParameter("lastName");
 
         if (request.getParameter("role").equals("Teacher")) {
-            Set<Teacher> users = new HashSet<>();
-            if (!userName.equals("")) {
-                users = userService.findAllByUsernameLike(userName).stream()
-                        .filter(user -> user.getRole().equals("TEACHER"))
-                        .map(User::getTeacher)
-                        .collect(Collectors.toSet());
-            }
-            if (!firstName.equals("")) {
-                List<Teacher> allByFirstName = teacherService.
-                        findAllByFirstNameContains(firstName);
-                users.addAll(allByFirstName);
-            }
-            if (!lastName.equals("")) {
-                List<Teacher> allByLastName = teacherService.findAllByLastNameContains(lastName);
-                users.addAll(allByLastName);
-            }
+            Set<Teacher> users = teacherService.getSearchResults(userName,firstName,lastName);
             model.addAttribute("users", users);
         } else {
-            Set<Student> users = new HashSet<>();
-            if (!userName.equals("")) {
-                users = userService.findAllByUsernameLike(userName).stream()
-                        .filter(user -> user.getRole().equals("STUDENT"))
-                        .map(User::getStudent)
-                        .collect(Collectors.toSet());
-            }
-            if (!firstName.equals("")) {
-                List<Student> allByFirstNameLikeOrLastNameLike = studentService.findAllByFirstNameContains(firstName);
-                users.addAll(allByFirstNameLikeOrLastNameLike);
-            }
-            if (!lastName.equals("")) {
-                List<Student> allByLastName = studentService.findAllByLastNameContains(lastName);
-                users.addAll(allByLastName);
-            }
+            Set<Student> users = studentService.getSearchResults(userName,firstName,lastName);
             model.addAttribute("users", users);
         }
         return "search-results";
@@ -108,14 +73,14 @@ public class AdminController {
         return "search";
     }
 
-    @GetMapping("teachers")
+    @GetMapping("list-teachers")
     public String sendListOfTeachers(Model model) {
         model.addAttribute("teachers", teacherService.findAll());
         return "list-teachers";
     }
 
-    @GetMapping("students")
-    public String sendListOfStudentss(Model model) {
+    @GetMapping("list-students")
+    public String sendListOfStudents(Model model) {
         model.addAttribute("students", studentService.findAll());
         return "list-students";
     }
@@ -123,42 +88,38 @@ public class AdminController {
 
     @GetMapping("assign-course-user/{id}")
     public String sendListOfCourses(@PathVariable Long id, Model model) {
-        tempUser = userService.findById(id);
-        if(tempUser.getTeacher()!=null){
+        User tempUser = userService.findById(id);
+        if(tempUser.getRole().equals("TEACHER")){
             model.addAttribute("courses", courseService.findAllWithoutTeacher());
         }else {
-            model.addAttribute("courses",courseService.findAllWithoutThisStudent(tempUser.getStudent()));
+            model.addAttribute("courses",courseService.findAllWithoutThisStudent((Student) tempUser));
         }
+        model.addAttribute("userId",id);
+        System.out.println();
         return "courses";
     }
 
-    @GetMapping("assign-course-by-role/{id}")
-    public String assignCourse(@PathVariable Long id, Model model) throws Exception {
-        Course course = courseService.findById(id);
-        Teacher teacher = tempUser.getTeacher();
-        Student student = tempUser.getStudent();
-        if (teacher != null) {
-            course.setTeacher(teacher);
-            //TODO Home Of Admin
-            courseService.save(course);
-            teacher.getUser().setAllowed(true);
-            teacherService.save(teacher);
-            model.addAttribute("teachers", teacherService.findAll());
 
-            return "list-teachers";
-        }else if(student != null) {
-            course.addStudent(student);
-            courseService.save(course);
-            student.getUser().setAllowed(true);
-            studentService.save(student);
-            model.addAttribute("students",studentService.findAll());
-
-            return "list-students";
+    @GetMapping("assign-course-by-role/{courseId}/{userId}")
+    public String assignCourse(@PathVariable Long courseId,@PathVariable Long userId, Model model) throws Exception {
+        //Input Hidden
+        Course course = courseService.findById(courseId);
+        if(courseService.addUser(course,userService.findById(userId)) != null) {
+            model.addAttribute("courses",courseService.findAll());
+            return "list-courses";
         }
         throw new Exception("500 , Server Encountered An Error!");
+    }
 
-//        model.addAttribute("message","500 , Server Encountered A Problem!");
-//        return "exception";
+    @GetMapping("list-courses")
+    public String sendListOfCourses(Model model){
+        model.addAttribute("courses",courseService.findAll());
+        return "list-courses";
+    }
+    @GetMapping("course-users/{id}")
+    public String sendListOfCourseUsers(@PathVariable Long id,Model model){
+        model.addAttribute("course",courseService.findById(id));
+        return "course-users";
     }
 
     @ExceptionHandler(Exception.class)
@@ -166,7 +127,25 @@ public class AdminController {
         model.addAttribute("message",ex.getMessage());
         return "admin-exception";
     }
-//    @GetMapping("students")
-    //TODO
 
+
+
+    @GetMapping("delete-course-user/{userId}/{courseId}")
+    public String deleteUser(@PathVariable Long userId, Model model, @PathVariable Long courseId){
+        User user = userService.findById(userId);
+        Course tempCourse = courseService.findById(courseId);
+        if(user.getRole().equals("TEACHER")){
+            Teacher teacher = teacherService.findById(userId);
+            teacher.removeCourse(tempCourse);
+            teacherService.save(teacher);
+            courseService.save(tempCourse);
+        }else if(user.getRole().equals("STUDENT")){
+            Student student = studentService.findById(userId);
+            student.removeCourse(tempCourse);
+            studentService.save(student);
+            courseService.save(tempCourse);
+        }
+        model.addAttribute("course",tempCourse);
+        return "course-users";
+    }
 }

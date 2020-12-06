@@ -51,9 +51,6 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessUrl("/menu");
 
-//TODO Login Failure A Page That Shows Reason That U Didn't Log In!
-        //TODO CRUD Teacher And Allowing By Admin
-
 
         http.authorizeRequests()
                 .mvcMatchers("/admin/**").hasRole("ADMIN")

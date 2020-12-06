@@ -1,8 +1,8 @@
 package ir.maktab.quizmaker.domains;
 
-import ir.maktab.quizmaker.base.domains.BaseEntity;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @author Alireza.d.a
  */
 @Entity
-public class Student extends BaseEntity<Long> {
+public class Student extends User {
     @Column(nullable = false,unique = true)
     private int studentCode;
 
@@ -21,12 +21,26 @@ public class Student extends BaseEntity<Long> {
     @Column(nullable = false,unique = true)
     private long nationalCode;
 
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "students")
+    @ManyToMany(mappedBy = "students")
+    private List<Exam> exams = new LinkedList<>();
+/*
+Performance
+ */
+//        @ManyToMany(fetch = FetchType.EAGER,mappedBy = "students")
+    @ManyToMany(mappedBy = "students")
     private List<Course> courses = new LinkedList<>();
 
-    @OneToOne
-    @JoinColumn(name = "userid")
-    private User user;
+    public Student() {
+        setRole("STUDENT");
+    }
+
+    public List<Exam> getExams() {
+        return exams;
+    }
+
+    public void setExams(List<Exam> exams) {
+        this.exams = exams;
+    }
 
     public int getStudentCode() {
         return studentCode;
@@ -68,16 +82,12 @@ public class Student extends BaseEntity<Long> {
         this.courses = courses;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-        user.setStudent(this);
-    }
-
     public void addCourse(Course course) {
         courses.add(course);
+    }
+
+    public void removeCourse(Course course) {
+        courses.remove(course);
+        course.removeStudent(this);
     }
 }

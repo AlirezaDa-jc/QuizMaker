@@ -5,8 +5,49 @@
     <title>Search</title>
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidenav a {
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .main {
+            padding-left: 200px ; !important;
+        }
+
+    </style>
 </head>
 <body>
+<div class="sidenav" id="mySidenav">
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Clients</a>
+    <a href="#">Contact</a>
+</div>
+<div class="main">
 <form action="/admin/search-results" method="GET" style="margin: auto;">
     <label for="userName">User Name:</label>
     <input id="userName" name="userName" type="text">
@@ -27,7 +68,7 @@
     <input type="submit" value="Search">
     <input type="reset" value="Reset Fields">
 </form>
-
+</div>
 
 <script crossorigin="anonymous"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

@@ -15,7 +15,18 @@ public class Subject extends BaseEntity<Long> {
     private String name;
 
     @OneToMany(mappedBy = "subject" , orphanRemoval = true)
+    List<Course> courses = new LinkedList<>();
+
+    @OneToMany(mappedBy = "subject" , orphanRemoval = true)
     List<Question> questions = new LinkedList<>();
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
 
     public String getName() {
         return name;
@@ -25,11 +36,12 @@ public class Subject extends BaseEntity<Long> {
         this.name = name;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public List<Course> getCourses() {
+        return courses;
     }
 
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
+
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Teacher Sign Up</title>
@@ -8,7 +8,7 @@
 </head>
 <body>
 <form action="/menu" id="myform" method="post"></form>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class=" navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Quiz Maker</a>
     <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
             data-target="#navbarText" data-toggle="collapse" type="button">
@@ -68,26 +68,18 @@
         </div>
     </div>
 </nav>
-<form action="/sign-up/teacher" method="post" style="margin: auto;">
-    <label for="userName">User Name:</label>
-    <input id="userName" name="userName" required type="text">
-    <br>
-    <label for="password">Password:</label>
-    <input id="password" name="password" required type="password">
-    <br>
-    <label for="firstName">First Name:</label>
-    <input id="firstName" name="firstName" required type="text">
-    <br>
-    <label for="lastName">Last Name:</label>
-    <input id="lastName" name="lastName" required type="text">
-    <br>
-    <label for="nationalCode">NationalCode:</label>
-    <input id="nationalCode" name="nationalCode" type="text"/><br>
-    <br>
-    <input type="submit" value="Create Teacher">
-    <input type="reset" value="Reset Fields">
-</form>
 
+<form action="#" class="forms" method="post" th:action="@{/menu/sign-up/teacher}" th:object="${teacher}">
+    UserName: <input th:field="*{userName}" type="text"/><br>
+    Password: <input th:field="*{password}" type="text"/><br>
+
+    FirstName: <input th:field="*{firstName}" type="text"/><br>
+    LastName: <input th:field="*{lastName}" type="text"/><br>
+
+    NationalCode: <input th:field="*{nationalCode}" type="text"/><br>
+    <input hidden th:field="*{role}" th:value="${role}" type="text">
+    <input type="submit" value="Sign Up"/> <input type="reset" value="Reset"/>
+</form>
 
 <script crossorigin="anonymous"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -98,4 +90,5 @@
 <script crossorigin="anonymous"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
 </html>

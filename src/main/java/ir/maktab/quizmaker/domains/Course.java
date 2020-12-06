@@ -33,8 +33,8 @@ public class Course extends BaseEntity<Long> {
 
     @ManyToMany
     @JoinTable(name = "Student_Course",
-            joinColumns = {@JoinColumn(name = "student_id")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id")})
+            joinColumns = {@JoinColumn(name = "course_id")},
+            inverseJoinColumns = {@JoinColumn(name = "student_id")})
     private List<Student> students = new LinkedList<>();
 
     public List<Student> getStudents() {
@@ -97,5 +97,13 @@ public class Course extends BaseEntity<Long> {
     public void addStudent(Student student) {
         students.add(student);
         student.addCourse(this);
+    }
+
+    public void removeTeacher() {
+        teacher = null;
+    }
+
+    public void removeStudent(Student student) {
+        students.remove(student);
     }
 }
