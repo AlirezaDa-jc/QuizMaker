@@ -1,77 +1,98 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>All Of Courses</title>
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
     <style>
-        body {
-            font-family: "Lato", sans-serif;
+        html[lang=fa] {
+            direction: rtl;
+        }
+
+        html[lang=en] {
+            direction: ltr;
         }
 
         .sidenav {
             height: 100%;
-            width: 200px;
-            position: fixed;
+            width: 20%;
+            position: absolute;
             z-index: 1;
             top: 0;
-            left: 0;
+            right: 0;
             background-color: #111;
             overflow-x: hidden;
             padding-top: 20px;
+            justify-content: end;
+            margin-left: 80%;
+            text-align: inherit;
         }
 
+
         .sidenav a {
-            padding: 6px 6px 6px 32px;
+            padding: 6px;
             text-decoration: none;
-            font-size: 25px;
+            font-size: 14px;
             color: #818181;
             display: block;
         }
+
 
         .sidenav a:hover {
             color: #f1f1f1;
         }
 
         .main {
-            padding-left: 200px ; !important;
+            width: 79%;
+            position: absolute;
+            left: 0;
+            padding: 0;
+            text-align: inherit;
         }
 
+        /*TODO*/
+        .lang {
+            text-align: center !important;;
+        }
     </style>
 </head>
 <body>
-<div class="sidenav" id="mySidenav">
-    <a href="#">About</a>
-    <a href="#">Services</a>
-    <a href="#">Clients</a>
-    <a href="#">Contact</a>
+
+<div class="sidenav lang" id="mySidenav">
+    <a href="/student/view"><p th:text="#{home}"></p></a>
+    <a href="/admin/search" th:text="#{search}"><p></p></a>
+    <a href="/admin/list-students" th:text="#{students}"><p></p></a>
+    <a href="/admin/list-teachers" th:text="#{teachers}"><p></p></a>
+    <a href="/admin/allow-user" th:text="#{allow_users}"><p></p></a>
 </div>
-<div  class="table-bordered main" style="margin: auto">
 
-    <table class="table">
+<div class="table-bordered main lang">
+    <table class="table lang">
 
-        <tr><th colspan="4">Course</th></tr>
         <tr>
-            <th>Subject</th>
-            <th>Start Date</th>
-            <th>End Date</th>
+            <th colspan="4">Teachers</th>
+        </tr>
+        <tr>
+            <th th:text="#{subject}"></th>
+            <th th:text="#{startdate}"></th>
+            <th th:text="#{enddate}"></th>
 
         </tr>
 
 
-
         <tr th:if="${courses.isEmpty()}">
-            <td colspan="5">There Are No Courses</td>
+            <td colspan="4" th:text="#{no_courses}"></td>
         </tr>
 
         <tr th:each="course : ${courses}">
 
-            <td><p th:text="${course.subject.name}"> Subject </p></td>
-            <td><p th:text="${course.startDate}"> Start Date</p></td>
-            <td><p th:text="${course.endDate}"> End Date </p></td>
+            <td><p th:text="${course.subject.name}"></p></td>
+            <td><p th:text="${course.startDate}"></p></td>
+            <td><p th:text="${course.endDate}"></p></td>
 
-            <td><a th:href="@{/admin/course-users/__${course.id}__}">See Users</a></td>
+            <td><a th:href="@{/admin/course-users/__${course.id}__}" th:text="#{see_users}"></a></td>
 
         </tr>
     </table>

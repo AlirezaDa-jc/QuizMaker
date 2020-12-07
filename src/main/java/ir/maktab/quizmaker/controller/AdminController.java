@@ -129,7 +129,6 @@ public class AdminController {
     }
 
 
-
     @GetMapping("delete-course-user/{userId}/{courseId}")
     public String deleteUser(@PathVariable Long userId, Model model, @PathVariable Long courseId){
         User user = userService.findById(userId);
@@ -148,4 +147,6 @@ public class AdminController {
         model.addAttribute("course",tempCourse);
         return "course-users";
     }
+
+    //ToDo Edit Name Student ! Teacher ! Course ! Edit!!! Front Add Login
 }
