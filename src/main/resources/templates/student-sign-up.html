@@ -7,10 +7,11 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
 </head>
 <body>
-<form method="post" action="/menu" id="myform"></form>
+<form action="/menu" id="myform" method="post"></form>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Quiz Maker</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-target="#navbarText" data-toggle="collapse" type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
@@ -27,61 +28,94 @@
                 <a class="nav-link" href="#">Pricing</a>
             </li>
         </ul>
-        <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="modalLoginForm" role="dialog"
+             tabindex="-1">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header text-center">
                         <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body mx-3">
                         <div class="md-form mb-5">
                             <i class="fas fa-envelope prefix grey-text"></i>
-                            <input form="myform" type="text" id="defaultForm-userName" name="username" class="form-control validate">
-                            <label data-error="wrong" data-success="right" for="defaultForm-userName">Your Username</label>
+                            <input class="form-control validate" form="myform" id="defaultForm-userName" name="username"
+                                   type="text">
+                            <label data-error="wrong" data-success="right" for="defaultForm-userName">Your
+                                Username</label>
                         </div>
 
                         <div class="md-form mb-4">
                             <i class="fas fa-lock prefix grey-text"></i>
-                            <input form="myform" type="password" id="defaultForm-pass" name="password" class="form-control validate">
+                            <input class="form-control validate" form="myform" id="defaultForm-pass" name="password"
+                                   type="password">
                             <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
                         </div>
 
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
-                        <input type="submit" form="myform" class="btn btn-default" value="Login"/>
+                        <input class="btn btn-default" form="myform" type="submit" value="Login"/>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="text-center">
-            <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Login</a>
+            <a class="btn btn-default btn-rounded mb-4" data-target="#modalLoginForm" data-toggle="modal"
+               href="">Login</a>
         </div>
     </div>
 </nav>
 
 <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${error}">
-    <p class="error">UserName is In Use</p>
+    <p class="error">UserName is In Use Or Invalid National Code/Student Code</p>
     <button aria-label="Close" class="close" data-dismiss="alert" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<form action="#" class="forms" method="post" th:action="@{/menu/sign-up/student}" th:object="${student}">
-    UserName: <input th:field="*{userName}" type="text"/><br>
-    Password: <input th:field="*{password}" type="text"/><br>
 
-    FirstName: <input th:field="*{firstName}" type="text"/><br>
-    LastName: <input th:field="*{lastName}" type="text"/><br>
-
-    NationalCode: <input th:field="*{nationalCode}" type="text"/><br>
-    StudentCode: <input th:field="*{studentCode}" type="text"/><br>
-    <input hidden th:field="*{role}" th:value="${role}" type="text">
-    <input type="submit" value="Sign Up"/> <input type="reset" value="Reset"/>
-</form>
+<div class="main lang">
+    <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
+        <div class="card-body">
+            <form action="#" class="forms" method="post" th:action="@{/menu/sign-up/student}" th:object="${student}">
+                <div class="form-group">
+                    <label for="username" th:text="#{username}"></label><br>
+                    <input aria-describedby="username" class="form-control"  id="username" name="username"
+                           th:field="*{userName}" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="password" th:text="#{password}"></label>
+                    <input aria-describedby="startDate" class="form-control" id="password" name="password"
+                           th:field="*{password}" type="password">
+                </div>
+                <div class="form-group">
+                    <label for="firstName" th:text="#{firstname}"></label>
+                    <input aria-describedby="firstName" class="form-control" id="firstName" name="firstName"
+                           th:field="*{firstName}" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="lastName" th:text="#{lastname}"></label>
+                    <input aria-describedby="lastName" class="form-control" id="lastName" name="lastName"
+                           th:field="*{lastName}" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="nationalCode" th:text="#{nationalcode}"></label>
+                    <input aria-describedby="nationalCode" class="form-control" id="nationalCode" name="nationalCode"
+                           th:field="*{nationalCode}" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="studentCode" th:text="#{studentcode}"></label>
+                    <input aria-describedby="studentCode" class="form-control" id="studentCode" name="studentCode"
+                           th:field="*{studentCode}" type="text">
+                </div>
+                <button class="btn btn-primary" th:value="#{search}" type="submit">Submit</button>
+                <button class="btn btn-primary" th:value="#{resetfields}" type="reset">Reset</button>
+            </form>
+        </div>
+    </div>
+</div>
 
 <script crossorigin="anonymous"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

@@ -4,73 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <title>List Of Forbidden Users</title>
+    <link rel="stylesheet" th:href="@{/css/admin-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
-    <style>
-        html[lang=fa] {
-            direction: rtl;
-        }
-        html[lang=en] {
-            direction: ltr;
-        }
-
-        .sidenav {
-            height: 100%;
-            width: 20%;
-            position: absolute;
-            z-index: 1;
-            top: 0;
-            right: 0;
-            background-color: #111;
-            overflow-x: hidden;
-            padding-top: 20px;
-            justify-content: end;
-            margin-left: 80%;
-            text-align: inherit;
-        }
-
-
-        .sidenav a {
-            padding: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            color: #818181;
-            display: block;
-        }
-
-
-
-        .sidenav a:hover {
-            color: #f1f1f1;
-        }
-
-        .main {
-            width: 79%;
-            position: absolute;
-            left: 0;
-            padding: 0;
-            text-align: inherit;
-        }
-        /*TODO*/
-        .lang{
-            text-align:center !important;;
-        }
-    </style>
 </head>
 <body>
 
 <div class="sidenav lang" id="mySidenav">
-    <a href="/student/view" ><p th:text="#{home}"></p></a>
+    <a href="/admin/home"><p th:text="#{home}"></p></a>
     <a href="/admin/search" th:text="#{search}"><p></p></a>
+    <a href="/admin/create-subject" th:text="#{create_subject}"><p></p></a>
     <a href="/admin/list-students" th:text="#{students}"><p></p></a>
     <a href="/admin/list-teachers" th:text="#{teachers}"><p></p></a>
+    <a href="/admin/list-subjects" th:text="#{subjects}"><p></p></a>
+    <a href="/admin/list-courses" th:text="#{courses}"><p></p></a>
     <a href="/admin/allow-user" th:text="#{allow_users}"><p></p></a>
 </div>
 
 <div class="table-bordered main lang">
     <table class="table lang">
 
-        <tr><th colspan="5" th:text="#{teachers}">Teachers</th></tr>
+        <tr>
+            <th colspan="5" th:text="#{teachers}">Teachers</th>
+        </tr>
         <tr>
             <th th:text="#{firstname}">First Name</th>
             <th th:text="#{lastname}">Last Name</th>
@@ -79,23 +35,25 @@
         </tr>
 
 
-
         <tr th:if="${teachers.isEmpty()}">
             <td colspan="5" th:text="#{no_teachers}">There Are No Forbidden Teachers</td>
         </tr>
 
         <tr th:each="teacher : ${teachers}">
 
-            <td><p th:text="${teacher.firstName}" > First Name </p></td>
+            <td><p th:text="${teacher.firstName}"> First Name </p></td>
             <td><p th:text="${teacher.lastName}"> Last Name </p></td>
             <td><p th:text="${teacher.nationalCode}"> National Code </p></td>
 
             <td><a th:href="@{/admin/allow-user/__${teacher.id}__}" th:text="#{allow}">Allow</a></td>
-            <td><a th:href="@{/admin/assign-course-user/__${teacher.id}__}" th:text="#{assign_to_a_course}">Assign To A Course</a></td>
+            <td><a th:href="@{/admin/assign-course-user/__${teacher.id}__}" th:text="#{assign_to_a_course}">Assign To A
+                Course</a></td>
 
 
         </tr>
-        <tr><th colspan="5">Students</th></tr>
+        <tr>
+            <th colspan="5">Students</th>
+        </tr>
         <tr th:if="${students.isEmpty()}">
             <td colspan="5">There Are No Forbidden Students</td>
         </tr>

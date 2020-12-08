@@ -3,107 +3,79 @@
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-    <meta http-equiv="Content-Language" th:content="${lang}" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <meta http-equiv="Content-Language" th:content="${lang}"/>
     <title>List Of Users In This Course</title>
+    <link rel="stylesheet" th:href="@{/css/admin-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
-    <style>
-        html[lang=fa] {
-            direction: rtl;
-        }
-        html[lang=en] {
-            direction: ltr;
-        }
-
-        .sidenav {
-            height: 100%;
-            width: 20%;
-            position: absolute;
-            z-index: 1;
-            top: 0;
-            right: 0;
-            background-color: #111;
-            overflow-x: hidden;
-            padding-top: 20px;
-            justify-content: end;
-            margin-left: 80%;
-            text-align: inherit;
-        }
-
-
-        .sidenav a {
-            padding: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            color: #818181;
-            display: block;
-        }
-
-
-
-        .sidenav a:hover {
-            color: #f1f1f1;
-        }
-
-        .main {
-            width: 79%;
-            position: absolute;
-            left: 0;
-            padding: 0;
-            text-align: inherit;
-        }
-        /*TODO*/
-        .lang{
-            text-align:center !important;;
-        }
-    </style>
 </head>
 <body>
 
 <div class="sidenav lang" id="mySidenav">
-    <a href="/student/view" ><p th:text="#{home}"></p></a>
+    <a href="/admin/home"><p th:text="#{home}"></p></a>
     <a href="/admin/search" th:text="#{search}"><p></p></a>
+    <a href="/admin/create-subject" th:text="#{create_subject}"><p></p></a>
     <a href="/admin/list-students" th:text="#{students}"><p></p></a>
     <a href="/admin/list-teachers" th:text="#{teachers}"><p></p></a>
+    <a href="/admin/list-subjects" th:text="#{subjects}"><p></p></a>
+    <a href="/admin/list-courses" th:text="#{courses}"><p></p></a>
     <a href="/admin/allow-user" th:text="#{allow_users}"><p></p></a>
 </div>
 
 <div class="table-bordered main lang">
     <table class="table lang">
 
-        <tr><th colspan="5" th:text="#{teachers}"></th></tr>
         <tr>
-            <th ><p th:text="#{firstname}"></p></th>
-            <th ><p th:text="#{lastname}"></p></th>
-            <th><p  th:text="#{nationalcode}"></p></th>
+            <th colspan="5" th:text="#{teachers}"></th>
+        </tr>
+        <tr>
+            <th><p th:text="#{firstname}"></p></th>
+            <th><p th:text="#{lastname}"></p></th>
+            <th><p th:text="#{nationalcode}"></p></th>
 
         </tr>
 
 
-
-        <tr th:if="${course.teacher==null}">
+        <tr th:if="${course.teacher == null}">
             <td colspan="5" th:text="#{no_teachers}"></td>
         </tr>
 
         <tr>
 
-            <td><p th:text="${course.teacher.firstName}">  </p></td>
-            <td><p th:text="${course.teacher.lastName}"> </p></td>
-            <td><p th:text="${course.teacher.nationalCode}"> </p></td>
+            <td><p th:text="${course.teacher?.firstName}"></p></td>
+            <td><p th:text="${course.teacher?.lastName}"></p></td>
+            <td><p th:text="${course.teacher?.nationalCode}"></p></td>
 
-            <td><a th:href="@{/admin/delete-course-user/__${course.teacher.id}__/__${course.id}__}" th:text="#{delete_teacher}"><p></p></a></td>
+            <td><a th:href="@{/admin/delete-course-user/__${course.teacher?.id}__/__${course.id}__}" th:if="${course.teacher!=null}"
+                   th:text="#{delete_teacher}"></a></td>
 
+        </tr>
+
+        <tr>
+            <th colspan="5" th:text="#{students}"></th>
+        </tr>
+        <tr>
+            <th><p th:text="#{firstname}"></p></th>
+            <th><p th:text="#{lastname}"></p></th>
+            <th><p th:text="#{nationalcode}"></p></th>
+            <th><p th:text="#{studentcode}"></p></th>
+
+        </tr>
+
+        <tr th:if="${course.students.isEmpty()}">
+            <td colspan="5" th:text="#{no_students}"></td>
         </tr>
 
         <tr th:each="student : ${course.students}">
 
             <td><p th:text="${student.firstName}"></p></td>
-            <td><p th:text="${student.lastName}">  </p></td>
-            <td><p th:text="${student.nationalCode}"> </p></td>
-            <td><p th:text="${student.studentCode}"> </p></td>
+            <td><p th:text="${student.lastName}"></p></td>
+            <td><p th:text="${student.nationalCode}"></p></td>
+            <td><p th:text="${student.studentCode}"></p></td>
 
-            <td><a th:href="@{/admin/delete-course-user/__${student.id}__/__${course.id}__}" th:text="#{delete_student}"><p></p></a></td>
+            <td><a th:href="@{/admin/delete-course-user/__${student.id}__/__${course.id}__}"
+                   th:text="#{delete_student}"><p></p></a></td>
 
         </tr>
 

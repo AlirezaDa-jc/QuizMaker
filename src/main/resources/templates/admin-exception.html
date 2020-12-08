@@ -4,74 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Error Encountered</title>
+    <link rel="stylesheet" th:href="@{/css/admin-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
-    <style>
-        html[lang=fa] {
-            direction: rtl;
-        }
-        html[lang=en] {
-            direction: ltr;
-        }
-
-        .sidenav {
-            height: 100%;
-            width: 20%;
-            position: absolute;
-            z-index: 1;
-            top: 0;
-            right: 0;
-            background-color: #111;
-            overflow-x: hidden;
-            padding-top: 20px;
-            justify-content: end;
-            margin-left: 80%;
-            text-align: inherit;
-        }
-
-
-        .sidenav a {
-            padding: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            color: #818181;
-            display: block;
-        }
-
-
-
-        .sidenav a:hover {
-            color: #f1f1f1;
-        }
-
-        .main {
-            width: 79%;
-            position: absolute;
-            left: 0;
-            padding: 0;
-            text-align: inherit;
-        }
-        /*TODO*/
-        .lang{
-            text-align:center !important;;
-        }
-    </style>
 </head>
 <body>
 
 <div class="sidenav lang" id="mySidenav">
-    <a href="/student/view" ><p th:text="#{home}"></p></a>
+    <a href="/admin/home"><p th:text="#{home}"></p></a>
     <a href="/admin/search" th:text="#{search}"><p></p></a>
+    <a href="/admin/create-subject" th:text="#{create_subject}"><p></p></a>
     <a href="/admin/list-students" th:text="#{students}"><p></p></a>
     <a href="/admin/list-teachers" th:text="#{teachers}"><p></p></a>
+    <a href="/admin/list-subjects" th:text="#{subjects}"><p></p></a>
+    <a href="/admin/list-courses" th:text="#{courses}"><p></p></a>
     <a href="/admin/allow-user" th:text="#{allow_users}"><p></p></a>
 </div>
 
 <div class="main lang">
     <div th:if="${message}" th:text="${message}"></div>
-<!--<h1>This is sample error page :-->
-<!--    ${message}-->
-<!--</h1>-->
+    <!--<h1>This is sample error page :-->
+    <!--    ${message}-->
+    <!--</h1>-->
 </div>
 </body>
 </html>

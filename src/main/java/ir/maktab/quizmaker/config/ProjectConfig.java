@@ -52,12 +52,15 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/menu");
 
 
+
         http.authorizeRequests()
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
                 .mvcMatchers("/teacher/**").hasRole("TEACHER")
                 .mvcMatchers("/student/**").hasRole("STUDENT")
+                .mvcMatchers("/resources/**").permitAll()
                 .anyRequest().permitAll();
 
         http.csrf().disable();
     }
+
 }

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Home</title>
+    <link rel="stylesheet" th:href="@{/css/admin-styles.css}">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<body>
+
+<div class="sidenav lang" id="mySidenav">
+    <a href="/admin/home"><p th:text="#{home}"></p></a>
+    <a href="/admin/search" th:text="#{search}"><p></p></a>
+    <a href="/admin/create-subject" th:text="#{create_subject}"><p></p></a>
+    <a href="/admin/list-students" th:text="#{students}"><p></p></a>
+    <a href="/admin/list-teachers" th:text="#{teachers}"><p></p></a>
+    <a href="/admin/list-subjects" th:text="#{subjects}"><p></p></a>
+    <a href="/admin/list-courses" th:text="#{courses}"><p></p></a>
+    <a href="/admin/allow-user" th:text="#{allow_users}"><p></p></a>
+</div>
+<div class="main lang">
+    <div class="bg-dark">
+        <div class="card" style="margin: auto">
+            <div class="card-body">
+                <span th:text="#{welcome_admin}"></span><span th:text="${admin}"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card wid50">
+                <div class="card-header bg-dark" style="color: white" th:text="#{users}">Users:</div>
+                <div class="card-body">
+                    <span th:text="#{amount_of_teachers}"></span><span th:text="${teachers.size}"></span><br>
+                    <span th:text="#{amount_of_students}"></span><span th:text="${students.size}"></span><br>
+                    <span th:text="#{users_not_allowed}"></span><span th:text="${users_not_allowed}"></span><br>
+                </div>
+            </div>
+            <div class="card wid50">
+                <div class="card-header bg-dark" style="color: white" th:text="#{courses}">Courses:</div>
+                <div class="card-body">
+                    <span th:text="#{amount_of_courses}"></span><span th:text="${courses.size}"></span><br>
+                    <span th:text="#{amount_of_subjects}"></span><span th:text="${subjects.size}"></span><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

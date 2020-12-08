@@ -3,6 +3,7 @@ package ir.maktab.quizmaker.controller;
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -89,7 +90,6 @@ public class AdminController {
             model.addAttribute("courses", courseService.findAllWithoutThisStudent((Student) tempUser));
         }
         model.addAttribute("userId", id);
-        System.out.println();
         return "courses";
     }
 
@@ -192,5 +192,17 @@ public class AdminController {
         }
     }
 
+    @GetMapping("home")
+    public String viewHome(Model model) {
+        model.addAttribute("admin",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        model.addAttribute("teachers",teacherService.findAll());
+        model.addAttribute("students",studentService.findAll());
+        int usersNotAllowedSize = teacherService.getForbiddenTeachers().size() + studentService.getForbiddenStudents().size();
+        model.addAttribute("users_not_allowed",usersNotAllowedSize);
+        model.addAttribute("courses",courseService.findAll());
+        model.addAttribute("subjects",subjectService.findAll());
+
+        return "admin-view";
+    }
     //ToDo Edit Name Student ! Teacher ! Course ! Edit!!! Front Add Login
 }

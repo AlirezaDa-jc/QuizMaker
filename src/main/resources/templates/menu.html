@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
 </head>
 <body>
 
-<form method="post" action="/menu" id="myform"></form>
+<form action="/menu" id="myform" method="post"></form>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixedNav">
     <a class="navbar-brand" href="#">Quiz Maker</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-target="#navbarText" data-toggle="collapse" type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
@@ -19,8 +20,8 @@
             <li class="nav-item active">
                 <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
-<!--            -->
-<!--            -->
+            <!--            -->
+            <!--            -->
             <li class="nav-item">
                 <a class="nav-link" href="#">Features</a>
             </li>
@@ -28,8 +29,8 @@
                 <a class="nav-link" href="#">Pricing</a>
             </li>
         </ul>
-        <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="modalLoginForm" role="dialog"
+             tabindex="-1">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${loginError}">
@@ -40,50 +41,52 @@
                     </div>
                     <div class="modal-header text-center">
                         <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body mx-3">
                         <div class="md-form mb-5">
                             <i class="fas fa-envelope prefix grey-text"></i>
-                            <input form="myform" type="text" id="defaultForm-userName" name="username" class="form-control validate">
-                            <label data-error="wrong" data-success="right" for="defaultForm-userName">Your Username</label>
+                            <input class="form-control validate" form="myform" id="defaultForm-userName" name="username"
+                                   type="text">
+                            <label data-error="wrong" data-success="right" for="defaultForm-userName">Your
+                                Username</label>
                         </div>
 
                         <div class="md-form mb-4">
                             <i class="fas fa-lock prefix grey-text"></i>
-                            <input form="myform" type="password" id="defaultForm-pass" name="password" class="form-control validate">
+                            <input class="form-control validate" form="myform" id="defaultForm-pass" name="password"
+                                   type="password">
                             <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
                         </div>
 
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
-                        <input type="submit" form="myform" class="btn btn-default" value="Login"/>
+                        <input class="btn btn-default" form="myform" type="submit" value="Login"/>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="text-center">
-            <a class="btn btn-default btn-rounded mb-4" data-target="#modalLoginForm" data-toggle="modal" href="">Login</a>
+            <a class="btn btn-default btn-rounded mb-4" data-target="#modalLoginForm" data-toggle="modal"
+               href="">Login</a>
         </div>
     </div>
 </nav>
 
 
+<!-- Todo Exception handling Menu! . Exception teacher and student for nationalCode != long ! . I18n menu Va login Va EDIT COURSE VA TEACHER VA STUDENT VA HAME!-->
 
-
-
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+<script crossorigin="anonymous"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
