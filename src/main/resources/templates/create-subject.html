@@ -3,7 +3,7 @@
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>All Of Courses</title>
+    <title>Create Subject</title>
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
     <style>
@@ -68,34 +68,31 @@
     <a href="/admin/allow-user" th:text="#{allow_users}"><p></p></a>
 </div>
 
-<div class="table-bordered main lang">
-    <table class="table lang">
-
-        <tr>
-            <th colspan="4" th:text="#{courses}"></th>
-        </tr>
-        <tr>
-            <th th:text="#{subject}"></th>
-            <th th:text="#{startdate}"></th>
-            <th th:text="#{enddate}"></th>
-
-        </tr>
-
-
-        <tr th:if="${courses.isEmpty()}">
-            <td colspan="4" th:text="#{no_courses}"></td>
-        </tr>
-
-        <tr th:each="course : ${courses}">
-
-            <td><p th:text="${course.subject.name}"></p></td>
-            <td><p th:text="${course.startDate}"></p></td>
-            <td><p th:text="${course.endDate}"></p></td>
-
-            <td><a th:href="@{/admin/course-users/__${course.id}__}" th:text="#{see_users}"></a></td>
-
-        </tr>
-    </table>
+<div class="main">
+    <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
+        <div class="card-body" >
+            <form action="#" class="forms" method="post" style="margin: auto;" th:action="@{/admin/create-subject}" th:object="${subject}">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input aria-describedby="username" class="form-control" id="name" name="name"
+                           placeholder="Enter UserName" th:field="*{name}" type="text">
+                </div>
+                <button class="btn btn-primary" type="submit">Submit</button>
+                <button class="btn btn-primary" type="reset">Reset</button>
+            </form>
+        </div>
+    </div>
 </div>
+
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
 </body>
 </html>

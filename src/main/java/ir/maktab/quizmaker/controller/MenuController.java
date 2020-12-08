@@ -41,9 +41,9 @@ public class MenuController {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         if (authorities.contains(anonymous))
             return "menu";
-        else if(authorities.contains(admin))
+        else if (authorities.contains(admin))
             return "redirect:/admin/view";
-        else if(authorities.contains(student))
+        else if (authorities.contains(student))
             return "redirect:/student/view";
         else {
             return "redirect:/teacher/view";
@@ -59,30 +59,42 @@ public class MenuController {
 
     @GetMapping("/sign-up/student")
     public String sendStudentSignUpForm(Model model) {
-        model.addAttribute("student",new Student());
-        model.addAttribute("role","STUDENT");
+        model.addAttribute("student", new Student());
+        model.addAttribute("role", "STUDENT");
         return "student-sign-up";
     }
 
     @PostMapping("/sign-up/student")
-    public String studentSignUp(@ModelAttribute Student student) {
-        if (studentService.save(student) != null)
-            return "redirect:/student/view";
-        return "menu";
+    public String studentSignUp(@ModelAttribute Student student, Model model) {
+        try {
+            studentService.save(student);
+        } catch (Exception ex) {
+            model.addAttribute("student", new Student());
+            model.addAttribute("role", "STUDENT");
+            model.addAttribute("error", true);
+            return "student-sign-up";
+        }
+        return "redirect:/student/view";
     }
 
 
     @GetMapping("/sign-up/teacher")
     public String sendSignUpForm(Model model) {
-        model.addAttribute("teacher",new Teacher());
-        model.addAttribute("role","TEACHER");
+        model.addAttribute("teacher", new Teacher());
+        model.addAttribute("role", "TEACHER");
         return "teacher-sign-up";
     }
 
     @PostMapping("/sign-up/teacher")
-    public String signUp(@ModelAttribute Teacher teacher) {
-        if (teacherService.save(teacher) != null)
-            return "redirect:/teacher/view";
-        return "menu";
+    public String signUp(@ModelAttribute Teacher teacher, Model model) throws Exception {
+        try {
+            teacherService.save(teacher);
+        } catch (Exception ex) {
+            model.addAttribute("teacher", new Teacher());
+            model.addAttribute("role", "TEACHER");
+            model.addAttribute("error", true);
+            return "teacher-sign-up";
+        }
+        return "redirect:/teacher/view";
     }
 }

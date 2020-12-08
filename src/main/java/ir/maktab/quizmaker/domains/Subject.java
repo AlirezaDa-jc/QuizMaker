@@ -2,6 +2,7 @@ package ir.maktab.quizmaker.domains;
 
 import ir.maktab.quizmaker.base.domains.BaseEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.LinkedList;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 @Entity
 public class Subject extends BaseEntity<Long> {
+    @Column(unique = true,nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "subject" , orphanRemoval = true)

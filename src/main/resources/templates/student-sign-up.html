@@ -64,7 +64,12 @@
     </div>
 </nav>
 
-
+<div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${error}">
+    <p class="error">UserName is In Use</p>
+    <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 <form action="#" class="forms" method="post" th:action="@{/menu/sign-up/student}" th:object="${student}">
     UserName: <input th:field="*{userName}" type="text"/><br>
     Password: <input th:field="*{password}" type="text"/><br>

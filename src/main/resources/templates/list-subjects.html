@@ -3,7 +3,7 @@
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>All Of Courses</title>
+    <title>Subjects</title>
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
     <style>
@@ -72,30 +72,28 @@
     <table class="table lang">
 
         <tr>
-            <th colspan="4" th:text="#{courses}"></th>
+            <th colspan="4" th:text="#{subject}"></th>
         </tr>
         <tr>
-            <th th:text="#{subject}"></th>
-            <th th:text="#{startdate}"></th>
-            <th th:text="#{enddate}"></th>
-
+            <th th:text="#{subjects}"></th>
         </tr>
 
 
-        <tr th:if="${courses.isEmpty()}">
-            <td colspan="4" th:text="#{no_courses}"></td>
+        <tr th:if="${subjects.isEmpty()}">
+            <td colspan="4" th:text="#{no_subjects}"></td>
         </tr>
 
-        <tr th:each="course : ${courses}">
+        <tr th:each="subject : ${subjects}">
 
-            <td><p th:text="${course.subject.name}"></p></td>
-            <td><p th:text="${course.startDate}"></p></td>
-            <td><p th:text="${course.endDate}"></p></td>
+            <td><p th:text="${subject.name}"></p></td>
+            <td><p th:text="${subject.courses.size()}"></p></td>
 
-            <td><a th:href="@{/admin/course-users/__${course.id}__}" th:text="#{see_users}"></a></td>
+            <td><a th:href="@{/admin/subject-courses/__${subject.id}__}" th:text="#{see_courses}"></a></td>
+            <td><a th:href="@{/admin/add-course-to-subject/__${subject.id}__}" th:text="#{add_course}"></a></td>
 
         </tr>
     </table>
 </div>
+
 </body>
 </html>

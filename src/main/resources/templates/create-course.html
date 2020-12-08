@@ -1,0 +1,109 @@
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Course</title>
+
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <link href="css/kamadatepicker.css" rel="stylesheet">
+    <style>
+        html[lang=fa] {
+            direction: rtl;
+        }
+
+        html[lang=en] {
+            direction: ltr;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 20%;
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+            justify-content: end;
+            margin-left: 80%;
+            text-align: inherit;
+        }
+
+
+        .sidenav a {
+            padding: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            color: #818181;
+            display: block;
+        }
+
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .main {
+            width: 79%;
+            position: absolute;
+            left: 0;
+            padding: 0;
+            text-align: inherit;
+        }
+
+        /*TODO*/
+        .lang {
+            text-align: center !important;;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidenav lang" id="mySidenav">
+    <a href="/student/view"><p th:text="#{home}"></p></a>
+    <a href="/admin/search" th:text="#{search}"><p></p></a>
+    <a href="/admin/list-students" th:text="#{students}"><p></p></a>
+    <a href="/admin/list-teachers" th:text="#{teachers}"><p></p></a>
+    <a href="/admin/allow-user" th:text="#{allow_users}"><p></p></a>
+</div>
+
+<div class="main">
+    <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
+        <div class="card-body" >
+            <form action="#" class="forms" method="post" style="margin: auto;" th:action="@{/admin/create-course}" th:object="${course}">
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input aria-describedby="subject" class="form-control" id="subject" name="subject" readonly
+                           th:value="${subject.name}" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="startDate">Start Date</label>
+                    <input aria-describedby="startDate" class="form-control" id="startDate" name="startDate"
+                           placeholder="Enter StartDate" th:field="*{startDate}" type="date">
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date</label>
+                    <input aria-describedby="endDate" class="form-control" id="endDate" name="endDate"
+                           placeholder="Enter EndDate" th:field="*{endDate}" type="date">
+                </div>
+                <button class="btn btn-primary" type="submit">Submit</button>
+                <button class="btn btn-primary" type="reset">Reset</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!--TODO Start Date And End Date Jalali-->
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="js/kamadatepicker.js"></script>
+</body>
+</html>

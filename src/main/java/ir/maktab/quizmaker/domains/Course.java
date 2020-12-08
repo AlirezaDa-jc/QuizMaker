@@ -37,6 +37,13 @@ public class Course extends BaseEntity<Long> {
             inverseJoinColumns = {@JoinColumn(name = "student_id")})
     private List<Student> students = new LinkedList<>();
 
+    public Course() {
+    }
+
+    public Course(Subject subject) {
+        this.subject = subject;
+    }
+
     public List<Student> getStudents() {
         return students;
     }
