@@ -74,4 +74,8 @@ public class StudentService {
         }
         return users;
     }
+
+    public void deleteById(Long id) {
+        studentRepository.deleteById(id);;
+    }
 }

@@ -3,8 +3,8 @@ package ir.maktab.quizmaker.domains;
 import ir.maktab.quizmaker.base.domains.BaseEntity;
 
 import javax.persistence.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alireza.d.a
@@ -21,13 +21,13 @@ public class Exam extends BaseEntity<Long> {
     @JoinTable(name = "Question_Exam",
             joinColumns = {@JoinColumn(name = "exam_id")},
             inverseJoinColumns = {@JoinColumn(name = "question_id")})
-    private List<Question> questions = new LinkedList<>();
+    private Set<Question> questions = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "Student_Exam",
             joinColumns = {@JoinColumn(name = "exam_id")},
             inverseJoinColumns = {@JoinColumn(name = "student_id")})
-    private List<Student> students = new LinkedList<>();
+    private Set<Student> students = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "courseid")
@@ -45,19 +45,19 @@ public class Exam extends BaseEntity<Long> {
         this.teacher = teacher;
     }
 
-    public List<Student> getStudents() {
+    public Set<Student> getStudents() {
         return students;
     }
 
-    public void setStudents(List<Student> students) {
+    public void setStudents(Set<Student> students) {
         this.students = students;
     }
 
-    public List<Question> getQuestions() {
+    public Set<Question> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Question> questions) {
+    public void setQuestions(Set<Question> questions) {
         this.questions = questions;
     }
 

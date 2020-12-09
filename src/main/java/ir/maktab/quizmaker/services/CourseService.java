@@ -59,4 +59,7 @@ public class CourseService {
         }
         return courseRepository.save(course);
     }
+
+    public void deleteUser(User user) {
+    }
 }

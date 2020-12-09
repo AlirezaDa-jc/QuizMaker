@@ -70,4 +70,8 @@ public class TeacherService {
         }
         return users;
     }
+
+    public void deleteById(Long id) {
+        teacherRepository.deleteById(id);
+    }
 }

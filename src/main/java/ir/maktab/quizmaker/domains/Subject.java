@@ -5,8 +5,8 @@ import ir.maktab.quizmaker.base.domains.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alireza.d.a
@@ -17,16 +17,16 @@ public class Subject extends BaseEntity<Long> {
     private String name;
 
     @OneToMany(mappedBy = "subject" , orphanRemoval = true)
-    List<Course> courses = new LinkedList<>();
+    Set<Course> courses = new HashSet<>();
 
     @OneToMany(mappedBy = "subject" , orphanRemoval = true)
-    List<Question> questions = new LinkedList<>();
+    Set<Question> questions = new HashSet<>();
 
-    public List<Question> getQuestions() {
+    public Set<Question> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Question> questions) {
+    public void setQuestions(Set<Question> questions) {
         this.questions = questions;
     }
 
@@ -38,11 +38,11 @@ public class Subject extends BaseEntity<Long> {
         this.name = name;
     }
 
-    public List<Course> getCourses() {
+    public Set<Course> getCourses() {
         return courses;
     }
 
-    public void setCourses(List<Course> courses) {
+    public void setCourses(Set<Course> courses) {
         this.courses = courses;
     }
 

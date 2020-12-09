@@ -77,6 +77,7 @@ public class User extends BaseEntity<Long> {
         return password;
     }
 
+
     public void setPassword(String password) {
         this.password = password;
     }

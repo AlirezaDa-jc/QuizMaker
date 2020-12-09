@@ -6,8 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alireza.d.a
@@ -34,7 +34,7 @@ public class Question extends BaseEntity<Long> {
     private Subject subject;
 
     @ManyToMany(mappedBy = "questions")
-    private List<Exam> exams = new LinkedList<>();
+    private Set<Exam> exams = new HashSet<>();
 
 //    private Blob Baraye Image . Sakhtan !
 
@@ -49,11 +49,11 @@ public class Question extends BaseEntity<Long> {
         this.teacher = teacher;
     }
 
-    public List<Exam> getExams() {
+    public Set<Exam> getExams() {
         return exams;
     }
 
-    public void setExams(List<Exam> exams) {
+    public void setExams(Set<Exam> exams) {
         this.exams = exams;
     }
 

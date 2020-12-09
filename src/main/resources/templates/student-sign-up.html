@@ -8,9 +8,10 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
 </head>
 <body>
-<form action="/menu" id="myform" method="post"></form>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Quiz Maker</a>
+
+<form action="/home" id="myform" method="post"></form>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixedNav">
+    <a class="navbar-brand" href="/home" th:text="#{quizmaker}">Quiz Maker</a>
     <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
             data-target="#navbarText" data-toggle="collapse" type="button">
         <span class="navbar-toggler-icon"></span>
@@ -18,23 +19,33 @@
     <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/home" th:text="#{home}">Home <span class="sr-only">(current)</span></a>
             </li>
-            <!--            -->
-            <!--            -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
+            <li class="nav-item dropdown">
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                   href="#" id="navbarDropdown" role="button" th:text="#{signup}">
+                </a>
+                <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                    <a class="dropdown-item" href="/home/sign-up/student" th:text="#{sign_up_student}"></a>
+                    <a class="dropdown-item" href="/home/sign-up/teacher" th:text="#{sign_up_teacher}"> </a>
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
+                <a class="nav-link" href="/home/courses" th:text="#{courses}"></a>
             </li>
         </ul>
         <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="modalLoginForm" role="dialog"
              tabindex="-1">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${loginError}">
+                        <p class="error" th:text="#{login_error}"></p>
+                        <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     <div class="modal-header text-center">
-                        <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+                        <h4 class="modal-title w-100 font-weight-bold" th:text="#{login}"></h4>
                         <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -44,20 +55,20 @@
                             <i class="fas fa-envelope prefix grey-text"></i>
                             <input class="form-control validate" form="myform" id="defaultForm-userName" name="username"
                                    type="text">
-                            <label data-error="wrong" data-success="right" for="defaultForm-userName">Your
-                                Username</label>
+                            <label data-error="wrong" data-success="right" for="defaultForm-userName"
+                                   th:text="#{username}"></label>
                         </div>
 
                         <div class="md-form mb-4">
                             <i class="fas fa-lock prefix grey-text"></i>
                             <input class="form-control validate" form="myform" id="defaultForm-pass" name="password"
                                    type="password">
-                            <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+                            <label data-error="wrong" data-success="right" for="defaultForm-pass" th:text="#{password}">m</label>
                         </div>
 
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
-                        <input class="btn btn-default" form="myform" type="submit" value="Login"/>
+                        <input class="btn btn-default" form="myform" th:value="#{login}" type="submit"/>
                     </div>
                 </div>
             </div>
@@ -65,7 +76,7 @@
 
         <div class="text-center">
             <a class="btn btn-default btn-rounded mb-4" data-target="#modalLoginForm" data-toggle="modal"
-               href="">Login</a>
+               href="" th:text="#{login}"></a>
         </div>
     </div>
 </nav>
@@ -80,10 +91,10 @@
 <div class="main lang">
     <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
         <div class="card-body">
-            <form action="#" class="forms" method="post" th:action="@{/menu/sign-up/student}" th:object="${student}">
+            <form action="#" class="forms" method="post" th:action="@{/home/sign-up/student}" th:object="${student}">
                 <div class="form-group">
                     <label for="username" th:text="#{username}"></label><br>
-                    <input aria-describedby="username" class="form-control"  id="username" name="username"
+                    <input aria-describedby="username" class="form-control" id="username" name="username"
                            th:field="*{userName}" type="text">
                 </div>
                 <div class="form-group">
@@ -111,6 +122,8 @@
                     <input aria-describedby="studentCode" class="form-control" id="studentCode" name="studentCode"
                            th:field="*{studentCode}" type="text">
                 </div>
+
+
                 <button class="btn btn-primary" th:value="#{search}" type="submit">Submit</button>
                 <button class="btn btn-primary" th:value="#{resetfields}" type="reset">Reset</button>
             </form>

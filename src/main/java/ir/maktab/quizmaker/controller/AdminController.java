@@ -4,6 +4,7 @@ import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,11 @@ public class AdminController {
 
     @Autowired
     private SubjectService subjectService;
+    @Autowired
+    private AdminService adminService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("allow-user")
     public String sendUsersList(Model model) {
@@ -125,20 +130,11 @@ public class AdminController {
 
 
     @GetMapping("delete-course-user/{userId}/{courseId}")
-    public String deleteUser(@PathVariable Long userId, Model model, @PathVariable Long courseId) {
+    public String deleteUserFromCourse(@PathVariable Long userId, Model model, @PathVariable Long courseId) {
         User user = userService.findById(userId);
         Course tempCourse = courseService.findById(courseId);
-        if (user.getRole().equals("TEACHER")) {
-            Teacher teacher = teacherService.findById(userId);
-            teacher.removeCourse(tempCourse);
-            teacherService.save(teacher);
-            courseService.save(tempCourse);
-        } else if (user.getRole().equals("STUDENT")) {
-            Student student = studentService.findById(userId);
-            student.removeCourse(tempCourse);
-            studentService.save(student);
-            courseService.save(tempCourse);
-        }
+        adminService.deleteUserFromCourse(user, tempCourse);
+
         model.addAttribute("course", tempCourse);
         return "course-users";
     }
@@ -155,54 +151,157 @@ public class AdminController {
             subjectService.save(subject);
             model.addAttribute("subjects", subjectService.findAll());
             return "list-subjects";
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             throw new Exception("400 , Subject's Name Must Be Unique!");
         }
     }
 
     @GetMapping("list-subjects")
-    public String sendListSubjects(Model model){
+    public String sendListSubjects(Model model) {
         model.addAttribute("subjects", subjectService.findAll());
         return "list-subjects";
     }
 
     @GetMapping("subject-courses/{id}")
-    public String sendListOfSubjectCourses(@PathVariable Long id,Model model){
-        Subject subject= subjectService.findById(id);
-        model.addAttribute("courses",subject.getCourses());
+    public String sendListOfSubjectCourses(@PathVariable Long id, Model model) {
+        Subject subject = subjectService.findById(id);
+        model.addAttribute("courses", subject.getCourses());
         return "subject-courses";
     }
 
     @GetMapping("add-course-to-subject/{subjectId}")
-    public String sendCreateCourseForm(@PathVariable Long subjectId,Model model){
+    public String sendCreateCourseForm(@PathVariable Long subjectId, Model model) {
         Subject subject = subjectService.findById(subjectId);
-        model.addAttribute("course",new Course(subject));
-        model.addAttribute("subject",subject);
+        model.addAttribute("course", new Course(subject));
+        model.addAttribute("subject", subject);
         return "create-course";
     }
 
     @PostMapping("create-course")
-    public String createCourse(@ModelAttribute Course course,Model model) throws Exception {
+    public String createCourse(@ModelAttribute Course course, Model model) throws Exception {
         try {
             courseService.save(course);
             model.addAttribute("courses", courseService.findAll());
             return "list-courses";
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             throw new Exception("500,Server Encountered An Error!");
         }
     }
 
     @GetMapping("home")
     public String viewHome(Model model) {
-        model.addAttribute("admin",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        model.addAttribute("teachers",teacherService.findAll());
-        model.addAttribute("students",studentService.findAll());
+        model.addAttribute("admin", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        model.addAttribute("teachers", teacherService.findAll());
+        model.addAttribute("students", studentService.findAll());
         int usersNotAllowedSize = teacherService.getForbiddenTeachers().size() + studentService.getForbiddenStudents().size();
-        model.addAttribute("users_not_allowed",usersNotAllowedSize);
-        model.addAttribute("courses",courseService.findAll());
-        model.addAttribute("subjects",subjectService.findAll());
+        model.addAttribute("users_not_allowed", usersNotAllowedSize);
+        model.addAttribute("courses", courseService.findAll());
+        model.addAttribute("subjects", subjectService.findAll());
 
         return "admin-view";
     }
-    //ToDo Edit Name Student ! Teacher ! Course ! Edit!!! Front Add Login
+
+    @GetMapping("edit-teacher/{id}")
+    public String sendEditTeacherForm(@PathVariable Long id, Model model) {
+        Teacher teacher = teacherService.findById(id);
+        model.addAttribute("teacher", teacher);
+        return "admin-edit-teacher";
+    }
+
+    @GetMapping("edit-student/{id}")
+    public String sendEditStudentForm(@PathVariable Long id, Model model) {
+        Student student = studentService.findById(id);
+        model.addAttribute("student", student);
+        return "admin-edit-student";
+    }
+
+    @GetMapping("delete-teacher/{id}")
+    public String deleteTeacher(@PathVariable Long id, Model model) {
+        teacherService.deleteById(id);
+        model.addAttribute("teachers", teacherService.findAll());
+        return "list-teachers";
+    }
+
+    @GetMapping("delete-student/{id}")
+    public String deleteStudent(@PathVariable Long id, Model model) {
+        studentService.deleteById(id);
+        model.addAttribute("students", studentService.findAll());
+        return "list-students";
+    }
+
+    @PostMapping("edit-teacher")
+    public String editTeacher(@ModelAttribute Teacher teacher, Model model) {
+        teacherService.save(teacher);
+        model.addAttribute("teachers", teacherService.findAll());
+        return "list-teachers";
+    }
+
+    @PostMapping("edit-student")
+    public String editStudent(@ModelAttribute Student student, Model model) {
+        studentService.save(student);
+        model.addAttribute("students", studentService.findAll());
+        return "list-students";
+    }
+
+    @GetMapping("edit-course/{id}")
+    public String sendEditCourseForm(@PathVariable Long id, Model model) {
+        model.addAttribute("course", courseService.findById(id));
+        model.addAttribute("subjects", subjectService.findAll());
+        return "edit-course";
+    }
+
+    @PostMapping("edit-course")
+    public String editCourse(@ModelAttribute Course course, Model model) {
+        courseService.save(course);
+        model.addAttribute("courses", courseService.findAll());
+        return "list-courses";
+    }
+
+    @GetMapping("edit-subject/{id}")
+    public String sendEditSubjectForm(@PathVariable Long id, Model model) {
+        model.addAttribute("subject",subjectService.findById(id));
+        return "edit-subject";
+    }
+
+    @GetMapping("delete-subject/{id}")
+    public String deleteSubject(@PathVariable Long id, Model model) {
+        subjectService.deleteById(id);
+        model.addAttribute("subjects", subjectService.findAll());
+        return "list-subjects";
+    }
+
+    @PostMapping("edit-subject")
+    public String editSubject(@ModelAttribute Subject subject,Model model) {
+        subjectService.save(subject);
+        model.addAttribute("subjects", subjectService.findAll());
+        return "list-subjects";
+    }
+
+    @GetMapping("edit-admin")
+    public String sendEditAdminForm(Model model){
+        model.addAttribute("admin",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        model.addAttribute("edited",false);
+        return "edit-admin";
+    }
+
+    @PostMapping("edit-admin")
+    public String editAdmin(Model model,HttpServletRequest req){
+        String userName = req.getParameter("userName");
+        String password = req.getParameter("currentPassword");
+        String newPassword = req.getParameter("newPassword");
+        String confirmPassword = req.getParameter("confirmPassword");
+        switch (userService.editUser(userName, password, newPassword, confirmPassword)) {
+            case 0:
+                model.addAttribute("edited",true);
+                break;
+            case 1:
+                model.addAttribute("unmatched_error",true);
+                break;
+            case 2:
+                model.addAttribute("current_password_error", true);
+                break;
+        }
+        model.addAttribute("admin",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return "edit-admin";
+    }
 }

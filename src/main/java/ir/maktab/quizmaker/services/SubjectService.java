@@ -28,4 +28,8 @@ public class SubjectService {
     public Subject findById(Long id) {
         return subjectRepository.findById(id).get();
     }
+
+    public void deleteById(Long id) {
+        subjectRepository.deleteById(id);
+    }
 }

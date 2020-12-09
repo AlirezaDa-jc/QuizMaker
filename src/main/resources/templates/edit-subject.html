@@ -3,7 +3,7 @@
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Subject</title>
+    <title>Edit Subject</title>
     <link rel="stylesheet" th:href="@{/css/admin-styles.css}">
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -25,32 +25,25 @@
 
 </div>
 
-<div class="main">
+<div class="main lang">
     <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
         <div class="card-body">
-            <form action="#" class="forms" method="post" style="margin: auto;" th:action="@{/admin/create-subject}"
-                  th:object="${subject}">
+            <form action="#" method="POST" style="margin: auto;" th:action="@{/admin/edit-subject}" th:object="${subject}">
                 <div class="form-group">
-                    <label for="name" th:text="#{name}">Name</label>
-                    <input aria-describedby="username" class="form-control" id="name" name="name"
-                           placeholder="Enter UserName" th:field="*{name}" type="text">
+                    <label for="subject" th:text="#{subject}"></label>
+                    <input aria-describedby="username" class="form-control" id="subject" name="subject"
+                           th:field="*{name}" type="text">
+                    <input aria-describedby="id" class="form-control" hidden id="id" name="id" readonly
+                           th:field="*{id}" type="text">
                 </div>
-                <button  class="btn btn-primary" th:value="#{create_course}" type="submit">Submit</button>
-                <button  class="btn btn-primary" th:value="#{resetfields}" type="reset">Reset</button>
+
+                <a class="btn btn-primary"  role="button" th:href="@{/admin/delete-subject/__${subject.id}__}"
+                   th:text="#{delete-subject}"></a>
+                <button class="btn btn-primary" th:text="#{edit_subject}" type="submit">Submit</button>
+                <button class="btn btn-primary" th:text="#{resetfields}" type="reset">Reset</button>
             </form>
         </div>
     </div>
 </div>
-
-<script crossorigin="anonymous"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
 </body>
 </html>

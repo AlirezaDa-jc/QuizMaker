@@ -2,8 +2,8 @@ package ir.maktab.quizmaker.domains;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alireza.d.a
@@ -17,23 +17,23 @@ public class Teacher extends User {
 
 
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)
-    private List<Course> courses = new LinkedList<>();
+    private Set<Course> courses = new HashSet<>();
 
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)
-    private List<Question> questions = new LinkedList<>();
+    private Set<Question> questions = new HashSet<>();
 
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)
-    private List<Exam> exams = new LinkedList<>();
+    private Set<Exam> exams = new HashSet<>();
 
     public Teacher() {
         setRole("TEACHER");
     }
 
-    public List<Exam> getExams() {
+    public Set<Exam> getExams() {
         return exams;
     }
 
-    public void setExams(List<Exam> exams) {
+    public void setExams(Set<Exam> exams) {
         this.exams = exams;
     }
 
@@ -61,19 +61,19 @@ public class Teacher extends User {
         this.nationalCode = nationalCode;
     }
 
-    public List<Course> getCourses() {
+    public Set<Course> getCourses() {
         return courses;
     }
 
-    public void setCourses(List<Course> courses) {
+    public void setCourses(Set<Course> courses) {
         this.courses = courses;
     }
 
-    public List<Question> getQuestions() {
+    public Set<Question> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Question> questions) {
+    public void setQuestions(Set<Question> questions) {
         this.questions = questions;
     }
 

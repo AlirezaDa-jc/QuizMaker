@@ -3,8 +3,8 @@ package ir.maktab.quizmaker.domains;
 import ir.maktab.quizmaker.base.domains.BaseEntity;
 
 import javax.persistence.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alireza.d.a
@@ -25,17 +25,15 @@ public class Course extends BaseEntity<Long> {
     @JoinColumn(name = "teacherid")
     private Teacher teacher;
 
-    @OneToMany(mappedBy = "course", orphanRemoval = true)
-    private List<Exam> exams = new LinkedList<>();
-
     @OneToMany(mappedBy = "course" , orphanRemoval = true)
-    List<Question> questions = new LinkedList<>();
-
+    Set<Question> questions = new HashSet<>();
+    @OneToMany(mappedBy = "course", orphanRemoval = true)
+    private Set<Exam> exams = new HashSet<>();
     @ManyToMany
     @JoinTable(name = "Student_Course",
             joinColumns = {@JoinColumn(name = "course_id")},
             inverseJoinColumns = {@JoinColumn(name = "student_id")})
-    private List<Student> students = new LinkedList<>();
+    private Set<Student> students = new HashSet<>();
 
     public Course() {
     }
@@ -44,13 +42,7 @@ public class Course extends BaseEntity<Long> {
         this.subject = subject;
     }
 
-    public List<Student> getStudents() {
-        return students;
-    }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
 
     public Teacher getTeacher() {
         return teacher;
@@ -85,20 +77,28 @@ public class Course extends BaseEntity<Long> {
         this.subject = subject;
     }
 
-    public List<Exam> getExams() {
+    public Set<Exam> getExams() {
         return exams;
     }
 
-    public void setExams(List<Exam> exams) {
+    public void setExams(Set<Exam> exams) {
         this.exams = exams;
     }
 
-    public List<Question> getQuestions() {
+    public Set<Question> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Question> questions) {
+    public void setQuestions(Set<Question> questions) {
         this.questions = questions;
+    }
+
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<Student> students) {
+        this.students = students;
     }
 
     public void addStudent(Student student) {

@@ -3,8 +3,8 @@ package ir.maktab.quizmaker.domains;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alireza.d.a
@@ -22,23 +22,20 @@ public class Student extends User {
     private long nationalCode;
 
     @ManyToMany(mappedBy = "students")
-    private List<Exam> exams = new LinkedList<>();
-/*
-Performance
- */
-//        @ManyToMany(fetch = FetchType.EAGER,mappedBy = "students")
+    private Set<Exam> exams = new HashSet<>();
+
     @ManyToMany(mappedBy = "students")
-    private List<Course> courses = new LinkedList<>();
+    private Set<Course> courses = new HashSet<>();
 
     public Student() {
         setRole("STUDENT");
     }
 
-    public List<Exam> getExams() {
+    public Set<Exam> getExams() {
         return exams;
     }
 
-    public void setExams(List<Exam> exams) {
+    public void setExams(Set<Exam> exams) {
         this.exams = exams;
     }
 
@@ -74,11 +71,11 @@ Performance
         this.nationalCode = nationalCode;
     }
 
-    public List<Course> getCourses() {
+    public Set<Course> getCourses() {
         return courses;
     }
 
-    public void setCourses(List<Course> courses) {
+    public void setCourses(Set<Course> courses) {
         this.courses = courses;
     }
 
