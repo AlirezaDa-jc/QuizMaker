@@ -43,13 +43,13 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .formLogin()
-                .loginPage("/menu")
+                .loginPage("/home")
                 .permitAll()
                 .successHandler(myAuthenticationSuccessHandler())
                 .failureUrl("/login_error")
                 .and()
                 .logout()
-                .logoutSuccessUrl("/menu");
+                .logoutSuccessUrl("/home");
 
 
 

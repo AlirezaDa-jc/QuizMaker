@@ -43,10 +43,6 @@ html[lang=en] {
     text-align: inherit;
 }
 
-/*TODO*/
-.lang {
-    text-align: center !important;;
-}
 
 .wid50{
     width: 50%;

@@ -2,6 +2,7 @@ package ir.maktab.quizmaker.controller;
 
 import ir.maktab.quizmaker.domains.Student;
 import ir.maktab.quizmaker.domains.Teacher;
+import ir.maktab.quizmaker.services.CourseService;
 import ir.maktab.quizmaker.services.StudentService;
 import ir.maktab.quizmaker.services.TeacherService;
 import ir.maktab.quizmaker.services.UserService;
@@ -23,12 +24,14 @@ import java.util.Collection;
  */
 
 @Controller
-@RequestMapping("menu")
-public class MenuController {
+@RequestMapping("home")
+public class HomeController {
     @Autowired
     private StudentService studentService;
     @Autowired
     private TeacherService teacherService;
+    @Autowired
+    private CourseService courseService;
 
     @Autowired
     private UserService userService;
@@ -40,9 +43,9 @@ public class MenuController {
         SimpleGrantedAuthority student = new SimpleGrantedAuthority("ROLE_STUDENT");
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         if (authorities.contains(anonymous))
-            return "menu";
+            return "home";
         else if (authorities.contains(admin))
-            return "redirect:/admin/view";
+            return "redirect:/admin/home";
         else if (authorities.contains(student))
             return "redirect:/student/view";
         else {
@@ -53,7 +56,7 @@ public class MenuController {
     @RequestMapping("/login_error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
-        return "menu";
+        return "home";
     }
 
 
@@ -96,5 +99,11 @@ public class MenuController {
             return "teacher-sign-up";
         }
         return "redirect:/teacher/view";
+    }
+
+    @GetMapping("courses")
+    public String sendListCoursesAndSubject(Model model){
+        model.addAttribute("courses",courseService.findAll());
+        return "home-show-courses";
     }
 }

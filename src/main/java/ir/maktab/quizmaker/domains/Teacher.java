@@ -15,6 +15,7 @@ public class Teacher extends User {
     private String lastName;
     private long nationalCode;
 
+
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)
     private List<Course> courses = new LinkedList<>();
 
