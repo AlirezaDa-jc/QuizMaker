@@ -69,8 +69,8 @@
             <td><p th:text="${student.nationalCode}"> National Code </p></td>
 
 
-            <td><a th:href="@{/admin/allow-user/__${student.id}__}">Allow</a></td>
-            <td><a th:href="@{/admin/assign-course-user/__${student.id}__}">Assign To A Course</a></td>
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/allow-user/__${student.id}__}">Allow</a></td>
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/assign-course-user/__${student.id}__}">Assign To A Course</a></td>
 
 
         </tr>

@@ -50,7 +50,7 @@
             <td><p th:text="${course.startDate}"></p></td>
             <td><p th:text="${course.endDate}"></p></td>
 
-            <td><a th:href="@{/admin/assign-course-by-role/__${course.id}__/__${id}__}"
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/assign-course-by-role/__${course.id}__/__${id}__}"
                    th:text="#{assign_to_this_course}"></a></td>
 
         </tr>

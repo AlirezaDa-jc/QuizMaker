@@ -17,52 +17,46 @@
     <a href="/logout" th:text="#{logout}"></a>
 
 </div>
-<div class="main lang ">
-    <div class="bg-dark">
-        <div class="card" style="margin: auto">
-            <div class="card-body">
-                <span th:text="#{welcome}"></span>
-                <span th:text="${teacher.firstName}"> </span>
-                <span th:text="${teacher.lastName}"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="table-bordered lang">
-                <table class="table lang">
+<div class="main lang content">
 
-                    <tr>
-                        <th colspan="5" th:text="#{courses}"></th>
-                    </tr>
-                    <tr>
-                        <th th:text="#{subject}"></th>
-                        <th th:text="#{startdate}"></th>
-                        <th th:text="#{enddate}"></th>
-
-                    </tr>
-
-
-                    <tr th:if="${teacher.courses.isEmpty()}">
-                        <td colspan="4" th:text="#{no_courses}"></td>
-                    </tr>
-
-                    <tr th:each="course : ${teacher.courses}">
-
-                        <td><p th:text="${course.subject.name}"></p></td>
-                        <td><p th:text="${course.startDate}"></p></td>
-                        <td><p th:text="${course.endDate}"></p></td>
-
-                    </tr>
-                </table>
-            </div>
+    <div class="card" style="margin: auto">
+        <div class="card-body">
+            <span th:text="#{welcome}"></span>
+            <span th:text="${teacher.firstName}"> </span>
+            <span th:text="${teacher.lastName}"></span>
         </div>
     </div>
+
+    <div class="table-bordered lang">
+        <table class="table lang">
+
+            <tr class="light-text bg-dark">
+                <th colspan="5" th:text="#{courses}"></th>
+            </tr>
+            <tr class="bg-dark light-text">
+                <th th:text="#{subject}"></th>
+                <th th:text="#{startdate}"></th>
+                <th th:text="#{enddate}"></th>
+
+            </tr>
+
+
+            <tr th:if="${teacher.courses.isEmpty()}">
+                <td colspan="4" th:text="#{no_courses}"></td>
+            </tr>
+
+            <tr th:each="course : ${teacher.courses}">
+
+                <td><p th:text="${course.subject.name}"></p></td>
+                <td><p th:text="${course.startDate}"></p></td>
+                <td><p th:text="${course.endDate}"></p></td>
+
+            </tr>
+        </table>
+    </div>
+
+
 </div>
-
-
-
-
-
-
 
 
 <script crossorigin="anonymous"

@@ -78,7 +78,7 @@
             <td><p th:text="${student.nationalCode}"></p></td>
             <td><p th:text="${student.studentCode}"></p></td>
 
-            <td><a th:href="@{/admin/delete-course-user/__${student.id}__/__${course.id}__}"
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/delete-course-user/__${student.id}__/__${course.id}__}"
                    th:text="#{delete_student}"></a></td>
 
         </tr>

@@ -23,6 +23,7 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
         return new CustomUrlAuthenticationSuccessHandler();
     }
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -46,7 +47,7 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/home")
                 .permitAll()
                 .successHandler(myAuthenticationSuccessHandler())
-                .failureUrl("/login_error")
+                .failureUrl("/home/login_error")
                 .and()
                 .logout()
                 .logoutSuccessUrl("/home");

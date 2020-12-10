@@ -48,7 +48,7 @@
             <td><p th:text="${course.startDate}"></p></td>
             <td><p th:text="${course.endDate}"></p></td>
 
-            <td><a th:href="@{/admin/course-users/__${course.id}__}" th:text="#{see_users}"></a></td>
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/course-users/__${course.id}__}" th:text="#{see_users}"></a></td>
 
         </tr>
     </table>

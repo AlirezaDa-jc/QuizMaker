@@ -104,4 +104,10 @@ public class HomeController {
         model.addAttribute("courses",courseService.findAll());
         return "home-show-courses";
     }
+
+    @GetMapping("login_error")
+    public String sendLoginError(Model model){
+        model.addAttribute("loginError",true);
+        return "home";
+    }
 }

@@ -28,7 +28,7 @@
     <table class="table  lang">
 
         <tr>
-            <th colspan="4" th:text="#{subject}"></th>
+            <th colspan="5" th:text="#{subject}"></th>
         </tr>
         <tr>
             <th th:text="#{subjects}"></th>
@@ -37,7 +37,7 @@
 
 
         <tr th:if="${subjects.isEmpty()}">
-            <td colspan="4" th:text="#{no_subjects}"></td>
+            <td colspan="5" th:text="#{no_subjects}"></td>
         </tr>
 
         <tr th:each="subject : ${subjects}">
@@ -45,9 +45,9 @@
             <td><p th:text="${subject.name}"></p></td>
             <td><p th:text="${subject.courses.size()}"></p></td>
 
-            <td><a th:href="@{/admin/subject-courses/__${subject.id}__}" th:text="#{see_courses}"></a></td>
-            <td><a th:href="@{/admin/add-course-to-subject/__${subject.id}__}" th:text="#{add_course}"></a></td>
-            <td><a th:href="@{/admin/edit-subject/__${subject.id}__}" th:text="#{edit_subject}"></a></td>
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/subject-courses/__${subject.id}__}" th:text="#{see_courses}"></a></td>
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/add-course-to-subject/__${subject.id}__}" th:text="#{add_course}"></a></td>
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/edit-subject/__${subject.id}__}" th:text="#{edit_subject}"></a></td>
 
         </tr>
     </table>
