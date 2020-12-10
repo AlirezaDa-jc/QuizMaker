@@ -5,7 +5,6 @@ import ir.maktab.quizmaker.domains.Teacher;
 import ir.maktab.quizmaker.services.CourseService;
 import ir.maktab.quizmaker.services.StudentService;
 import ir.maktab.quizmaker.services.TeacherService;
-import ir.maktab.quizmaker.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,8 +32,7 @@ public class HomeController {
     @Autowired
     private CourseService courseService;
 
-    @Autowired
-    private UserService userService;
+
 
     @GetMapping
     public String showMenu() {
@@ -47,9 +45,9 @@ public class HomeController {
         else if (authorities.contains(admin))
             return "redirect:/admin/home";
         else if (authorities.contains(student))
-            return "redirect:/student/view";
+            return "redirect:/student/home";
         else {
-            return "redirect:/teacher/view";
+            return "redirect:/teacher/home";
         }
     }
 
@@ -70,14 +68,14 @@ public class HomeController {
     @PostMapping("/sign-up/student")
     public String studentSignUp(@ModelAttribute Student student, Model model) {
         try {
-            studentService.save(student);
+            studentService.signUp(student);
         } catch (Exception ex) {
             model.addAttribute("student", new Student());
             model.addAttribute("role", "STUDENT");
             model.addAttribute("error", true);
             return "student-sign-up";
         }
-        return "redirect:/student/view";
+        return "home";
     }
 
 
@@ -91,14 +89,14 @@ public class HomeController {
     @PostMapping("/sign-up/teacher")
     public String signUp(@ModelAttribute Teacher teacher, Model model) throws Exception {
         try {
-            teacherService.save(teacher);
+            teacherService.signUp(teacher);
         } catch (Exception ex) {
             model.addAttribute("teacher", new Teacher());
             model.addAttribute("role", "TEACHER");
             model.addAttribute("error", true);
             return "teacher-sign-up";
         }
-        return "redirect:/teacher/view";
+        return "home";
     }
 
     @GetMapping("courses")

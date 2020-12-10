@@ -3,7 +3,7 @@
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Edit Account</title>
     <link rel="stylesheet" th:href="@{/css/user-styles.css}">
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -12,18 +12,12 @@
 <body>
 
 <div class="sidenav lang" id="mySidenav">
-    <a href="/admin/home"><p th:text="#{home}"></p></a>
-    <a href="/admin/search" th:text="#{search}"></a>
-    <a href="/admin/create-subject" th:text="#{create_subject}"></a>
-    <a href="/admin/list-students" th:text="#{students}"></a>
-    <a href="/admin/list-teachers" th:text="#{teachers}"></a>
-    <a href="/admin/list-subjects" th:text="#{subjects}"></a>
-    <a href="/admin/list-courses" th:text="#{courses}"></a>
-    <a href="/admin/allow-user" th:text="#{allow_users}"></a>
-    <a href="/admin/edit-admin" th:text="#{edit_account}"></a>
+    <a href="/student/home"><p th:text="#{home}"></p></a>
+    <a href="/student/edit-user" th:text="#{edit_account}"></a>
     <a href="/logout" th:text="#{logout}"></a>
+
 </div>
-<div class="main  lang">
+<div class="main lang ">
     <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
         <div class="card-body">
             <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${edited}">
@@ -50,7 +44,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="/admin/edit-admin" method="POST" style="margin: auto;">
+            <form action="/student/edit-user" method="POST" style="margin: auto;">
                 <div class="form-group">
                     <label for="userName" th:text="#{username}"></label>
                     <input aria-describedby="username" class="form-control" id="userName" name="userName" required
@@ -59,17 +53,37 @@
                 <div class="form-group">
                     <label for="currentPassword" th:text="#{current_password}"></label>
                     <input aria-describedby="currentPassword" class="form-control" id="currentPassword" name="currentPassword" required
-                          type="password">
+                           type="password">
                 </div>
                 <div class="form-group">
                     <label for="newPassword" th:text="#{new_password}"></label>
                     <input aria-describedby="newPassword" class="form-control" id="newPassword" name="newPassword"
-                          type="password">
+                           type="password">
                 </div>
                 <div class="form-group">
                     <label for="confirmPassword" th:text="#{confirm_password}"></label>
                     <input aria-describedby="confirmPassword" class="form-control" id="confirmPassword" name="confirmPassword"
-                          type="password">
+                           type="password">
+                </div>
+                <div class="form-group">
+                    <label for="firstName" th:text="#{firstname}"></label>
+                    <input aria-describedby="username" class="form-control" id="firstName" name="firstName"
+                           type="text">
+                </div>
+                <div class="form-group">
+                    <label for="lastName" th:text="#{lastname}"></label>
+                    <input aria-describedby="username" class="form-control" id="lastName" name="lastName"
+                           type="text">
+                </div>
+                <div class="form-group">
+                    <label for="nationalCode" th:text="#{nationalcode}"></label>
+                    <input aria-describedby="username" class="form-control" id="nationalCode" name="nationalCode"
+                           type="text">
+                </div>
+                <div class="form-group">
+                    <label for="studentCode" th:text="#{studentcode}"></label>
+                    <input aria-describedby="username" class="form-control" id="studentCode" name="studentCode"
+                           type="text">
                 </div>
 
                 <button class="btn btn-primary" th:text="#{edit_account}" type="submit">Submit</button>
@@ -78,6 +92,13 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+
+
 
 
 

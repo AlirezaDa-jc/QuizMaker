@@ -2,12 +2,15 @@ package ir.maktab.quizmaker.services;
 
 
 import ir.maktab.quizmaker.domains.User;
+import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +35,6 @@ public class UserService {
     }
 
     public User save(User user) {
-
         user.setPassword(
                 this.passwordEncoder.encode(
                         user.getPassword()
@@ -41,13 +43,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public boolean editPassword(String password, String userName) {
-        String encodedPassword = passwordEncoder.encode(password);
-        User byUserName = userRepository.findByUserName(userName);
-        byUserName.setPassword(encodedPassword);
-        userRepository.save(byUserName);
-        return true;
-    }
 
     public List<User> getNotAllowedUsers() {
         List<User> all = userRepository.findAll();
@@ -70,21 +65,44 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public int editUser(String userName, String password, String newPassword, String confirmPassword) {
-        String oldUserName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByUserName(oldUserName);
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            if (confirmPassword.equals(newPassword)) {
-                if (!(userName == null || userName.equals(""))) {
+    public boolean editUser(HttpServletRequest req, Model model) throws UniqueException {
+        try {
+            String userName = req.getParameter("userName");
+            String password = req.getParameter("currentPassword");
+            String newPassword = req.getParameter("newPassword");
+            String confirmPassword = req.getParameter("confirmPassword");
+            String oldUserName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userRepository.findByUserName(oldUserName);
+            if (passwordEncoder.matches(password, user.getPassword())) {
+
+                if (userRepository.findByUserName(userName) == null) {
                     user.setUserName(userName);
+
+                    if (!newPassword.equals("") && confirmPassword.equals(newPassword)) {
+                        user.setPassword(newPassword);
+                    } else {
+                        model.addAttribute("unmatched_error", true);
+                    }
+
+                    userRepository.save(user);
+                    model.addAttribute("edited", true);
+                    return true;
+
+                } else {
+                    model.addAttribute("duplicate_username", true);
                 }
-                user.setPassword(newPassword);
-                userRepository.save(user);
-                return 0;
+
             } else {
-                return 1;
+                model.addAttribute("current_password_error", true);
             }
+        } catch (Exception ex) {
+            throw new UniqueException("Invalid UserName");
         }
-        return 2;
+        return false;
+    }
+
+    public User findByUserName(String userName) {
+        return userRepository.findByUserName(userName);
     }
 }
+

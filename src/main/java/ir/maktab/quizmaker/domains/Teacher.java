@@ -13,7 +13,7 @@ public class Teacher extends User {
 
     private String firstName;
     private String lastName;
-    private long nationalCode;
+    private Long nationalCode;
 
 
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)
@@ -53,11 +53,11 @@ public class Teacher extends User {
         this.lastName = lastName;
     }
 
-    public long getNationalCode() {
+    public Long getNationalCode() {
         return nationalCode;
     }
 
-    public void setNationalCode(long nationalCode) {
+    public void setNationalCode(Long nationalCode) {
         this.nationalCode = nationalCode;
     }
 

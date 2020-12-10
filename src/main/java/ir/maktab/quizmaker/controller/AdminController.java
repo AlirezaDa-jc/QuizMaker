@@ -1,10 +1,11 @@
 package ir.maktab.quizmaker.controller;
 
 import ir.maktab.quizmaker.domains.*;
+import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,11 +31,12 @@ public class AdminController {
 
     @Autowired
     private SubjectService subjectService;
+
     @Autowired
     private AdminService adminService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private Teacher tempTeacher;
+    private Student tempStudent;
 
     @GetMapping("allow-user")
     public String sendUsersList(Model model) {
@@ -122,8 +124,16 @@ public class AdminController {
         return "course-users";
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handle(Exception ex, Model model) {
+    @ExceptionHandler(UniqueException.class)
+    public String handle(UniqueException ex, Model model) {
+
+        model.addAttribute("message", ex.getMessage());
+        return "admin-exception";
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handle(IllegalArgumentException ex, Model model) {
+
         model.addAttribute("message", ex.getMessage());
         return "admin-exception";
     }
@@ -146,13 +156,13 @@ public class AdminController {
     }
 
     @PostMapping("create-subject")
-    public String createSubject(@ModelAttribute Subject subject, Model model) throws Exception {
+    public String createSubject(@ModelAttribute Subject subject, Model model) throws UniqueException {
         try {
             subjectService.save(subject);
             model.addAttribute("subjects", subjectService.findAll());
             return "list-subjects";
         } catch (Exception ex) {
-            throw new Exception("400 , Subject's Name Must Be Unique!");
+            throw new UniqueException("400 , Subject's Name Must Be Unique!");
         }
     }
 
@@ -204,6 +214,7 @@ public class AdminController {
     @GetMapping("edit-teacher/{id}")
     public String sendEditTeacherForm(@PathVariable Long id, Model model) {
         Teacher teacher = teacherService.findById(id);
+        tempTeacher = teacher;
         model.addAttribute("teacher", teacher);
         return "admin-edit-teacher";
     }
@@ -211,6 +222,7 @@ public class AdminController {
     @GetMapping("edit-student/{id}")
     public String sendEditStudentForm(@PathVariable Long id, Model model) {
         Student student = studentService.findById(id);
+        tempStudent = student;
         model.addAttribute("student", student);
         return "admin-edit-student";
     }
@@ -231,14 +243,14 @@ public class AdminController {
 
     @PostMapping("edit-teacher")
     public String editTeacher(@ModelAttribute Teacher teacher, Model model) {
-        teacherService.save(teacher);
+        teacherService.save(teacher,tempTeacher);
         model.addAttribute("teachers", teacherService.findAll());
         return "list-teachers";
     }
 
     @PostMapping("edit-student")
     public String editStudent(@ModelAttribute Student student, Model model) {
-        studentService.save(student);
+        studentService.save(student,tempStudent);
         model.addAttribute("students", studentService.findAll());
         return "list-students";
     }
@@ -285,22 +297,8 @@ public class AdminController {
     }
 
     @PostMapping("edit-admin")
-    public String editAdmin(Model model,HttpServletRequest req){
-        String userName = req.getParameter("userName");
-        String password = req.getParameter("currentPassword");
-        String newPassword = req.getParameter("newPassword");
-        String confirmPassword = req.getParameter("confirmPassword");
-        switch (userService.editUser(userName, password, newPassword, confirmPassword)) {
-            case 0:
-                model.addAttribute("edited",true);
-                break;
-            case 1:
-                model.addAttribute("unmatched_error",true);
-                break;
-            case 2:
-                model.addAttribute("current_password_error", true);
-                break;
-        }
+    public String editAdmin(Model model,HttpServletRequest req) throws ResourceNotFoundException {
+        userService.editUser(req,model);
         model.addAttribute("admin",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return "edit-admin";
     }

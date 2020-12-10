@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit User</title>
-    <link rel="stylesheet" th:href="@{/css/admin-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
@@ -24,7 +24,7 @@
     <a href="/logout" th:text="#{logout}"></a>
 </div>
 
-<div class="main lang">
+<div class="main  lang">
     <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
         <div class="card-body">
             <form action="#" method="POST" style="margin: auto;" th:action="@{/admin/edit-teacher}" th:object="${teacher}">
@@ -53,8 +53,11 @@
                     <input class="form-control" id="nationalCode" name="nationalCode" th:field="*{nationalCode}"
                            type="text">
                 </div>
-                <input aria-describedby="password" class="form-control" hidden
-                       th:field="*{password}" type="text">
+                <div class="form-group">
+                    <label for="password" th:text="#{password}"></label>
+                    <input aria-describedby="password" class="form-control" hidden
+                           id="password" th:field="*{password}" type="password">
+                </div>
                 <a class="btn btn-primary"  role="button" th:href="@{/admin/delete-teacher/__${teacher.id}__}"
                    th:text="#{delete_teacher}"></a>
                 <button class="btn btn-primary" th:text="#{edit_teacher}" type="submit">Submit</button>
@@ -63,5 +66,16 @@
         </div>
     </div>
 </div>
+
+
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

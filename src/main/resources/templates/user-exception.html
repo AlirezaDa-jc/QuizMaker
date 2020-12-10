@@ -12,19 +12,13 @@
 <body>
 
 <div class="sidenav lang" id="mySidenav">
-    <a href="/admin/home"><p th:text="#{home}"></p></a>
-    <a href="/admin/search" th:text="#{search}"></a>
-    <a href="/admin/create-subject" th:text="#{create_subject}"></a>
-    <a href="/admin/list-students" th:text="#{students}"></a>
-    <a href="/admin/list-teachers" th:text="#{teachers}"></a>
-    <a href="/admin/list-subjects" th:text="#{subjects}"></a>
-    <a href="/admin/list-courses" th:text="#{courses}"></a>
-    <a href="/admin/allow-user" th:text="#{allow_users}"></a>
-    <a href="/admin/edit-admin" th:text="#{edit_account}"></a>
+    <a href="/student/home"><p th:text="#{home}"></p></a>
+    <a href="/student/edit-user" th:text="#{edit_account}"></a>
     <a href="/logout" th:text="#{logout}"></a>
+
 </div>
 
-<div class="main  lang">
+<div class="main lang ">
     <div th:if="${message}" th:text="${message}"></div>
     <!--<h1>This is sample error page :-->
     <!--    ${message}-->

@@ -23,11 +23,11 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
         return new CustomUrlAuthenticationSuccessHandler();
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {

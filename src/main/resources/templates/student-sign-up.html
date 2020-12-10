@@ -82,13 +82,13 @@
 </nav>
 
 <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${error}">
-    <p class="error">UserName is In Use Or Invalid National Code/Student Code</p>
+    <p class="error">UserName/NationalCode/StudentCode  is In Use</p>
     <button aria-label="Close" class="close" data-dismiss="alert" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
 
-<div class="main lang">
+<div class="main lang ">
     <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
         <div class="card-body">
             <form action="#" class="forms" method="post" th:action="@{/home/sign-up/student}" th:object="${student}">
@@ -115,12 +115,12 @@
                 <div class="form-group">
                     <label for="nationalCode" th:text="#{nationalcode}"></label>
                     <input aria-describedby="nationalCode" class="form-control" id="nationalCode" name="nationalCode"
-                           th:field="*{nationalCode}" type="text">
+                           th:field="*{nationalCode}" type="number">
                 </div>
                 <div class="form-group">
                     <label for="studentCode" th:text="#{studentcode}"></label>
                     <input aria-describedby="studentCode" class="form-control" id="studentCode" name="studentCode"
-                           th:field="*{studentCode}" type="text">
+                           th:field="*{studentCode}" type="number">
                 </div>
 
 

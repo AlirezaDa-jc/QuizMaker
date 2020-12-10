@@ -4,12 +4,29 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/home-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <style>
+        .background {
+            background:url('../img/bg/diagonalnoise.png');
+            position: relative;
+        }
+
+        .layer {
+            background-color: rgba(248, 247, 216, 0.7);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
 </head>
 <body>
-
-<form action="/home" id="myform" method="post"></form>
+<div class="color">
+    <form action="/home" id="myform" method="post"></form>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixedNav">
     <a class="navbar-brand" href="/home" th:text="#{quizmaker}">Quiz Maker</a>
     <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
@@ -80,8 +97,8 @@
 </nav>
 
 
-<!-- Todo Exception handling Menu! . Exception teacher and student for nationalCode != long ! . Front Menu! Teachers And students Can Edit Themselves !-->
-
+<!-- Todo Front Menu!!-->
+</div>
 <script crossorigin="anonymous"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>

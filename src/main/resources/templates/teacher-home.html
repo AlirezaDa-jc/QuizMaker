@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<body>
+
+<div class="sidenav lang" id="mySidenav">
+    <a href="/teacher/home"><p th:text="#{home}"></p></a>
+    <a href="/teacher/edit-user" th:text="#{edit_account}"></a>
+    <a href="/logout" th:text="#{logout}"></a>
+
+</div>
+<div class="main lang ">
+    <div class="bg-dark">
+        <div class="card" style="margin: auto">
+            <div class="card-body">
+                <span th:text="#{welcome}"></span>
+                <span th:text="${teacher.firstName}"> </span>
+                <span th:text="${teacher.lastName}"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="table-bordered lang">
+                <table class="table lang">
+
+                    <tr>
+                        <th colspan="5" th:text="#{courses}"></th>
+                    </tr>
+                    <tr>
+                        <th th:text="#{subject}"></th>
+                        <th th:text="#{startdate}"></th>
+                        <th th:text="#{enddate}"></th>
+
+                    </tr>
+
+
+                    <tr th:if="${teacher.courses.isEmpty()}">
+                        <td colspan="4" th:text="#{no_courses}"></td>
+                    </tr>
+
+                    <tr th:each="course : ${teacher.courses}">
+
+                        <td><p th:text="${course.subject.name}"></p></td>
+                        <td><p th:text="${course.startDate}"></p></td>
+                        <td><p th:text="${course.endDate}"></p></td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

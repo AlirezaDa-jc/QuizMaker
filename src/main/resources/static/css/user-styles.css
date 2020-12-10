@@ -42,6 +42,9 @@ html[lang=en] {
     padding: 0;
     text-align: inherit;
 }
+.content{
+    width: 79%;
+}
 
 
 .wid50{

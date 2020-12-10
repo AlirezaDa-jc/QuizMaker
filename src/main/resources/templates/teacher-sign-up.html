@@ -92,7 +92,7 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<div class="main lang">
+<div class="main lang ">
     <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
         <div class="card-body">
             <form action="#" class="forms" method="post" th:action="@{/home/sign-up/teacher}" th:object="${teacher}">
@@ -119,7 +119,7 @@
                 <div class="form-group">
                     <label for="nationalCode" th:text="#{nationalcode}"></label>
                     <input aria-describedby="nationalCode" class="form-control" id="nationalCode" name="nationalCode"
-                           th:field="*{nationalCode}" type="text">
+                           th:field="*{nationalCode}" type="number">
                 </div>
                 <button class="btn btn-primary" th:value="#{search}" type="submit">Submit</button>
                 <button class="btn btn-primary" th:value="#{resetfields}" type="reset">Reset</button>

@@ -12,14 +12,14 @@ import java.util.Set;
 @Entity
 public class Student extends User {
     @Column(nullable = false,unique = true)
-    private int studentCode;
+    private Integer studentCode;
 
     private String firstName;
 
     private String lastName;
 
     @Column(nullable = false,unique = true)
-    private long nationalCode;
+    private Long nationalCode;
 
     @ManyToMany(mappedBy = "students")
     private Set<Exam> exams = new HashSet<>();
@@ -39,11 +39,11 @@ public class Student extends User {
         this.exams = exams;
     }
 
-    public int getStudentCode() {
+    public Integer getStudentCode() {
         return studentCode;
     }
 
-    public void setStudentCode(int studentCode) {
+    public void setStudentCode(Integer studentCode) {
         this.studentCode = studentCode;
     }
 
@@ -63,11 +63,11 @@ public class Student extends User {
         this.lastName = lastName;
     }
 
-    public long getNationalCode() {
+    public Long getNationalCode() {
         return nationalCode;
     }
 
-    public void setNationalCode(long nationalCode) {
+    public void setNationalCode(Long nationalCode) {
         this.nationalCode = nationalCode;
     }
 
