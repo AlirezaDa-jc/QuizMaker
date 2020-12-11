@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class CourseService {
+
     @Autowired
     private CourseRepository courseRepository;
 
@@ -46,11 +47,6 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
-    public void saveO(Student student, Course course) {
-        course.addStudent(student);
-        courseRepository.save(course);
-    }
-
     public Course addUser(Course course, User tempUser) {
         if(tempUser.getRole().equals("STUDENT")){
             course.addStudent((Student) tempUser);
@@ -60,6 +56,5 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    public void deleteUser(User user) {
-    }
+
 }

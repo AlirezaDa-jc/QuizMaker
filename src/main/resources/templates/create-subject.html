@@ -32,11 +32,11 @@
                   th:object="${subject}">
                 <div class="form-group">
                     <label for="name" th:text="#{name}">Name</label>
-                    <input aria-describedby="username" class="form-control" id="name" name="name"
-                           placeholder="Enter UserName" th:field="*{name}" type="text">
+                    <input aria-describedby="name" class="form-control" id="name" name="name"
+                           placeholder="Enter Name" th:field="*{name}" type="text">
                 </div>
-                <button  class="btn btn-primary" th:value="#{create_course}" type="submit">Submit</button>
-                <button  class="btn btn-primary" th:value="#{resetfields}" type="reset">Reset</button>
+                <button  class="btn btn-primary" th:text="#{create_course}" type="submit"></button>
+                <button  class="btn btn-primary" th:text="#{resetfields}" type="reset"></button>
             </form>
         </div>
     </div>
