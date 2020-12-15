@@ -67,3 +67,8 @@ html[lang=en] {
 .light-text{
     color: white;
 }
+.center{
+    display: table !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+}

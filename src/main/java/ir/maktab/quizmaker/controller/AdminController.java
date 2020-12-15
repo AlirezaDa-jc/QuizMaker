@@ -42,7 +42,7 @@ public class AdminController {
     public String sendUsersList(Model model) {
         model.addAttribute("teachers", teacherService.getForbiddenTeachers());
         model.addAttribute("students", studentService.getForbiddenStudents());
-        return "not-allowed-users";
+        return "admin-not-allowed-users";
     }
 
     @GetMapping("allow-user/{id}")
@@ -50,7 +50,7 @@ public class AdminController {
         userService.allowUser(id);
         model.addAttribute("teachers", teacherService.getForbiddenTeachers());
         model.addAttribute("students", studentService.getForbiddenStudents());
-        return "not-allowed-users";
+        return "admin-not-allowed-users";
 
     }
 
@@ -67,24 +67,24 @@ public class AdminController {
             Set<Student> users = studentService.getSearchResults(userName, firstName, lastName);
             model.addAttribute("users", users);
         }
-        return "search-results";
+        return "admin-search-results";
     }
 
     @GetMapping("search")
     public String sendSearchList() {
-        return "search";
+        return "admin-search";
     }
 
     @GetMapping("list-teachers")
     public String sendListOfTeachers(Model model) {
         model.addAttribute("teachers", teacherService.findAll());
-        return "list-teachers";
+        return "admin-list-teachers";
     }
 
     @GetMapping("list-students")
     public String sendListOfStudents(Model model) {
         model.addAttribute("students", studentService.findAll());
-        return "list-students";
+        return "admin-list-students";
     }
 
 
@@ -97,17 +97,16 @@ public class AdminController {
             model.addAttribute("courses", courseService.findAllWithoutThisStudent((Student) tempUser));
         }
         model.addAttribute("userId", id);
-        return "courses";
+        return "admin-courses";
     }
 
 
     @GetMapping("assign-course-by-role/{courseId}/{userId}")
     public String assignCourse(@PathVariable Long courseId, @PathVariable Long userId, Model model) throws Exception {
-        //Input Hidden
         Course course = courseService.findById(courseId);
         if (courseService.addUser(course, userService.findById(userId)) != null) {
             model.addAttribute("courses", courseService.findAll());
-            return "list-courses";
+            return "admin-list-courses";
         }
         throw new Exception("500 , Server Encountered An Error!");
     }
@@ -115,29 +114,14 @@ public class AdminController {
     @GetMapping("list-courses")
     public String sendListOfCourses(Model model) {
         model.addAttribute("courses", courseService.findAll());
-        return "list-courses";
+        return "admin-list-courses";
     }
 
     @GetMapping("course-users/{id}")
     public String sendListOfCourseUsers(@PathVariable Long id, Model model) {
         model.addAttribute("course", courseService.findById(id));
-        return "course-users";
+        return "admin-course-users";
     }
-
-    @ExceptionHandler(UniqueException.class)
-    public String handle(UniqueException ex, Model model) {
-
-        model.addAttribute("message", ex.getMessage());
-        return "admin-exception";
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String handle(IllegalArgumentException ex, Model model) {
-
-        model.addAttribute("message", ex.getMessage());
-        return "admin-exception";
-    }
-
 
     @GetMapping("delete-course-user/{userId}/{courseId}")
     public String deleteUserFromCourse(@PathVariable Long userId, Model model, @PathVariable Long courseId) {
@@ -146,13 +130,13 @@ public class AdminController {
         adminService.deleteUserFromCourse(user, tempCourse);
 
         model.addAttribute("course", tempCourse);
-        return "course-users";
+        return "admin-course-users";
     }
 
     @GetMapping("create-subject")
     public String sendFormCreateSubject(Model model) {
         model.addAttribute("subject", new Subject());
-        return "create-subject";
+        return "admin-create-subject";
     }
 
     @PostMapping("create-subject")
@@ -160,7 +144,7 @@ public class AdminController {
         try {
             subjectService.save(subject);
             model.addAttribute("subjects", subjectService.findAll());
-            return "list-subjects";
+            return "admin-list-subjects";
         } catch (Exception ex) {
             throw new UniqueException("400 , Subject's Name Must Be Unique!");
         }
@@ -169,7 +153,7 @@ public class AdminController {
     @GetMapping("list-subjects")
     public String sendListSubjects(Model model) {
         model.addAttribute("subjects", subjectService.findAll());
-        return "list-subjects";
+        return "admin-list-subjects";
     }
 
     @GetMapping("subject-courses/{id}")
@@ -184,20 +168,26 @@ public class AdminController {
         Subject subject = subjectService.findById(subjectId);
         model.addAttribute("course", new Course(subject));
         model.addAttribute("subject", subject);
-        return "create-course";
+        return "admin-create-course";
     }
 
     @PostMapping("create-course")
     public String createCourse(@ModelAttribute Course course, Model model) throws Exception {
         try {
+            if(courseService.checkDate(course)){
+                model.addAttribute("date_error",true);
+                model.addAttribute("course", course);
+                model.addAttribute("subject", course.getSubject());
+                return "admin-create-course";
+            }
             courseService.save(course);
             model.addAttribute("courses", courseService.findAll());
-            return "list-courses";
+            return "admin-list-courses";
         } catch (Exception ex) {
             throw new Exception("500,Server Encountered An Error!");
         }
     }
-
+//Todo Delete UnAllowed Student Reason
     @GetMapping("home")
     public String viewHome(Model model) {
         model.addAttribute("admin", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -231,75 +221,102 @@ public class AdminController {
     public String deleteTeacher(@PathVariable Long id, Model model) {
         teacherService.deleteById(id);
         model.addAttribute("teachers", teacherService.findAll());
-        return "list-teachers";
+        return "admin-list-teachers";
     }
 
     @GetMapping("delete-student/{id}")
     public String deleteStudent(@PathVariable Long id, Model model) {
         studentService.deleteById(id);
         model.addAttribute("students", studentService.findAll());
-        return "list-students";
+        return "admin-list-students";
     }
 
     @PostMapping("edit-teacher")
     public String editTeacher(@ModelAttribute Teacher teacher, Model model) {
         teacherService.save(teacher,tempTeacher);
         model.addAttribute("teachers", teacherService.findAll());
-        return "list-teachers";
+        return "admin-list-teachers";
     }
 
     @PostMapping("edit-student")
     public String editStudent(@ModelAttribute Student student, Model model) {
         studentService.save(student,tempStudent);
         model.addAttribute("students", studentService.findAll());
-        return "list-students";
+        return "admin-list-students";
     }
 
     @GetMapping("edit-course/{id}")
     public String sendEditCourseForm(@PathVariable Long id, Model model) {
         model.addAttribute("course", courseService.findById(id));
         model.addAttribute("subjects", subjectService.findAll());
-        return "edit-course";
+        return "admin-edit-course";
     }
 
     @PostMapping("edit-course")
     public String editCourse(@ModelAttribute Course course, Model model) {
-        courseService.save(course);
+        if(!courseService.checkDate(course)){
+            courseService.save(course);
+            model.addAttribute("courses", courseService.findAll());
+            return "admin-list-courses";
+        }
+        model.addAttribute("date_error",true);
+        model.addAttribute("course", course);
+        model.addAttribute("subject", course.getSubject());
+        return "admin-edit-course";
+    }
+
+    @GetMapping("delete-course/{courseId}")
+    public String deleteCourse(@PathVariable Long courseId,Model model){
+        courseService.deleteById(courseId);
         model.addAttribute("courses", courseService.findAll());
-        return "list-courses";
+        return "admin-list-courses";
     }
 
     @GetMapping("edit-subject/{id}")
     public String sendEditSubjectForm(@PathVariable Long id, Model model) {
         model.addAttribute("subject",subjectService.findById(id));
-        return "edit-subject";
+        return "admin-edit-subject";
     }
 
     @GetMapping("delete-subject/{id}")
     public String deleteSubject(@PathVariable Long id, Model model) {
         subjectService.deleteById(id);
         model.addAttribute("subjects", subjectService.findAll());
-        return "list-subjects";
+        return "admin-list-subjects";
     }
 
     @PostMapping("edit-subject")
     public String editSubject(@ModelAttribute Subject subject,Model model) {
         subjectService.save(subject);
         model.addAttribute("subjects", subjectService.findAll());
-        return "list-subjects";
+        return "admin-list-subjects";
     }
 
     @GetMapping("edit-admin")
     public String sendEditAdminForm(Model model){
         model.addAttribute("admin",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         model.addAttribute("edited",false);
-        return "edit-admin";
+        return "admin-edit-user";
     }
 
     @PostMapping("edit-admin")
     public String editAdmin(Model model,HttpServletRequest req) throws ResourceNotFoundException {
         userService.editUser(req,model);
         model.addAttribute("admin",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        return "edit-admin";
+        return "admin-edit-user";
+    }
+
+    @ExceptionHandler(UniqueException.class)
+    public String handle(UniqueException ex, Model model) {
+
+        model.addAttribute("message", ex.getMessage());
+        return "admin-exception";
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handle(IllegalArgumentException ex, Model model) {
+
+        model.addAttribute("message", ex.getMessage());
+        return "admin-exception";
     }
 }

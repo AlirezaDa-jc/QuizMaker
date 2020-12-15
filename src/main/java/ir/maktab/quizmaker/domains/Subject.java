@@ -46,4 +46,7 @@ public class Subject extends BaseEntity<Long> {
         this.courses = courses;
     }
 
+    public void addQuestion(Question question) {
+        questions.add(question);
+    }
 }

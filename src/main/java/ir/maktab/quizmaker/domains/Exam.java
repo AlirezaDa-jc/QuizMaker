@@ -17,6 +17,9 @@ public class Exam extends BaseEntity<Long> {
 
     private int time;
 
+    private boolean isAvailable = false;
+
+
     @ManyToMany
     @JoinTable(name = "Question_Exam",
             joinColumns = {@JoinColumn(name = "exam_id")},
@@ -36,6 +39,22 @@ public class Exam extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "teacherid")
     private Teacher teacher;
+
+    public Exam() {
+    }
+
+    public Exam(Course course, Teacher teacher) {
+        this.course = course;
+        this.teacher = teacher;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
 
     public Teacher getTeacher() {
         return teacher;

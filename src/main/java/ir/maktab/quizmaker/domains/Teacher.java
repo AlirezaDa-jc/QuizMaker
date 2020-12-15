@@ -1,6 +1,7 @@
 package ir.maktab.quizmaker.domains;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,8 +16,8 @@ public class Teacher extends User {
     private String lastName;
     private Long nationalCode;
 
-
-    @OneToMany(mappedBy = "teacher", orphanRemoval = true)
+    //How To Avoid Lazy Initialization
+    @OneToMany(mappedBy = "teacher", orphanRemoval = true,fetch = FetchType.EAGER)
     private Set<Course> courses = new HashSet<>();
 
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)

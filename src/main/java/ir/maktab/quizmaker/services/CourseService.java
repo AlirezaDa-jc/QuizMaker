@@ -53,8 +53,16 @@ public class CourseService {
         }else{
             course.setTeacher((Teacher) tempUser);
         }
+        tempUser.setAllowed(true);
         return courseRepository.save(course);
     }
 
 
+    public void deleteById(Long courseId) {
+        courseRepository.deleteById(courseId);
+    }
+
+    public boolean checkDate(Course course) {
+        return course.getEndDate().compareTo(course.getStartDate())<0;
+    }
 }

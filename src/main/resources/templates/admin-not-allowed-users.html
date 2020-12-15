@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List Of Forbidden Users</title>
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<body>
+
+<div class="sidenav lang" id="mySidenav">
+    <a href="/admin/home"><p th:text="#{home}"></p></a>
+    <a href="/admin/search" th:text="#{search}"></a>
+    <a href="/admin/create-subject" th:text="#{create_subject}"></a>
+    <a href="/admin/list-students" th:text="#{students}"></a>
+    <a href="/admin/list-teachers" th:text="#{teachers}"></a>
+    <a href="/admin/list-subjects" th:text="#{subjects}"></a>
+    <a href="/admin/list-courses" th:text="#{courses}"></a>
+    <a href="/admin/allow-user" th:text="#{allow_users}"></a>
+    <a href="/admin/edit-admin" th:text="#{edit_account}"></a>
+    <a href="/logout" th:text="#{logout}"></a>
+
+</div>
+
+<div class="table-bordered main  lang">
+    <table class="table lang">
+
+        <tr>
+            <th colspan="5" th:text="#{teachers}">Teachers</th>
+        </tr>
+        <tr>
+            <th th:text="#{firstname}">First Name</th>
+            <th th:text="#{lastname}">Last Name</th>
+            <th th:text="#{nationalcode}">National Code</th>
+
+        </tr>
+
+
+        <tr th:if="${teachers.isEmpty()}">
+            <td colspan="5" th:text="#{no_teachers}">There Are No Forbidden Teachers</td>
+        </tr>
+
+        <tr th:each="teacher : ${teachers}">
+
+            <td><p th:text="${teacher.firstName}"> First Name </p></td>
+            <td><p th:text="${teacher.lastName}"> Last Name </p></td>
+            <td><p th:text="${teacher.nationalCode}"> National Code </p></td>
+
+            <td><a class="btn btn-primary card-link" th:href="@{/admin/allow-user/__${teacher.id}__}" th:text="#{allow}">Allow</a></td>
+            <td><a class="btn btn-primary card-link" th:href="@{/admin/delete-teacher/__${teacher.id}__}" th:text="#{delete_teacher}">Allow</a></td>
+            <td><a class="btn btn-primary card-link" th:href="@{/admin/assign-course-user/__${teacher.id}__}" th:text="#{assign_to_a_course}">Assign To A
+                Course</a></td>
+
+
+        </tr>
+        <tr>
+            <th colspan="5">Students</th>
+        </tr>
+        <tr th:if="${students.isEmpty()}">
+            <td colspan="5" th:text="#{no_students}">There Are No Forbidden Students</td>
+        </tr>
+
+        <tr th:each="student : ${students}">
+
+            <td><p th:text="${student.firstName}"> First Name </p></td>
+            <td><p th:text="${student.lastName}"> Last Name </p></td>
+            <td><p th:text="${student.nationalCode}"> National Code </p></td>
+
+
+            <td><a class="btn btn-primary card-link" role="button"  th:href="@{/admin/allow-user/__${student.id}__}" th:text="#{allow}"></a></td>
+            <td><a class="btn btn-primary card-link" th:href="@{/admin/delete-student/__${student.id}__}" th:text="#{delete_student}"></a></td>
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/assign-course-user/__${student.id}__}" th:text="#{assign_to_a_course}"></a></td>
+
+
+        </tr>
+
+    </table>
+</div>
+
+
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

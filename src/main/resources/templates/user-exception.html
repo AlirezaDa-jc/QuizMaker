@@ -11,14 +11,8 @@
 </head>
 <body>
 
-<div class="sidenav lang" id="mySidenav">
-    <a href="/student/home"><p th:text="#{home}"></p></a>
-    <a href="/student/edit-user" th:text="#{edit_account}"></a>
-    <a href="/logout" th:text="#{logout}"></a>
 
-</div>
-
-<div class="main lang ">
+<div class="lang ">
     <div th:if="${message}" th:text="${message}"></div>
     <!--<h1>This is sample error page :-->
     <!--    ${message}-->

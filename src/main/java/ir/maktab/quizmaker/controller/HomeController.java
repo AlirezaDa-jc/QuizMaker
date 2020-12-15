@@ -75,7 +75,7 @@ public class HomeController {
             model.addAttribute("error", true);
             return "student-sign-up";
         }
-        return "home";
+        return "redirect:/home";
     }
 
 
@@ -96,7 +96,7 @@ public class HomeController {
             model.addAttribute("error", true);
             return "teacher-sign-up";
         }
-        return "home";
+        return "redirect:/home";
     }
 
     @GetMapping("courses")

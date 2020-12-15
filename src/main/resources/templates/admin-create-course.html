@@ -1,13 +1,17 @@
-<!DOCTYPE html>
 <html th:lang="${lang}"
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Course</title>
+    <title>Create Course</title>
     <link rel="stylesheet" th:href="@{/css/user-styles.css}">
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+
+    <!--    <link rel="stylesheet" th:href="@{/css/persian-datepicker.css}">-->
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <!--    <script type="text/javascript" th:src="@{/js/jquery-1.6.2.min.js}"></script>-->
+    <!--    <script type="text/javascript" th:src="@{js/persian-datepicker.js}"></script>-->
+
 </head>
 <body>
 
@@ -28,23 +32,30 @@
 <div class="main  lang">
     <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
         <div class="card-body">
-            <form action="#" method="POST" style="margin: auto;" th:action="@{/admin/edit-course}" th:object="${course}">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${date_error}">
+                <p class="error" th:text="#{date_error}"></p>
+                <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="#" class="forms" method="post" style="margin: auto;" th:action="@{/admin/create-course}"
+                  th:object="${course}">
                 <div class="form-group">
-                    <label for="id" th:text="#{id}"></label>
-                    <input aria-describedby="username" class="form-control"  id="id" name="id" readonly th:field="*{id}"
-                           type="text">
+                    <label for="subject" th:text="#{subject}">Subject</label><br>
+                    <input disabled id="subject" readonly th:value="${subject.name}">
+                    <input aria-describedby="subject" class="form-control" hidden  name="subject" readonly
+                            th:field="*{subject}" th:value="${subject}" type="text">
                 </div>
                 <div class="form-group">
-                    <label for="subject" th:text="#{subject}"></label><br>
-                    <select id="subject" th:field="*{subject}">
-                        <option th:field="*{subject}" th:text="${course.subject.name}" th:value="${course.subject.id}"> </option>
-                        <option th:each="subject : ${subjects}" th:field="*{subject}" th:text="${subject.name}" th:value="${subject.id}"> </option>
-                    </select>
+                    <label for="name" th:text="#{name}">Name</label>
+                    <input aria-describedby="name" class="form-control" id="name" name="name"
+                           th:field="*{name}" type="text">
                 </div>
                 <div class="form-group">
                     <label for="startDate" th:text="#{startdate}">Start Date</label>
                     <input aria-describedby="startDate" class="form-control" id="startDate" name="startDate"
                            th:field="*{startDate}" type="date">
+
                 </div>
                 <div class="form-group">
                     <label for="endDate" th:text="#{enddate}">End Date</label>
@@ -52,18 +63,13 @@
                            th:field="*{endDate}" type="date">
 
                 </div>
-
-                <a class="btn btn-primary"  role="button" th:href="@{/admin/delete-course/__${course.id}__}"
-                   th:text="#{delete-course}"></a>
-                <button class="btn btn-primary" th:text="#{edit_course}" type="submit">Submit</button>
-                <button class="btn btn-primary" th:text="#{resetfields}" type="reset">Reset</button>
+                <button class="btn btn-primary" th:value="#{create_course}" type="submit">Submit</button>
+                <button class="btn btn-primary" th:value="#{resetfields}" type="reset">Reset</button>
             </form>
         </div>
     </div>
 </div>
-
-
-
+<!--TODO Start Date And End Date Jalali-->
 <script crossorigin="anonymous"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -73,5 +79,42 @@
 <script crossorigin="anonymous"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(DOM_Load);
+
+    function DOM_Load() {
+        $("#startDate").on("click", startDate_Click);
+        $("#endDate").on("click", endDate_Click);
+    }
+
+    function startDate_Click() {
+        let today = new Date();
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1; //January is 0!
+        const yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("startDate").setAttribute("min", today);
+        return today;
+    }
+
+    function endDate_Click() {
+
+        let value = document.getElementById("startDate").value;
+        if(value > startDate_Click()){
+            document.getElementById("endDate").value = value;
+            return;
+        }
+        document.getElementById("endDate").setAttribute("min", value);
+    }
+
+</script>
 </body>
 </html>

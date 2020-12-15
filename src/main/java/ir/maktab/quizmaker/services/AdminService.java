@@ -27,8 +27,6 @@ public class AdminService {
     private CourseService courseService;
 
     public void deleteUserFromCourse(User user, Course tempCourse) {
-        courseService.deleteUser(user);
-
         if (user.getRole().equals("TEACHER")) {
             Teacher teacher = (Teacher) user;
             teacher.removeCourse(tempCourse);

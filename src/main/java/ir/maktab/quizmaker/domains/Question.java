@@ -18,7 +18,7 @@ public class Question extends BaseEntity<Long> {
 
     private String question;
 
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @ManyToOne
     @JoinColumn(name = "teacherid")
@@ -36,9 +36,18 @@ public class Question extends BaseEntity<Long> {
     @ManyToMany(mappedBy = "questions")
     private Set<Exam> exams = new HashSet<>();
 
+    public Question() {
+    }
+
+    public Question(Exam exam) {
+        exams.add(exam);
+        subject = exam.getCourse().getSubject();
+        course = exam.getCourse();
+        teacher = exam.getTeacher();
+    }
+
 //    private Blob Baraye Image . Sakhtan !
 
-//    private List<String> options = new LinkedList<>();
 
 
     public Teacher getTeacher() {
@@ -73,11 +82,11 @@ public class Question extends BaseEntity<Long> {
         this.question = question;
     }
 
-    public boolean isPublic() {
+    public Boolean getPublic() {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
+    public void setPublic(Boolean aPublic) {
         isPublic = aPublic;
     }
 
@@ -87,6 +96,7 @@ public class Question extends BaseEntity<Long> {
 
     public void setCourse(Course course) {
         this.course = course;
+        course.addQuestion(this);
     }
 
     public Subject getSubject() {
@@ -95,5 +105,7 @@ public class Question extends BaseEntity<Long> {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
+        if(isPublic)
+            subject.addQuestion(this);
     }
 }

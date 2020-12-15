@@ -29,10 +29,13 @@ public class CustomUserDetail implements UserDetails {
         );
         return authorities;
     }
-
+/*
+noop = Bcrypt
+ */
 
     @Override
     public String getPassword() {
+//        return "{noop}"+user.getPassword();
         return user.getPassword();
     }
 

@@ -3,7 +3,7 @@
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Courses</title>
     <link rel="stylesheet" th:href="@{/css/user-styles.css}">
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -19,26 +19,37 @@
     <a href="/logout" th:text="#{logout}"></a>
 
 </div>
-
 <div class="main lang content">
 
-    <div class="card" style="margin: auto">
-        <div class="card-body">
-            <span th:text="#{welcome}"></span>
-            <span th:text="${teacher.firstName}"> </span>
-            <span th:text="${teacher.lastName}"></span>
-        </div>
-    </div>
+    <div class="table-bordered lang">
+        <table class="table lang">
 
-    <hr>
-    <div class="row center">
-        <a class="padding5" href="/teacher/show-exams">
-            <img  alt="Exams" height="150" src="../static/css/img/Exams.jpg" width="300">
-        </a>
+            <tr class="light-text bg-dark">
+                <th colspan="6" th:text="#{courses}"></th>
+            </tr>
+            <tr>
+                <th th:text="#{subject}"></th>
+                <th th:text="#{startdate}"></th>
+                <th th:text="#{enddate}"></th>
+                <th th:text="#{students}"></th>
+            </tr>
 
-        <a href="/teacher/show-courses">
-            <img  alt="Courses" height="150" src="../static/css/img/Courses.jpg" width="300">
-        </a>
+
+            <tr th:if="${courses.isEmpty()}">
+                <td colspan="6" th:text="#{no_courses}"></td>
+            </tr>
+
+            <tr th:each="course : ${courses}">
+
+                <td><p th:text="${course.subject.name}"></p></td>
+                <td><p th:text="${course.startDate}"></p></td>
+                <td><p th:text="${course.endDate}"></p></td>
+                <td><a class="btn btn-primary card-link" role="button" th:href="@{/teacher/add-exam/__${course.id}__}" th:text="#{create_exam}"></a></td>
+                <td><a class="btn btn-primary card-link" role="button" th:href="@{/teacher/show-exams/__${course.id}__}" th:text="#{show_exams}"></a></td>
+                <td><a class="btn btn-primary card-link" role="button" th:href="@{/teacher/show-students/__${course.id}__}" th:text="#{show_students}"></a></td>
+
+            </tr>
+        </table>
     </div>
 
 

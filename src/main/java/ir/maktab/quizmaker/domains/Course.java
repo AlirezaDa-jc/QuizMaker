@@ -12,6 +12,7 @@ import java.util.Set;
 @Entity
 public class Course extends BaseEntity<Long> {
 
+    private String name;
 
     private String startDate;
 
@@ -43,6 +44,13 @@ public class Course extends BaseEntity<Long> {
     }
 
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Teacher getTeacher() {
         return teacher;
@@ -112,5 +120,9 @@ public class Course extends BaseEntity<Long> {
 
     public void removeStudent(Student student) {
         students.remove(student);
+    }
+
+    public void addQuestion(Question question) {
+        questions.add(question);
     }
 }

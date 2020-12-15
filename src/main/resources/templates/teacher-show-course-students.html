@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html th:lang="${lang}"
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
-    <title>Assign Course</title>
+    <title>Students</title>
     <link rel="stylesheet" th:href="@{/css/user-styles.css}">
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -13,45 +12,37 @@
 <body>
 
 <div class="sidenav lang" id="mySidenav">
-    <a href="/admin/home"><p th:text="#{home}"></p></a>
-    <a href="/admin/search" th:text="#{search}"></a>
-    <a href="/admin/create-subject" th:text="#{create_subject}"></a>
-    <a href="/admin/list-students" th:text="#{students}"></a>
-    <a href="/admin/list-teachers" th:text="#{teachers}"></a>
-    <a href="/admin/list-subjects" th:text="#{subjects}"></a>
-    <a href="/admin/list-courses" th:text="#{courses}"></a>
-    <a href="/admin/allow-user" th:text="#{allow_users}"></a>
-    <a href="/admin/edit-admin" th:text="#{edit_account}"></a>
+    <a href="/teacher/home"><p th:text="#{home}"></p></a>
+    <a href="/teacher/show-courses"><p th:text="#{courses}"></p></a>
+    <a href="/teacher/show-exams"><p th:text="#{exams}"></p></a>
+    <a href="/teacher/edit-user" th:text="#{edit_account}"></a>
     <a href="/logout" th:text="#{logout}"></a>
-
 </div>
-
-<div class="table-bordered main lang">
+<div class="main lang content">
+    <div class="table-bordered lang">
     <table class="table lang">
 
         <tr>
-            <th colspan="4">Teachers</th>
+            <th colspan="5" th:text="#{students}"></th>
         </tr>
         <tr>
-            <th th:text="#{subject}"></th>
-            <th th:text="#{startdate}"></th>
-            <th th:text="#{enddate}">End Date</th>
+            <th><p th:text="#{firstname}"></p></th>
+            <th><p th:text="#{lastname}"></p></th>
+            <th><p th:text="#{nationalcode}"></p></th>
+            <th><p th:text="#{studentcode}"></p></th>
 
         </tr>
 
-
-        <tr th:if="${courses.isEmpty()}">
-            <td colspan="4" th:text="#{no_courses}">There Are No Courses</td>
+        <tr th:if="${students.isEmpty()}">
+            <td colspan="5" th:text="#{no_students}"></td>
         </tr>
 
-        <tr th:each="course : ${courses}">
+        <tr th:each="student : ${students}">
 
-            <td><p th:text="${course.subject.name}"></p></td>
-            <td><p th:text="${course.startDate}"></p></td>
-            <td><p th:text="${course.endDate}"></p></td>
-
-            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/assign-course-by-role/__${course.id}__/__${id}__}"
-                   th:text="#{assign_to_this_course}"></a></td>
+            <td><p th:text="${student.firstName}"></p></td>
+            <td><p th:text="${student.lastName}"></p></td>
+            <td><p th:text="${student.nationalCode}"></p></td>
+            <td><p th:text="${student.studentCode}"></p></td>
 
         </tr>
 
@@ -67,5 +58,6 @@
 <script crossorigin="anonymous"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
 </body>
 </html>
