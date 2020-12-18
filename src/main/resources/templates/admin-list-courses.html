@@ -33,6 +33,7 @@
         </tr>
         <tr>
             <th th:text="#{subject}"></th>
+            <th th:text="#{name}"></th>
             <th th:text="#{startdate}"></th>
             <th th:text="#{enddate}"></th>
 
@@ -46,6 +47,7 @@
         <tr th:each="course : ${courses}">
 
             <td><p th:text="${course.subject.name}"></p></td>
+            <td><p th:text="${course.name}"></p></td>
             <td><p th:text="${course.startDate}"></p></td>
             <td><p th:text="${course.endDate}"></p></td>
 

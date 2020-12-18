@@ -25,23 +25,24 @@
         <table class="table lang">
 
             <tr class="light-text bg-dark">
-                <th colspan="6" th:text="#{courses}"></th>
+                <th colspan="7" th:text="#{courses}"></th>
             </tr>
             <tr>
                 <th th:text="#{subject}"></th>
+                <th th:text="#{name}"></th>
                 <th th:text="#{startdate}"></th>
                 <th th:text="#{enddate}"></th>
-                <th th:text="#{students}"></th>
             </tr>
 
 
             <tr th:if="${courses.isEmpty()}">
-                <td colspan="6" th:text="#{no_courses}"></td>
+                <td colspan="7" th:text="#{no_courses}"></td>
             </tr>
 
             <tr th:each="course : ${courses}">
 
                 <td><p th:text="${course.subject.name}"></p></td>
+                <td><p th:text="${course.name}"></p></td>
                 <td><p th:text="${course.startDate}"></p></td>
                 <td><p th:text="${course.endDate}"></p></td>
                 <td><a class="btn btn-primary card-link" role="button" th:href="@{/teacher/add-exam/__${course.id}__}" th:text="#{create_exam}"></a></td>

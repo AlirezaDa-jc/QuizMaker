@@ -17,11 +17,21 @@ public class MultipleChoiceQuestion extends Question {
     @Column(name="options")
     private Set<String> options = new HashSet<>();
 
+    public MultipleChoiceQuestion() {
+    }
+
+    public MultipleChoiceQuestion(Exam exam) {
+        super(exam);
+    }
+
     public Set<String> getOptions() {
         return options;
     }
 
     public void setOptions(Set<String> options) {
         this.options = options;
+    }
+    public void addOptions(String option) {
+        options.add(option);
     }
 }

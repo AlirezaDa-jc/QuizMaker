@@ -75,6 +75,4 @@ public class StudentController {
         return "user-exception";
     }
 
-
-//    @RequestMapping("student")
 }

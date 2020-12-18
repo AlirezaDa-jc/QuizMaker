@@ -77,13 +77,13 @@ public class AdminController {
 
     @GetMapping("list-teachers")
     public String sendListOfTeachers(Model model) {
-        model.addAttribute("teachers", teacherService.findAll());
+        model.addAttribute("teachers", teacherService.findAll().stream().filter(Teacher::isAllowed));
         return "admin-list-teachers";
     }
 
     @GetMapping("list-students")
     public String sendListOfStudents(Model model) {
-        model.addAttribute("students", studentService.findAll());
+        model.addAttribute("students", studentService.findAll().stream().filter(Student::isAllowed));
         return "admin-list-students";
     }
 
@@ -187,7 +187,7 @@ public class AdminController {
             throw new Exception("500,Server Encountered An Error!");
         }
     }
-//Todo Delete UnAllowed Student Reason
+
     @GetMapping("home")
     public String viewHome(Model model) {
         model.addAttribute("admin", SecurityContextHolder.getContext().getAuthentication().getPrincipal());

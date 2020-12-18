@@ -1,9 +1,6 @@
 package ir.maktab.quizmaker.controller;
 
-import ir.maktab.quizmaker.domains.Course;
-import ir.maktab.quizmaker.domains.DescriptiveQuestion;
-import ir.maktab.quizmaker.domains.Exam;
-import ir.maktab.quizmaker.domains.Teacher;
+import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +37,9 @@ public class TeacherController {
     @Autowired
     private DescriptiveQuestionService descriptiveQuestionService;
 
+    @Autowired
+    private MultipleChoiceQuestionService multipleChoiceQuestionService;
+
 
     private Set<Course> courses;
 
@@ -55,7 +55,6 @@ public class TeacherController {
 
     @GetMapping("show-courses")
     public String showCourses(Model model) {
-        //Eager Need
         model.addAttribute("courses", courses);
         return "teacher-show-courses";
     }
@@ -96,14 +95,13 @@ public class TeacherController {
         try {
             examService.save(exam);
             model.addAttribute("exams", examService.findAllByTeacher(teacher));
-            System.out.println();
         } catch (Exception ex) {
             model.addAttribute("exam", new Exam());
             model.addAttribute("course", exam.getCourse());
             model.addAttribute("teacher", teacher);
             return "redirect:/teacher/add-exam/" + exam.getCourse().getId();
         }
-        return "redirect:/teacher/list-exams";
+        return "redirect:/teacher/show-exams";
     }
 
     @GetMapping("show-exams")
@@ -114,14 +112,14 @@ public class TeacherController {
 
     @GetMapping("set-exam-available/{examId}")
     public String setExamAvailable(@PathVariable Long examId, Model model) {
-        examService.setExamAvailble(examId);
+        examService.setExamAvailable(examId);
         model.addAttribute("exams", examService.findAllByTeacher(teacher));
         return "teacher-show-exams";
     }
 
     @GetMapping("set-exam-unavailable/{examId}")
     public String setExamUnAvailable(@PathVariable Long examId, Model model) {
-        examService.setExamUnAvailble(examId);
+        examService.setExamUnAvailable(examId);
         model.addAttribute("exams", examService.findAllByTeacher(teacher));
         return "teacher-show-exams";
     }
@@ -147,6 +145,12 @@ public class TeacherController {
         return "teacher-edit-exam";
     }
 
+    @GetMapping("delete-exam/{examId}")
+    public String deleteExam(@PathVariable Long examId,Model model){
+        examService.deleteById(examId);
+        model.addAttribute("exams", examService.findAllByTeacher(teacher));
+        return "teacher-show-exams";
+    }
     @PostMapping("edit-exam")
     public String editExam(@ModelAttribute Exam exam, Model model) {
 
@@ -156,8 +160,8 @@ public class TeacherController {
         return "teacher-edit-exam";
     }
 
-    @GetMapping("add-descriptive-question/{examId}")
-    public String sendAddQuestionForm(@PathVariable Long examId, Model model) {
+    @GetMapping("descriptive-question/{examId}")
+    public String sendAddDescriptiveQuestionForm(@PathVariable Long examId, Model model) {
         Exam exam = examService.findById(examId);
 
         model.addAttribute("exam", exam);
@@ -165,18 +169,43 @@ public class TeacherController {
         return "teacher-descriptive-question";
     }
 
-    @PostMapping("add-descriptive-question")
+    @GetMapping("multiple-question/{examId}")
+    public String sendAddMultipleQuestionForm(@PathVariable Long examId, Model model) {
+        Exam exam = examService.findById(examId);
+
+        model.addAttribute("exam", exam);
+        model.addAttribute("question", new DescriptiveQuestion(exam));
+        return "teacher-multiple-question";
+    }
+
+    @PostMapping("multiple-question}")
+    public String addMultipleQuestion(@ModelAttribute MultipleChoiceQuestion multipleChoiceQuestion, Model model,
+                                      HttpServletRequest req) {
+        long examId = Long.parseLong(req.getParameter("examId"));
+        Exam exam = examService.findById(examId);
+        try {
+            multipleChoiceQuestionService.save(multipleChoiceQuestion);
+            model.addAttribute("added",true);
+        } catch (Exception ex) {
+            model.addAttribute("added",false);
+        }
+        model.addAttribute("exam", exam);
+        model.addAttribute("question", new MultipleChoiceQuestion(exam));
+        return "teacher-multiple-question";
+    }
+
+    @PostMapping("descriptive-question")
     public String addDescriptiveQuestion(@ModelAttribute DescriptiveQuestion descriptiveQuestion, Model model,
                                          HttpServletRequest req) {
         long examId = Long.parseLong(req.getParameter("examId"));
         Exam exam = examService.findById(examId);
+        model.addAttribute("exam", exam);
         try {
             descriptiveQuestionService.save(descriptiveQuestion);
             model.addAttribute("added",true);
         } catch (Exception ex) {
             model.addAttribute("added",false);
         }
-        model.addAttribute("exam", exam);
         model.addAttribute("question", new DescriptiveQuestion(exam));
         return "teacher-descriptive-question";
     }

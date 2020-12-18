@@ -29,8 +29,9 @@
             <th th:text="#{title}"></th>
             <th th:text="#{description}"></th>
             <th th:text="#{time}"></th>
-            <th th:text="#{availability}"></th>
             <th th:text="#{course}"></th>
+            <th th:text="#{availability}"></th>
+
 
         </tr>
 
@@ -44,15 +45,15 @@
             <td><p th:text="${exam.title}"></p></td>
             <td><p th:text="${exam.description}"></p></td>
             <td><p th:text="${exam.time}"></p></td>
+            <td><p th:text="${exam.course.name}"></p></td>
             <td th:if="${exam.isAvailable}" th:text="#{available}"></td>
             <td th:if="${exam.isAvailable}"><a class="btn btn-primary card-link" role="button"
-                                                th:href="@{/teacher/set-exam-unavailable/__${exam.id}__}"
-                                                th:text="#{set_unavailable}"></a></td>
+                                               th:href="@{/teacher/set-exam-unavailable/__${exam.id}__}"
+                                               th:text="#{set_unavailable}"></a></td>
             <td th:if="${!exam.isAvailable}" th:text="#{not_available}"></td>
             <td th:if="${!exam.isAvailable}"><a class="btn btn-primary card-link" role="button"
-                                               th:href="@{/teacher/set-exam-available/__${exam.id}__}"
-                                               th:text="#{set_available}"></a></td>
-            <td><p th:text="${exam.course.name}"></p></td>
+                                                th:href="@{/teacher/set-exam-available/__${exam.id}__}"
+                                                th:text="#{set_available}"></a></td>
             <td><a class="btn btn-primary card-link" role="button" th:href="@{/teacher/edit-exam/__${exam.id}__}" th:text="#{edit_exam}"></a></td>
 
 

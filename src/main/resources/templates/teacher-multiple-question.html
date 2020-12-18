@@ -19,7 +19,7 @@
     <a href="/teacher/edit-user" th:text="#{edit_account}"></a>
     <a href="/logout" th:text="#{logout}"></a>
 </div>
-
+<!--TODO NAVBAR ESME TARAF BASHE DROPDOWN VA LOGIN O INA LOGOUT O EDIT ACC O INA TOSH BIAD-->
 <div class="main lang ">
     <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
         <div class="card-body">
@@ -60,14 +60,27 @@
                            th:field="*{question}" type="text">
                 </div>
                 <div class="form-group">
-                    <label for="answer" th:text="#{answer}"></label>
-                    <input aria-describedby="answer" class="form-control" id="answer" name="description"
-                           th:field="*{answer}" type="text">
+                    <label th:text="#{answer}"></label>
+                    <input aria-describedby="answer" class="form-control option" name="description"
+                           th:field="*{options}" type="text">
+                </div>
+                <div class="form-group">
+                    <label th:text="#{answer}"></label>
+                    <input aria-describedby="answer" class="form-control option" name="description"
+                           th:field="*{options}" type="text">
+                </div>
+                <div id='add' style='padding: 10px;'>
+                    <button onclick="addOption('add')"
+                            style='width: 100px; height: 40px; border-radius: 3px; background-color: lightblue; font-weight: 700;'
+                            type='button'>Submit
+                    </button>
                 </div>
                 <div class="form-group">
                     <label for="isPublic" th:text="#{isPublic}"></label>
                     <input id="isPublic" th:field="*{public}" type="checkbox"/>
                 </div>
+
+
 
                 <button class="btn btn-primary" th:text="#{add_question}" type="submit"></button>
                 <button class="btn btn-primary" th:text="#{resetfields}" type="reset"></button>
@@ -75,6 +88,7 @@
         </div>
     </div>
 </div>
+<!--TODO List Options-->
 <script src="../static/minified/sceditor.min.js"></script>
 <script src="../static/minified/formats/bbcode.js"></script>
 <script src="../static/minified/formats/xhtml.js"></script>
@@ -91,8 +105,31 @@
         format: 'xhtml',
         style: '../static/minified/themes/content/default.min.css'
     });
-
 </script>
+<script>
+    function addOption(elementID) {
+        document.getElementById(elementID).innerHTML = "";
 
+        document.getElementById(elementID).innerHTML +=
+            '                <div class="form-group">\n' +
+            '                    <label for="answer" th:text="#{answer}"></label>\n' +
+            '                    <input aria-describedby="answer" class="form-control option" id="answer" name="description"\n' +
+            '                           th:field="*{addOptions()}" type="text">\n' +
+            '                </div>'
+
+
+
+        $(elementID).append(
+            '    <div id=\'add\' style=\'padding: 10px;\'>\n' +
+            '        <button type=\'button\'\n' +
+            '                style=\'width: 100px; height: 40px; border-radius: 3px; background-color: lightblue; font-weight: 700;\'\n' +
+            '                onclick="addOption(\'add\')">Submit\n' +
+            '        </button>\n' +
+            '    </div>'
+        )
+
+        document.getElementById(elementID).setAttribute("class","option")
+    }
+</script>
 </body>
 </html>

@@ -26,12 +26,12 @@ public class ExamService {
         return examRepository.findAllByTeacher(teacher);
     }
 
-    public Exam setExamAvailble(Long examId) {
+    public Exam setExamAvailable(Long examId) {
         Exam exam = examRepository.findById(examId).get();
         exam.setAvailable(true);
         return examRepository.save(exam);
     }
-    public Exam setExamUnAvailble(Long examId) {
+    public Exam setExamUnAvailable(Long examId) {
         Exam exam = examRepository.findById(examId).get();
         exam.setAvailable(false);
         return examRepository.save(exam);
@@ -39,5 +39,9 @@ public class ExamService {
 
     public Exam findById(Long examId) {
         return examRepository.findById(examId).get();
+    }
+
+    public void deleteById(Long examId) {
+        examRepository.deleteById(examId);
     }
 }
