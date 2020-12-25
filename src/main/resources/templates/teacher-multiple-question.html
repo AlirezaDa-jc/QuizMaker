@@ -6,7 +6,7 @@
     <title>Teacher Add Descriptive Question</title>
     <link rel="stylesheet" th:href="@{/css/user-styles.css}">
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
-    <link href="../static/minified/themes/default.min.css" rel="stylesheet" />
+    <link href="../static/minified/themes/default.min.css" rel="stylesheet"/>
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
 </head>
@@ -22,9 +22,9 @@
 <!--TODO NAVBAR ESME TARAF BASHE DROPDOWN VA LOGIN O INA LOGOUT O EDIT ACC O INA TOSH BIAD-->
 <div class="main lang ">
     <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
-        <div class="card-body">
-            <form action="#" class="forms" method="post" style="margin: auto;" th:action="@{/teacher/descriptive-question}"
-                  th:object="${question}">
+        <div class="card-body" id="questionForm">
+            <form action="#" class="forms" method="post" style="margin: auto;" th:action="@{/teacher/multiple-question}"
+                  th:object="${multipleChoiceQuestion}">
                 <div class="form-group">
                     <label for="exam" th:text="#{exam}"></label><br>
                     <input disabled id="exam" readonly th:value="${exam.title}">
@@ -41,12 +41,12 @@
                     <label for="subject" th:text="#{subject}"></label><br>
                     <input disabled id="subject" readonly th:value="${exam.course.subject.name}">
                     <input aria-describedby="course" class="form-control" hidden name="course" readonly
-                           th:field="*{subject}" th:value="${exam.course.subject}" type="text">
+                           th:value="${exam.course.subject}" type="text">
                 </div>
                 <div class="form-group">
                     <label for="teacher" th:text="#{teacher}"></label><br>
                     <input disabled id="teacher" readonly th:value="${exam.teacher.userName}">
-                    <input aria-describedby="teacher" class="form-control" hidden  name="teacher" readonly
+                    <input aria-describedby="teacher" class="form-control" hidden name="teacher" readonly
                            th:field="*{teacher}" th:value="${exam.teacher}" type="text">
                 </div>
                 <div class="form-group">
@@ -60,76 +60,101 @@
                            th:field="*{question}" type="text">
                 </div>
                 <div class="form-group">
-                    <label th:text="#{answer}"></label>
-                    <input aria-describedby="answer" class="form-control option" name="description"
-                           th:field="*{options}" type="text">
+                    <label for="score" th:text="#{score}"></label>
+                    <input aria-describedby="score" class="form-control" id="score" name="score"
+                           type="number">
                 </div>
                 <div class="form-group">
-                    <label th:text="#{answer}"></label>
-                    <input aria-describedby="answer" class="form-control option" name="description"
-                           th:field="*{options}" type="text">
+                    <label for="answer" th:text="#{answer}"></label>
+                    <input aria-describedby="question" class="form-control" id="answer" name="answer"
+                           th:field="*{answer}" type="text">
                 </div>
-                <div id='add' style='padding: 10px;'>
-                    <button onclick="addOption('add')"
-                            style='width: 100px; height: 40px; border-radius: 3px; background-color: lightblue; font-weight: 700;'
-                            type='button'>Submit
-                    </button>
+                <div class="form-group" id="add-choice">
+<!--                    <button type="button" th:text="#{add_another_option}" onclick="addOption()"></button>-->
+                    <label th:text="#{content}"></label>
+                    <div th:each="li, iter: *{options}">
+                        <input th:field="*{options[__${iter.index}__]}" type="text">
+                    </div>
                 </div>
+<!--                <fieldset id="items">-->
+<!--                    <div th:each="li, stat : ${multipleChoiceQuestion.options}">-->
+<!--                        <label >Name</label>-->
+<!--                        <input th:field="${multipleChoiceQuestion.options[__${stat.index}__]}">-->
+<!--                        <button type="button" name="removeItem" th:value="${stat.index}">Remove item</button>-->
+<!--                    </div>-->
+<!--                </fieldset>-->
+
+<!--                <button type="button" name="addItem">Add item</button>-->
+
+
                 <div class="form-group">
                     <label for="isPublic" th:text="#{isPublic}"></label>
                     <input id="isPublic" th:field="*{public}" type="checkbox"/>
                 </div>
-
-
-
+                <!--                TODO Pagination -->
+                <a class="btn btn-dark card-link" role="button"
+                   th:href="@{/teacher/descriptive-question/__${exam.id}__}"
+                   th:text="#{add_descriptive_question}"></a>
+                <a class="btn btn-dark card-link" role="button"
+                   th:href="@{/teacher/add_question_from_bank/__${exam.id}__}"
+                   th:text="#{add_question_from_bank}"></a>
                 <button class="btn btn-primary" th:text="#{add_question}" type="submit"></button>
                 <button class="btn btn-primary" th:text="#{resetfields}" type="reset"></button>
             </form>
         </div>
     </div>
 </div>
-<!--TODO List Options-->
-<script src="../static/minified/sceditor.min.js"></script>
-<script src="../static/minified/formats/bbcode.js"></script>
-<script src="../static/minified/formats/xhtml.js"></script>
+<script src="/../static/js/jquery-3.5.1.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<!--<script src="/../static/minified/sceditor.min.js"></script>-->
+<!--<script src="/../static/minified/formats/bbcode.js"></script>-->
+<!--<script src="/../static/minified/formats/xhtml.js"></script>-->
 <script>
-    const textarea = document.getElementById('question');
-    const textarea1 = document.getElementById('answer');
-
-    sceditor.create(textarea, {
-        format: 'xhtml',
-        style: '../static/minified/themes/content/default.min.css'
-    });
-
-    sceditor.create(textarea1, {
-        format: 'xhtml',
-        style: '../static/minified/themes/content/default.min.css'
-    });
-</script>
-<script>
-    function addOption(elementID) {
-        document.getElementById(elementID).innerHTML = "";
-
-        document.getElementById(elementID).innerHTML +=
-            '                <div class="form-group">\n' +
-            '                    <label for="answer" th:text="#{answer}"></label>\n' +
-            '                    <input aria-describedby="answer" class="form-control option" id="answer" name="description"\n' +
-            '                           th:field="*{addOptions()}" type="text">\n' +
-            '                </div>'
+    // const textarea = document.getElementById('question');
+    //
+    // sceditor.create(textarea, {
+    //     format: 'xhtml',
+    //     style: '/../static/minified/themes/content/default.min.css'
+    // });
 
 
+    // function replaceItems (html) {
+    //     $('#items').replaceWith($(html));
+    // }
+    //
+    // $('button[name="addItem"]').click(function (event) {
+    //     event.preventDefault();
+    //     let data = $('form').serialize();
+    //     data += 'addItem';
+    //     $.post('/multiple-question', data, replaceItems);
+    // });
+    //
+    // $('button[name="removeItem"]').click(function (event) {
+    //     event.preventDefault();
+    //     let data = $('form').serialize();
+    //     data += 'removeItem=' + $(this).val();
+    //     $.post('/multiple-question', data, replaceItems);
+    // });
+    // let addChoice;
+    // let option = 1;
+    // function addOption() {
+    //     addChoice =
+    //         "                    <label th:text=\"#{content}\"></label>\n" +
+    //         "                    <div th:each=\"li, iter: *{options}\" th:if=\"${iter.index} == " + option + "\">\n" +
+    //         "                        <input type=\"text\" th:field=\"*{options[__${iter.index}__]}\">\n" +
+    //         "                         <input type=\"text\" th:value=\"${iter.index}\" readonly>\n" +
+    //         "                    </div>\n"
+    //     if (option <= 6) {
+    //         document.getElementById("add-choice").innerHTML += addChoice;
+    //         option = option + 1;
+    //     }
+    // }
 
-        $(elementID).append(
-            '    <div id=\'add\' style=\'padding: 10px;\'>\n' +
-            '        <button type=\'button\'\n' +
-            '                style=\'width: 100px; height: 40px; border-radius: 3px; background-color: lightblue; font-weight: 700;\'\n' +
-            '                onclick="addOption(\'add\')">Submit\n' +
-            '        </button>\n' +
-            '    </div>'
-        )
-
-        document.getElementById(elementID).setAttribute("class","option")
-    }
 </script>
 </body>
 </html>

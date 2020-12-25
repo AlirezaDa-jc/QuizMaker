@@ -1,8 +1,8 @@
 package ir.maktab.quizmaker.domains;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -15,23 +15,34 @@ public class MultipleChoiceQuestion extends Question {
     @ElementCollection
     @CollectionTable(name="options", joinColumns=@JoinColumn(name="question_id"))
     @Column(name="options")
-    private Set<String> options = new HashSet<>();
-
+    private List<String> options = new LinkedList<>();
+//Int Answer TODO
     public MultipleChoiceQuestion() {
     }
 
     public MultipleChoiceQuestion(Exam exam) {
         super(exam);
+        options.add("");
+        options.add("");
+        options.add("");
+        options.add("");
+        options.add("");
+        options.add("");
     }
 
-    public Set<String> getOptions() {
+    public List<String> getOptions() {
         return options;
     }
 
-    public void setOptions(Set<String> options) {
+    public void setOptions(List<String> options) {
         this.options = options;
     }
+
     public void addOptions(String option) {
         options.add(option);
+    }
+
+    public void removeOption(int index) {
+        options.remove(index);
     }
 }

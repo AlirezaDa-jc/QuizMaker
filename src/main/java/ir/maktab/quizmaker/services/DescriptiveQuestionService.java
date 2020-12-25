@@ -14,7 +14,14 @@ public class DescriptiveQuestionService {
     @Autowired
     private DescriptiveQuestionRepository descriptiveQuestionRepository;
 
-    public DescriptiveQuestion save(DescriptiveQuestion descriptiveQuestion){
+    @Autowired
+    private SubjectService subjectService;
+
+    @Autowired
+    private ExamService examService;
+
+    public DescriptiveQuestion save(DescriptiveQuestion descriptiveQuestion) {
         return descriptiveQuestionRepository.save(descriptiveQuestion);
     }
+
 }

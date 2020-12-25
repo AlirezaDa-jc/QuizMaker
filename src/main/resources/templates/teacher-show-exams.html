@@ -23,7 +23,7 @@
     <table class="table  lang">
 
         <tr class="light-text bg-dark">
-            <th colspan="7" th:text="#{exams}"></th>
+            <th colspan="8" th:text="#{exams}"></th>
         </tr>
         <tr>
             <th th:text="#{title}"></th>
@@ -37,7 +37,7 @@
 
 
         <tr th:if="${exams.isEmpty()}">
-            <td colspan="6" th:text="#{no_exams}"></td>
+            <td colspan="8" th:text="#{no_exams}"></td>
         </tr>
 
         <tr th:each="exam : ${exams}">
@@ -46,6 +46,9 @@
             <td><p th:text="${exam.description}"></p></td>
             <td><p th:text="${exam.time}"></p></td>
             <td><p th:text="${exam.course.name}"></p></td>
+            <td><a class="btn btn-primary card-link" role="button"
+                                               th:href="@{/teacher/show-questions/__${exam.id}__}"
+                                               th:text="#{show_questions}"></a></td>
             <td th:if="${exam.isAvailable}" th:text="#{available}"></td>
             <td th:if="${exam.isAvailable}"><a class="btn btn-primary card-link" role="button"
                                                th:href="@{/teacher/set-exam-unavailable/__${exam.id}__}"

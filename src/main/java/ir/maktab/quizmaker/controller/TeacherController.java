@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,8 +20,10 @@ import java.util.Set;
 @RequestMapping("teacher")
 public class TeacherController {
 
-    private Teacher teacher;
+    private static final String AJAX_HEADER_NAME = "X-Requested-With";
+    private static final String AJAX_HEADER_VALUE = "XMLHttpRequest";
 
+    private Teacher teacher;
 
     @Autowired
     private TeacherService teacherService;
@@ -35,11 +38,13 @@ public class TeacherController {
     private UserService userService;
 
     @Autowired
-    private DescriptiveQuestionService descriptiveQuestionService;
+    private QuestionService questionService;
 
     @Autowired
-    private MultipleChoiceQuestionService multipleChoiceQuestionService;
+    private QuestionExamScoreService questionExamScoreService;
 
+
+    private QuestionExamScore tempQuestionExamScore;
 
     private Set<Course> courses;
 
@@ -82,11 +87,15 @@ public class TeacherController {
     }
 
     @GetMapping("add-exam/{courseId}")
-    public String sendAddExamForm(@PathVariable Long courseId, Model model) {
+    public String sendAddExamForm(@PathVariable Long courseId, Model model) throws Exception {
         Course course = courseService.findById(courseId);
+        if (!course.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
         model.addAttribute("exam", new Exam(course, teacher));
         model.addAttribute("course", course);
         model.addAttribute("teacher", teacher);
+        model.addAttribute("error", false);
         return "teacher-add-exam";
     }
 
@@ -96,6 +105,7 @@ public class TeacherController {
             examService.save(exam);
             model.addAttribute("exams", examService.findAllByTeacher(teacher));
         } catch (Exception ex) {
+            model.addAttribute("error", true);
             model.addAttribute("exam", new Exam());
             model.addAttribute("course", exam.getCourse());
             model.addAttribute("teacher", teacher);
@@ -111,108 +121,251 @@ public class TeacherController {
     }
 
     @GetMapping("set-exam-available/{examId}")
-    public String setExamAvailable(@PathVariable Long examId, Model model) {
+    public String setExamAvailable(@PathVariable Long examId, Model model) throws Exception {
+        if (!examService.findById(examId).getTeacher().getUserName().
+                equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
         examService.setExamAvailable(examId);
         model.addAttribute("exams", examService.findAllByTeacher(teacher));
         return "teacher-show-exams";
     }
 
     @GetMapping("set-exam-unavailable/{examId}")
-    public String setExamUnAvailable(@PathVariable Long examId, Model model) {
+    public String setExamUnAvailable(@PathVariable Long examId, Model model) throws Exception {
+        if (!examService.findById(examId).getTeacher().getUserName().
+                equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
         examService.setExamUnAvailable(examId);
         model.addAttribute("exams", examService.findAllByTeacher(teacher));
         return "teacher-show-exams";
     }
 
     @GetMapping("show-exams/{courseId}")
-    public String showCourseExams(@PathVariable Long courseId, Model model) {
+    public String showCourseExams(@PathVariable Long courseId, Model model) throws Exception {
         Course course = courseService.findById(courseId);
+        if (!course.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
         model.addAttribute("exams", course.getExams());
         return "teacher-show-exams";
     }
 
     @GetMapping("show-students/{courseId}")
-    public String showCourseStudents(@PathVariable Long courseId, Model model) {
+    public String showCourseStudents(@PathVariable Long courseId, Model model) throws Exception {
         Course course = courseService.findById(courseId);
+        if (!course.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
         model.addAttribute("students", course.getStudents());
         return "teacher-show-course-students";
     }
 
     @GetMapping("edit-exam/{examId}")
-    public String sendEditExamForm(@PathVariable Long examId, Model model) {
+    public String sendEditExamForm(@PathVariable Long examId, Model model) throws Exception {
+        if (!examService.findById(examId).getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
         Exam exam = examService.findById(examId);
         model.addAttribute("exam", exam);
+        model.addAttribute("error", false);
         return "teacher-edit-exam";
     }
 
     @GetMapping("delete-exam/{examId}")
-    public String deleteExam(@PathVariable Long examId,Model model){
+    public String deleteExam(@PathVariable Long examId, Model model) throws Exception {
+        if (!examService.findById(examId).getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
         examService.deleteById(examId);
         model.addAttribute("exams", examService.findAllByTeacher(teacher));
         return "teacher-show-exams";
     }
+
     @PostMapping("edit-exam")
     public String editExam(@ModelAttribute Exam exam, Model model) {
-
-        examService.save(exam);
-
+        try {
+            examService.save(exam);
+        } catch (Exception ex) {
+            model.addAttribute("error", true);
+        }
         model.addAttribute("exam", exam);
         return "teacher-edit-exam";
     }
 
-    @GetMapping("descriptive-question/{examId}")
-    public String sendAddDescriptiveQuestionForm(@PathVariable Long examId, Model model) {
+    @GetMapping("show-questions/{examId}")
+    public String showQuestionsExam(@PathVariable Long examId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
-
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
+        List<MultipleChoiceQuestion> multipleChoiceQuestions = examService.findMultipleChoiceQuestions(exam);
+        List<DescriptiveQuestion> descriptiveQuestions = examService.findDescriptiveQuestions(exam);
+        model.addAttribute("multiple", multipleChoiceQuestions);
+        model.addAttribute("descriptive", descriptiveQuestions);
         model.addAttribute("exam", exam);
-        model.addAttribute("question", new DescriptiveQuestion(exam));
+        return "teacher-show-questions";
+    }
+
+    @GetMapping("descriptive-question/{examId}")
+    public String sendAddDescriptiveQuestionForm(@PathVariable Long examId, Model model) throws Exception {
+        Exam exam = examService.findById(examId);
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
+        DescriptiveQuestion descriptiveQuestion = new DescriptiveQuestion(exam);
+        QuestionExamScore questionExamScore = questionExamScoreService.create(exam);
+        tempQuestionExamScore = questionExamScore;
+        model.addAttribute("exam", exam);
+        model.addAttribute("descriptiveQuestion", descriptiveQuestion);
+        model.addAttribute("score", questionExamScore);
         return "teacher-descriptive-question";
     }
 
     @GetMapping("multiple-question/{examId}")
-    public String sendAddMultipleQuestionForm(@PathVariable Long examId, Model model) {
+    public String sendAddMultipleQuestionForm(@PathVariable Long examId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
-
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
+        MultipleChoiceQuestion multipleChoiceQuestion = new MultipleChoiceQuestion(exam);
+        QuestionExamScore questionExamScore = questionExamScoreService.create(exam);
+        tempQuestionExamScore = questionExamScore;
         model.addAttribute("exam", exam);
-        model.addAttribute("question", new DescriptiveQuestion(exam));
+        model.addAttribute("multipleChoiceQuestion", multipleChoiceQuestion);
+        model.addAttribute("score", questionExamScore);
         return "teacher-multiple-question";
     }
 
-    @PostMapping("multiple-question}")
+    @PostMapping("multiple-question")
     public String addMultipleQuestion(@ModelAttribute MultipleChoiceQuestion multipleChoiceQuestion, Model model,
                                       HttpServletRequest req) {
         long examId = Long.parseLong(req.getParameter("examId"));
+        int score = Integer.parseInt(req.getParameter("score"));
         Exam exam = examService.findById(examId);
+        tempQuestionExamScore.setScore(score);
         try {
-            multipleChoiceQuestionService.save(multipleChoiceQuestion);
-            model.addAttribute("added",true);
+            questionService.create(multipleChoiceQuestion, exam, tempQuestionExamScore);
+            model.addAttribute("added", true);
         } catch (Exception ex) {
-            model.addAttribute("added",false);
+            model.addAttribute("added", false);
         }
         model.addAttribute("exam", exam);
-        model.addAttribute("question", new MultipleChoiceQuestion(exam));
+        model.addAttribute("multipleChoiceQuestion", new MultipleChoiceQuestion(exam));
         return "teacher-multiple-question";
+    }
+
+    @PostMapping(params = "addItem", path = {"multiple-question", "multiple-question/{id}"})
+    public String addMultipleQuestionOption(MultipleChoiceQuestion multipleChoiceQuestion, HttpServletRequest request) {
+        multipleChoiceQuestion.addOptions("");
+        if (AJAX_HEADER_VALUE.equals(request.getHeader(AJAX_HEADER_NAME))) {
+            return "teacher-multiple-question::#items";
+        } else {
+            return "teacher-multiple-question";
+        }
+
+    }
+    @PostMapping(params = "removeItem", path = {"multiple-question", "multiple-question/{id}"})
+    public String removeOrder(MultipleChoiceQuestion multipleChoiceQuestion, @RequestParam("removeItem") int index, HttpServletRequest request) {
+        multipleChoiceQuestion.removeOption(index);
+        if (AJAX_HEADER_VALUE.equals(request.getHeader(AJAX_HEADER_NAME))) {
+            return "teacher-multiple-question::#items";
+        } else {
+            return "teacher-multiple-question";
+        }
     }
 
     @PostMapping("descriptive-question")
     public String addDescriptiveQuestion(@ModelAttribute DescriptiveQuestion descriptiveQuestion, Model model,
                                          HttpServletRequest req) {
         long examId = Long.parseLong(req.getParameter("examId"));
+        int score = Integer.parseInt(req.getParameter("score"));
         Exam exam = examService.findById(examId);
+        tempQuestionExamScore.setScore(score);
         model.addAttribute("exam", exam);
         try {
-            descriptiveQuestionService.save(descriptiveQuestion);
-            model.addAttribute("added",true);
+            questionService.create(descriptiveQuestion, exam, tempQuestionExamScore);
+            model.addAttribute("added", true);
         } catch (Exception ex) {
-            model.addAttribute("added",false);
+            model.addAttribute("added", false);
         }
-        model.addAttribute("question", new DescriptiveQuestion(exam));
+        model.addAttribute("descriptiveQuestion", new DescriptiveQuestion(exam));
         return "teacher-descriptive-question";
     }
+
+    @GetMapping("add_question_from_bank/{examId}")
+    public String sendBankQuestions(@PathVariable Long examId, Model model) throws Exception {
+        Exam exam = examService.findById(examId);
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
+        Set<Question> questions = questionService.getQuestionBank(exam);
+        model.addAttribute("multipleChoice", questionService.findMultipleChoiceQuestions(questions));
+        model.addAttribute("descriptive", questionService.findDescriptiveQuestions(questions));
+        model.addAttribute("examId", examId);
+        return "teacher-add-question-from-bank";
+    }
+
+    @GetMapping("add_question/{examId}/{questionId}")
+    public String sendBankQuestions(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
+        Exam exam = examService.findById(examId);
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
+        Question question = questionService.findById(questionId);
+        QuestionExamScore questionExamScore = questionExamScoreService.create(exam,question);
+        model.addAttribute("questionExamScore",questionExamScore);
+        model.addAttribute("exam",exam);
+        model.addAttribute("question",question);
+        return "teacher-add-score-question-from-bank";
+    }
+
+    @PostMapping("add-score-question-from-bank")
+    public String addQuestionFromBank(@ModelAttribute QuestionExamScore questionExamScore ,Model model) throws Exception {
+        System.out.println(questionExamScore);
+        if (!questionExamScore.getExam().getTeacher().getUserName()
+                .equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
+        questionExamScoreService.save(questionExamScore);
+        Exam exam = questionExamScore.getExam();
+        Set<Question> questions = questionService.getQuestionBank(exam);
+        model.addAttribute("multipleChoice", questionService.findMultipleChoiceQuestions(questions));
+        model.addAttribute("descriptive", questionService.findDescriptiveQuestions(questions));
+        model.addAttribute("examId", exam.getId());
+        return "teacher-add-question-from-bank";
+    }
+
+    @GetMapping("edit-multiple-choice-question/{examId}/{questionId}")
+    private String sendEditMultipleChoiceQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) {
+        Exam exam = examService.findById(examId);
+        MultipleChoiceQuestion multipleChoiceQuestion = (MultipleChoiceQuestion) questionService.findById(questionId);
+        QuestionExamScore questionExamScore = questionExamScoreService.create(exam);
+        tempQuestionExamScore = questionExamScore;
+        model.addAttribute("exam", exam);
+        model.addAttribute("multipleChoiceQuestion", multipleChoiceQuestion);
+        model.addAttribute("score", questionExamScore);
+        return "teacher-multiple-question";
+    }
+
+    @GetMapping("edit-descriptive-question/{examId}/{questionId}")
+    private String sendEditDescriptiveQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) {
+        Exam exam = examService.findById(examId);
+        DescriptiveQuestion descriptiveQuestion = (DescriptiveQuestion) questionService.findById(questionId);
+        QuestionExamScore questionExamScore = questionExamScoreService.create(exam);
+        tempQuestionExamScore = questionExamScore;
+        model.addAttribute("exam", exam);
+        model.addAttribute("descriptiveQuestion", descriptiveQuestion);
+        model.addAttribute("score", questionExamScore);
+        return "teacher-descriptive-question";
+    }
+
 
     @ExceptionHandler(Exception.class)
     public String handle(Exception ex, Model model) {
         model.addAttribute("message", ex.getMessage());
+        ex.printStackTrace();
         return "user-exception";
     }
 

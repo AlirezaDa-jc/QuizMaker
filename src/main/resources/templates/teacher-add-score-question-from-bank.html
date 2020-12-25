@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Add Descriptive Question</title>
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link href="../static/minified/themes/default.min.css" rel="stylesheet"/>
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<body>
+
+<div class="sidenav lang" id="mySidenav">
+    <a href="/teacher/home"><p th:text="#{home}"></p></a>
+    <a href="/teacher/show-courses"><p th:text="#{courses}"></p></a>
+    <a href="/teacher/show-exams"><p th:text="#{exams}"></p></a>
+    <a href="/teacher/edit-user" th:text="#{edit_account}"></a>
+    <a href="/logout" th:text="#{logout}"></a>
+</div>
+
+<div class="main lang ">
+    <div class="card" style="width: max-content;margin-left: auto;margin-right: auto;">
+        <div class="card-body">
+            <form action="#" class="forms" method="post" style="margin: auto;"
+                  th:action="@{/teacher/add-score-question-from-bank}"
+                  th:object="${questionExamScore}">
+                <input aria-describedby="id" class="form-control"   hidden name="id" readonly
+                       th:field="*{id}" type="text">
+                <div class="form-group">
+                    <label th:text="#{exam}"></label><br>
+                    <label aria-describedby="exam" class="form-control" th:text="${exam.title}"></label>
+                    <input aria-describedby="exam" class="form-control"   hidden name="exam" readonly
+                           th:field="*{exam}" th:value="${exam}" type="text">
+                </div>
+                <div class="form-group">
+                    <label th:text="#{exam}"></label><br>
+                    <label aria-describedby="question" class="form-control" th:text="${question.title}"></label>
+                    <input aria-describedby="question" class="form-control"   hidden name="question" readonly
+                           th:field="*{question}" th:value="${question.id}" type="text">
+                </div>
+
+                <div class="form-group">
+                    <label for="score" th:text="#{score}"></label>
+                    <input aria-describedby="score" class="form-control" id="score" name="score" th:field="*{score}"
+                           type="number">
+                </div>
+
+                <button class="btn btn-primary" th:text="#{add_question}" type="submit"></button>
+                <button class="btn btn-primary" th:text="#{resetfields}" type="reset"></button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="../static/minified/sceditor.min.js"></script>
+<script src="../static/minified/formats/bbcode.js"></script>
+<script src="../static/minified/formats/xhtml.js"></script>
+<script>
+    const textarea = document.getElementById('question');
+    const textarea1 = document.getElementById('answer');
+
+    sceditor.create(textarea, {
+        format: 'xhtml',
+        style: '../static/minified/themes/content/default.min.css'
+    });
+
+    sceditor.create(textarea1, {
+        format: 'xhtml',
+        style: '../static/minified/themes/content/default.min.css'
+    });
+
+</script>
+
+</body>
+</html>

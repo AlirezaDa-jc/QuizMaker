@@ -10,21 +10,12 @@ import javax.persistence.InheritanceType;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class DescriptiveQuestion extends Question{
-    private String answer;
+public class DescriptiveQuestion extends Question {
 
     public DescriptiveQuestion() {
     }
 
     public DescriptiveQuestion(Exam exam) {
         super(exam);
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
     }
 }

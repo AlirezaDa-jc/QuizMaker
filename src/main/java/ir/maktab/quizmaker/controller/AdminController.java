@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Alireza.d.a
@@ -77,13 +78,14 @@ public class AdminController {
 
     @GetMapping("list-teachers")
     public String sendListOfTeachers(Model model) {
-        model.addAttribute("teachers", teacherService.findAll().stream().filter(Teacher::isAllowed));
+
+        model.addAttribute("teachers",teacherService.findAll().stream().filter(Teacher::isAllowed).collect(Collectors.toList()));
         return "admin-list-teachers";
     }
 
     @GetMapping("list-students")
     public String sendListOfStudents(Model model) {
-        model.addAttribute("students", studentService.findAll().stream().filter(Student::isAllowed));
+        model.addAttribute("students", studentService.findAll().stream().filter(Student::isAllowed).collect(Collectors.toList()));
         return "admin-list-students";
     }
 

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Questions From Bank</title>
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<body>
+
+<div class="sidenav lang" id="mySidenav">
+    <a href="/teacher/home"><p th:text="#{home}"></p></a>
+    <a href="/teacher/show-courses"><p th:text="#{courses}"></p></a>
+    <a href="/teacher/show-exams"><p th:text="#{exams}"></p></a>
+    <a href="/teacher/edit-user" th:text="#{edit_account}"></a>
+    <a href="/logout" th:text="#{logout}"></a>
+</div>
+<div class="main lang content">
+    <div class="table-bordered lang">
+        <table class="table lang">
+
+            <tr>
+                <th colspan="7" th:text="#{multiple_choice_question}"></th>
+            </tr>
+            <tr>
+                <th><p th:text="#{title}"></p></th>
+                <th><p th:text="#{question}"></p></th>
+                <th><p th:text="#{subject}"></p></th>
+                <th><p th:text="#{isPublic}"></p></th>
+                <th><p th:text="#{answer}"></p></th>
+                <th><p th:text="#{teacher}"></p></th>
+                <th><p th:text="#{option}"></p></th>
+
+            </tr>
+
+            <tr th:if="${multipleChoice.isEmpty()}">
+                <td colspan="7" th:text="#{no_students}"></td>
+            </tr>
+
+            <tr th:each="question : ${multipleChoice}">
+
+                <td><p th:text="${question.title}"></p></td>
+                <td><p th:text="${question.question}"></p></td>
+                <td><p th:text="${question.course.subject.name}"></p></td>
+                <td><p th:text="${question.public}"></p></td>
+                <td><p th:text="${question.answer}"></p></td>
+                <td><p th:text="${question.teacher.userName}"></p></td>
+                <td>
+                    <span th:each="option : ${question.options}">
+                    <span th:text="${option}">Item description here...</span>
+                        </span>
+                </td>
+                <td><a class="btn btn-primary card-link" role="button"
+                       th:href="@{/teacher/add_question/__${examId}__/__${question.id}__}"
+                       th:text="#{add_question}"></a></td>
+        </table>
+    </div>
+<!--    Query 10 TODO Pagination -->
+    <div class="table-bordered lang">
+        <table class="table lang">
+
+            <tr>
+                <th colspan="6" th:text="#{descriptive_questions}"></th>
+            </tr>
+            <tr>
+                <th><p th:text="#{title}"></p></th>
+                <th><p th:text="#{question}"></p></th>
+                <th><p th:text="#{subject}"></p></th>
+                <th><p th:text="#{isPublic}"></p></th>
+                <th><p th:text="#{answer}"></p></th>
+                <th><p th:text="#{teacher}"></p></th>
+
+            </tr>
+
+            <tr th:if="${descriptive.isEmpty()}">
+                <td colspan="6" th:text="#{no_students}"></td>
+            </tr>
+
+            <tr th:each="question : ${descriptive}">
+
+                <td><p th:text="${question.title}"></p></td>
+                <td><p th:text="${question.question}"></p></td>
+                <td><p th:text="${question.course.subject.name}"></p></td>
+                <td><p th:text="${question.public}"></p></td>
+                <td><p th:text="${question.answer}"></p></td>
+                <td><p th:text="${question.teacher.userName}"></p></td>
+                <td><a class="btn btn-primary card-link" role="button"
+                       th:href="@{/teacher/add_question/__${examId}__/__${question.id}__}"
+                       th:text="#{add_question}"></a></td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</body>
+</html>

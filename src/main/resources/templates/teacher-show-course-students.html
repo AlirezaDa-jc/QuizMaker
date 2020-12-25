@@ -20,44 +20,44 @@
 </div>
 <div class="main lang content">
     <div class="table-bordered lang">
-    <table class="table lang">
+        <table class="table lang">
 
-        <tr>
-            <th colspan="5" th:text="#{students}"></th>
-        </tr>
-        <tr>
-            <th><p th:text="#{firstname}"></p></th>
-            <th><p th:text="#{lastname}"></p></th>
-            <th><p th:text="#{nationalcode}"></p></th>
-            <th><p th:text="#{studentcode}"></p></th>
+            <tr>
+                <th colspan="5" th:text="#{exam}"></th>
+            </tr>
+            <tr>
+                <th><p th:text="#{firstname}"></p></th>
+                <th><p th:text="#{lastname}"></p></th>
+                <th><p th:text="#{nationalcode}"></p></th>
+                <th><p th:text="#{studentcode}"></p></th>
 
-        </tr>
+            </tr>
 
-        <tr th:if="${students.isEmpty()}">
-            <td colspan="5" th:text="#{no_students}"></td>
-        </tr>
+            <tr th:if="${students.isEmpty()}">
+                <td colspan="5" th:text="#{no_students}"></td>
+            </tr>
 
-        <tr th:each="student : ${students}">
+            <tr th:each="student : ${students}">
 
-            <td><p th:text="${student.firstName}"></p></td>
-            <td><p th:text="${student.lastName}"></p></td>
-            <td><p th:text="${student.nationalCode}"></p></td>
-            <td><p th:text="${student.studentCode}"></p></td>
+                <td><p th:text="${student.firstName}"></p></td>
+                <td><p th:text="${student.lastName}"></p></td>
+                <td><p th:text="${student.nationalCode}"></p></td>
+                <td><p th:text="${student.studentCode}"></p></td>
 
-        </tr>
+            </tr>
 
-    </table>
-</div>
+        </table>
+    </div>
 
-<script crossorigin="anonymous"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script crossorigin="anonymous"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 </body>
 </html>

@@ -4,6 +4,7 @@ import ir.maktab.quizmaker.base.domains.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +20,7 @@ public class Subject extends BaseEntity<Long> {
     @OneToMany(mappedBy = "subject" , orphanRemoval = true)
     Set<Course> courses = new HashSet<>();
 
-    @OneToMany(mappedBy = "subject" , orphanRemoval = true)
+    @ManyToMany(mappedBy = "subjects")
     Set<Question> questions = new HashSet<>();
 
     public Set<Question> getQuestions() {

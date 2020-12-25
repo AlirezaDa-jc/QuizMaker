@@ -51,7 +51,7 @@
             <td><p th:text="${course.teacher?.lastName}"></p></td>
             <td><p th:text="${course.teacher?.nationalCode}"></p></td>
 
-            <td><a th:href="@{/admin/delete-course-user/__${course.teacher?.id}__/__${course.id}__}" th:if="${course.teacher!=null}"
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/admin/delete-course-user/__${course.teacher?.id}__/__${course.id}__}" th:if="${course.teacher!=null}"
                    th:text="#{delete_teacher}"></a></td>
 
         </tr>

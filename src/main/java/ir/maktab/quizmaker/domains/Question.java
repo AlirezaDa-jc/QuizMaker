@@ -2,10 +2,7 @@ package ir.maktab.quizmaker.domains;
 
 import ir.maktab.quizmaker.base.domains.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +17,9 @@ public class Question extends BaseEntity<Long> {
 
     private Boolean isPublic;
 
+    @OneToMany(mappedBy = "question" , orphanRemoval = true)
+    Set<QuestionExamScore> scores = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name = "teacherid")
     private Teacher teacher;
@@ -28,27 +28,33 @@ public class Question extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "courseid")
     private Course course;
+    private String answer;
+    @ManyToMany
+    @JoinTable(name = "Question_Subject",
+            joinColumns = {@JoinColumn(name = "question_id")},
+            inverseJoinColumns = {@JoinColumn(name = "subject_id")})
+    private Set<Subject> subjects = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "subjectid")
-    private Subject subject;
-
-    @ManyToMany(mappedBy = "questions")
-    private Set<Exam> exams = new HashSet<>();
+//    @ManyToMany(mappedBy = "questions")
+//    private Set<Exam> exams = new HashSet<>();
 
     public Question() {
     }
 
     public Question(Exam exam) {
-        exams.add(exam);
-        subject = exam.getCourse().getSubject();
         course = exam.getCourse();
         teacher = exam.getTeacher();
     }
 
 //    private Blob Baraye Image . Sakhtan !
 
+    public String getAnswer() {
+        return answer;
+    }
 
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
 
     public Teacher getTeacher() {
         return teacher;
@@ -58,12 +64,20 @@ public class Question extends BaseEntity<Long> {
         this.teacher = teacher;
     }
 
-    public Set<Exam> getExams() {
-        return exams;
-    }
-
-    public void setExams(Set<Exam> exams) {
-        this.exams = exams;
+//    public Set<Exam> getExams() {
+//        return exams;
+//    }
+//
+//    public void setExams(Set<Exam> exams) {
+//        this.exams = exams;
+//    }
+//    public void addExam(Exam exam){
+//        exams.add(exam);
+//        exam.addQuestion(this);
+//    }
+    public void addSubject(Subject subject){
+        subjects.add(subject);
+        subject.addQuestion(this);
     }
 
     public String getTitle() {
@@ -99,13 +113,27 @@ public class Question extends BaseEntity<Long> {
         course.addQuestion(this);
     }
 
-    public Subject getSubject() {
-        return subject;
+    public Set<Subject> getSubjects() {
+        return subjects;
     }
 
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-        if(isPublic)
-            subject.addQuestion(this);
+    public void setSubjects(Set<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public void addQuestion(QuestionExamScore questionExamScore) {
+        scores.add(questionExamScore);
+    }
+
+    public Set<QuestionExamScore> getScores() {
+        return scores;
+    }
+
+    public void setScores(Set<QuestionExamScore> scores) {
+        this.scores = scores;
+    }
+
+    public void addScores(QuestionExamScore score) {
+        scores.add(score);
     }
 }

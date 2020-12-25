@@ -27,15 +27,15 @@
                 <div class="form-group">
                     <label for="course" th:text="#{course}"></label><br>
                     <input disabled id="course" readonly th:value="${exam.course.name}">
-                    <input aria-describedby="course" class="form-control" hidden  name="course" readonly
+                    <input aria-describedby="course" class="form-control" hidden name="course" readonly
                            th:field="*{course}" th:value="${exam.course}" type="text">
-                    <input aria-describedby="course" class="form-control" hidden  name="course" readonly
+                    <input aria-describedby="course" class="form-control" hidden name="course" readonly
                            th:field="*{id}" th:value="${exam.id}" type="text">
                 </div>
                 <div class="form-group">
                     <label for="teacher" th:text="#{teacher}"></label><br>
                     <input disabled id="teacher" readonly th:value="${exam.teacher.userName}">
-                    <input aria-describedby="teacher" class="form-control" hidden  name="teacher" readonly
+                    <input aria-describedby="teacher" class="form-control" hidden name="teacher" readonly
                            th:field="*{teacher}" th:value="${exam.teacher}" type="text">
                 </div>
                 <div class="form-group">
@@ -51,25 +51,22 @@
                 <div class="form-group">
                     <label for="time" th:text="#{time}"></label>
                     <input aria-describedby="time" class="form-control" id="time" name="time"
-                           th:field="*{time}" type="number">
+                           max="420" min="1" th:field="*{time}" type="number">
                 </div>
-
-                <a class="btn btn-primary card-link" role="button" th:href="@{/teacher/delete-exam/__${exam.id}__}" th:text="#{delete_exam}"></a>
-                <a class="btn btn-primary card-link" role="button" th:href="@{/teacher/descriptive-question/__${exam.id}__}" th:text="#{add_descriptive_question}"></a>
+                <a class="btn btn-primary card-link" role="button" th:href="@{/teacher/delete-exam/__${exam.id}__}"
+                   th:text="#{delete_exam}"></a>
+                <a class="btn btn-dark card-link" role="button"
+                   th:href="@{/teacher/add_question_from_bank/__${exam.id}__}" th:text="#{add_question_from_bank}"></a>
+                <a class="btn btn-dark card-link" role="button"
+                   th:href="@{/teacher/descriptive-question/__${exam.id}__}" th:text="#{add_descriptive_question}"></a>
+                <a class="btn btn-dark card-link" role="button"
+                   th:href="@{/teacher/multiple-question/__${exam.id}__}" th:text="#{add_multiple_question}"></a>
                 <button class="btn btn-primary" th:text="#{edit_exam}" type="submit"></button>
                 <button class="btn btn-primary" th:text="#{resetfields}" type="reset"></button>
             </form>
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
 
 
 <script crossorigin="anonymous"

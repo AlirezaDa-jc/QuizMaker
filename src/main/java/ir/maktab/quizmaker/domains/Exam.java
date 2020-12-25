@@ -20,11 +20,14 @@ public class Exam extends BaseEntity<Long> {
     private boolean isAvailable = false;
 
 
-    @ManyToMany
-    @JoinTable(name = "Question_Exam",
-            joinColumns = {@JoinColumn(name = "exam_id")},
-            inverseJoinColumns = {@JoinColumn(name = "question_id")})
-    private Set<Question> questions = new HashSet<>();
+    @OneToMany(mappedBy = "exam" , orphanRemoval = true)
+    Set<QuestionExamScore> scores = new HashSet<>();
+
+//    @ManyToMany
+//    @JoinTable(name = "Question_Exam",
+//            joinColumns = {@JoinColumn(name = "exam_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "question_id")})
+//    private Set<Question> questions = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "Student_Exam",
@@ -72,13 +75,13 @@ public class Exam extends BaseEntity<Long> {
         this.students = students;
     }
 
-    public Set<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(Set<Question> questions) {
-        this.questions = questions;
-    }
+//    public Set<Question> getQuestions() {
+//        return questions;
+//    }
+//
+//    public void setQuestions(Set<Question> questions) {
+//        this.questions = questions;
+//    }
 
     public String getTitle() {
         return title;
@@ -110,5 +113,20 @@ public class Exam extends BaseEntity<Long> {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+//    public void addQuestion(Question question) {
+//        questions.add(question);
+//    }
+    public void addQuestion(QuestionExamScore questionExamScore) {
+        scores.add(questionExamScore);
+    }
+
+    public Set<QuestionExamScore> getScores() {
+        return scores;
+    }
+
+    public void setScores(Set<QuestionExamScore> scores) {
+        this.scores = scores;
     }
 }
