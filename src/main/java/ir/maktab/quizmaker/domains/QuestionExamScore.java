@@ -5,6 +5,9 @@ import ir.maktab.quizmaker.base.domains.BaseEntity;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alireza.d.a
@@ -21,6 +24,9 @@ public class QuestionExamScore extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "questionid")
     private Question question;
+
+    @OneToMany(mappedBy = "questionExamScore" , orphanRemoval = true)
+    Set<StudentQuestionScore> scores = new HashSet<>();
 
     public QuestionExamScore() {
     }

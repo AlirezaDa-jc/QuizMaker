@@ -16,7 +16,7 @@ public class MultipleChoiceQuestion extends Question {
     @CollectionTable(name="options", joinColumns=@JoinColumn(name="question_id"))
     @Column(name="options")
     private List<String> options = new LinkedList<>();
-//Int Answer TODO
+
     public MultipleChoiceQuestion() {
     }
 

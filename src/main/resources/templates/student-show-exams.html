@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Exams</title>
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<body>
+<div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${joined}">
+    <p class="error" th:text="#{joined}"></p>
+    <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="sidenav lang" id="mySidenav">
+    <a href="/student/home"><p th:text="#{home}"></p></a>
+    <a href="/student/edit-user" th:text="#{edit_account}"></a>
+    <a href="/student/courses" th:text="#{courses}"></a>
+    <a href="/logout" th:text="#{logout}"></a>
+</div>
+
+<div class="table-bordered main lang">
+    <table class="table  lang">
+
+        <tr class="light-text bg-dark">
+            <th colspan="8" th:text="#{exams}"></th>
+        </tr>
+        <tr>
+            <th th:text="#{title}"></th>
+            <th th:text="#{description}"></th>
+            <th th:text="#{time}"></th>
+            <th th:text="#{course}"></th>
+
+        </tr>
+
+
+        <tr th:if="${exams.isEmpty()}">
+            <td colspan="5" th:text="#{no_exams}"></td>
+        </tr>
+
+        <tr th:each="exam : ${exams}">
+
+            <td><p th:text="${exam.title}"></p></td>
+            <td><p th:text="${exam.description}"></p></td>
+            <td><p th:text="${exam.time}"></p></td>
+            <td><p th:text="${exam.course.name}"></p></td>
+            <td><a class="btn btn-primary card-link" role="button"
+                   th:href="@{/student/join-exam/__${exam.id}__}"
+                   th:text="#{join_exam}"></a></td>
+
+
+        </tr>
+    </table>
+</div>

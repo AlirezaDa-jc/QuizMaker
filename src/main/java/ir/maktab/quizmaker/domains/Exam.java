@@ -4,6 +4,8 @@ import ir.maktab.quizmaker.base.domains.BaseEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,7 +23,7 @@ public class Exam extends BaseEntity<Long> {
 
 
     @OneToMany(mappedBy = "exam" , orphanRemoval = true)
-    Set<QuestionExamScore> scores = new HashSet<>();
+    List<QuestionExamScore> scores = new LinkedList<>();
 
 //    @ManyToMany
 //    @JoinTable(name = "Question_Exam",
@@ -122,11 +124,11 @@ public class Exam extends BaseEntity<Long> {
         scores.add(questionExamScore);
     }
 
-    public Set<QuestionExamScore> getScores() {
+    public List<QuestionExamScore> getScores() {
         return scores;
     }
 
-    public void setScores(Set<QuestionExamScore> scores) {
+    public void setScores(List<QuestionExamScore>  scores) {
         this.scores = scores;
     }
 }

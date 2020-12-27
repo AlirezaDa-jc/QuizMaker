@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="#" method="post" th:action="@{/student/correct-exam/__${exam.id}__}">
+    <h1 th:if="${!multipleChoice.isEmpty()}">Multiple Choice Questions</h1>
+
+    <div th:each="question , li: ${multipleChoice}">
+        <h3 th:text="${question.title}"></h3>
+        <h5 th:text="${question.question}"></h5>
+        <div th:each="option : ${question.options}">
+            <input th:name="${li.index}" th:value="${option}" type="radio">
+            <span th:text="${option}"></span><br>
+        </div>
+    </div>
+    <h1 th:if="${!descriptive.isEmpty()}">Multiple Choice Questions</h1>
+
+    <div th:each="question , li: ${descriptive}">
+        <h3 th:text="${question.title}"></h3>
+        <h5 th:text="${question.question}"></h5>
+        <input th:name="${li.index}+${multipleChoice.size()}" type="text">
+    </div>
+
+    <input type="submit" value="submit">;
+
+</form>
+</body>
+</html>

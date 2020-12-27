@@ -17,6 +17,8 @@ public class Question extends BaseEntity<Long> {
 
     private Boolean isPublic;
 
+    private String answer;
+
     @OneToMany(mappedBy = "question" , orphanRemoval = true)
     Set<QuestionExamScore> scores = new HashSet<>();
 
@@ -28,7 +30,7 @@ public class Question extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "courseid")
     private Course course;
-    private String answer;
+
     @ManyToMany
     @JoinTable(name = "Question_Subject",
             joinColumns = {@JoinColumn(name = "question_id")},

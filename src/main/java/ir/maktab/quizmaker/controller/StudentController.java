@@ -1,19 +1,20 @@
 package ir.maktab.quizmaker.controller;
 
+import ir.maktab.quizmaker.domains.Course;
+import ir.maktab.quizmaker.domains.Exam;
 import ir.maktab.quizmaker.domains.Student;
 import ir.maktab.quizmaker.exception.UniqueException;
-import ir.maktab.quizmaker.services.StudentService;
-import ir.maktab.quizmaker.services.UserService;
+import ir.maktab.quizmaker.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -27,15 +28,30 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private CourseService courseService;
+
+    @Autowired
+    private ExamService examService;
+
+    @Autowired
+    private QuestionService questionService;
+
+    @Autowired
+    private StudentQuestionScoreService studentQuestionScoreService;
+
     @Autowired
     private UserService userService;
 
+    private Set<Course> courses;
 
     @GetMapping("home")
     public String showHome(Model model) {
         student = (Student) userService.findByUsername(
                 (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()
         );
+        courses = student.getCourses();
         model.addAttribute("student", student);
         return "student-home";
     }
@@ -60,6 +76,55 @@ public class StudentController {
         model.addAttribute("student", student.getUserName());
         return "student-edit-user";
     }
+
+    @GetMapping("show-courses")
+    public String showCourses(Model model) {
+        model.addAttribute("courses", courses);
+        return "student-show-courses";
+    }
+
+    @GetMapping("show-exams/{courseId}")
+    public String showExams(Model model, @PathVariable Long courseId) {
+        List<Exam> exams = courseService.findById(courseId).getExams().stream()
+                .filter(Exam::isAvailable)
+                .collect(Collectors.toList());
+        model.addAttribute("exams", exams);
+        model.addAttribute("joined", false);
+        return "student-show-exams";
+    }
+
+    @GetMapping("join-exam/{examId}")
+    public String joinExam(@PathVariable Long examId, Model model) {
+        Exam exam = examService.findById(examId);
+        if(exam.getStudents().contains(student)){
+            model.addAttribute("exams", exam.getCourse().getExams());
+            model.addAttribute("joined", true);
+            return "student-show-exams";
+        }
+        model.addAttribute("exam", exam);
+        model.addAttribute("multipleChoice", examService.findMultipleChoiceQuestions(exam));
+        model.addAttribute("descriptive", examService.findDescriptiveQuestions(exam));
+        return "student-join-exam";
+    }
+
+    @PostMapping("correct-exam/{examId}")
+    public String correctExam(@PathVariable Long examId, HttpServletRequest request, Model model) {
+        Exam exam = examService.findById(examId);
+        String[] answers = new String[exam.getScores().size()];
+        int i = 0;
+        String answer = request.getParameter(String.valueOf(i));
+        while (answer != null) {
+            answers[i] = answer;
+            i++;
+            answer = request.getParameter(String.valueOf(i));
+        }
+        studentQuestionScoreService.correctAnswers(exam, student, answers);
+//TODO Teacher Can See Answer of Descriptive and Give a mark! . Auto Submit form . Quiz Front!
+        model.addAttribute("student", student);
+        return "student-home";
+
+    }
+
 
     @ExceptionHandler(UniqueException.class)
     public String handle(UniqueException ex, Model model) {

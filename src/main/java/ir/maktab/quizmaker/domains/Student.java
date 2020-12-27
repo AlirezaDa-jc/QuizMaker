@@ -1,8 +1,6 @@
 package ir.maktab.quizmaker.domains;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,13 +16,18 @@ public class Student extends User {
 
     private String lastName;
 
+
     @Column(nullable = false,unique = true)
     private Long nationalCode;
+
+    @OneToMany(mappedBy = "student" , orphanRemoval = true)
+    Set<StudentQuestionScore> scores = new HashSet<>();
+
 
     @ManyToMany(mappedBy = "students")
     private Set<Exam> exams = new HashSet<>();
 
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany(mappedBy = "students",fetch = FetchType.EAGER)
     private Set<Course> courses = new HashSet<>();
 
     public Student() {

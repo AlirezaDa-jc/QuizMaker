@@ -5,7 +5,9 @@ import ir.maktab.quizmaker.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -96,5 +98,17 @@ public class QuestionService {
                 .filter(c -> c instanceof DescriptiveQuestion)
                 .map(c -> (DescriptiveQuestion) c)
                 .collect(Collectors.toSet());
+    }
+
+    public void deleteAllOption(){
+        questionRepository.findAll().forEach(multipleChoiceQuestion -> {
+            if(multipleChoiceQuestion instanceof MultipleChoiceQuestion) {
+                MultipleChoiceQuestion question = (MultipleChoiceQuestion) multipleChoiceQuestion;
+                List<String> options = question.getOptions();
+                options.removeAll(Collections.singleton(""));
+                question.setOptions(options);
+                questionRepository.save(question);
+            }
+        });
     }
 }

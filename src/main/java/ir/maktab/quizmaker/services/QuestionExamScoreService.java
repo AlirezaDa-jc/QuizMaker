@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class QuestionExamScoreService {
     @Autowired
     private QuestionExamRepository questionExamRepository;
-//TODO BANK!
+
     public QuestionExamScore save(QuestionExamScore questionExamScore){
         return questionExamRepository.save(questionExamScore);
     }
