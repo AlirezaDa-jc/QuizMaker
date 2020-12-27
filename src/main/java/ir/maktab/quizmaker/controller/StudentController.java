@@ -119,7 +119,7 @@ public class StudentController {
             answer = request.getParameter(String.valueOf(i));
         }
         studentQuestionScoreService.correctAnswers(exam, student, answers);
-//TODO Teacher Can See Answer of Descriptive and Give a mark! . Auto Submit form . Quiz Front!
+//TODO Teacher Can See Answer of Descriptive and Give a mark! . Quiz Front!
         model.addAttribute("student", student);
         return "student-home";
 
