@@ -3,71 +3,87 @@
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Exam</title>
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
 </head>
-<body>
-<form action="#" method="post" th:action="@{/student/correct-exam/__${exam.id}__}">
-    <h1 th:text="${exam.title}"></h1>
-    <strong id="time" th:text="${exam.time}"></strong>
-<!--    <strong  id="time">1</strong>-->
-    <h2 th:if="${!multipleChoice.isEmpty()}">Multiple Choice Questions</h2>
-
-    <div th:each="question , li: ${multipleChoice}">
-        <h3 th:text="${question.title}"></h3>
-        <h5 th:text="${question.question}"></h5>
-        <div th:each="option : ${question.options}">
-            <input th:name="${li.index}" th:value="${option}" type="radio">
-            <span th:text="${option}"></span><br>
+<body class="black">
+<div class="card" style="width: 90%;margin: auto;padding: 0">
+    <div style="padding: 3%">
+        <div class="row">
+            <div><h3 th:text="${exam.title}"></h3></div>
+            <div><strong id="time"></strong></div>
         </div>
+        <hr>
+
+        <form action="#" method="post" th:action="@{/student/correct-exam/__${exam.id}__}">
+
+            <h2 th:if="${!multipleChoice.isEmpty()}" th:text="#{multiple_choice_questions}"></h2>
+            <br>
+            <div class="card " th:each="question , li: ${multipleChoice}">
+                <div class="card-body">
+                    <h4><span class="card-title" th:text="${li.index + 1}"></span>- <span class="card-title"
+                                                                                      th:text="${question.title}"></span>
+                    </h4>
+                    <h5 class="card-text" th:text="${question.question}"></h5>
+                    <div th:each="option : ${question.options}">
+                        <input th:name="${li.index}" th:value="${option}" type="radio">
+                        <span class="card-text" th:text="${option}"></span><br>
+                    </div>
+                </div>
+            </div>
+
+
+            <h2 th:if="${!descriptive.isEmpty()}" th:text="#{descriptive_questions}"></h2>
+
+            <div th:each="question , li: ${descriptive}">
+                <h4><span class="card-title" th:text="${li.index + 1}"></span>- <span class="card-title"
+                                                                                  th:text="${question.title}"></span></h4>
+                <h5 class="card-text" th:text="${question.question}"></h5>
+                <input th:name="${li.index}+${multipleChoice.size()}" type="text">
+            </div>
+
+            <input class="btn btn-primary card-link" role="button" th:value="#{set_score}" type="submit">
+
+        </form>
     </div>
-    <h2 th:if="${!descriptive.isEmpty()}">Multiple Choice Questions</h2>
-
-    <div th:each="question , li: ${descriptive}">
-        <h3 th:text="${question.title}"></h3>
-        <h5 th:text="${question.question}"></h5>
-        <input th:name="${li.index}+${multipleChoice.size()}" type="text">
-    </div>
-
-    <input type="submit" value="submit">;
-
-</form>
-<p id="demo"></p>
+</div>
 
 <script src="/../static/js/jquery-3.5.1.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
 
     /*]]>*/
-    // $(document).ready(function () {
-        let number = /*[[${exam.time}* 60000]]*/
+
+    let number = /*[[${exam.time}* 60000]]*/
         console.log(number)
 
-        setTimeout('document.forms[0].submit();', number);
-    // })
+    setTimeout('document.forms[0].submit();', number);
 
-    // Set the date we're counting down to
-    var countDownDate = new Date().getTime()+number;
 
-    // Update the count down every 1 second
-    var x = setInterval(function() {
+    const countDownDate = new Date().getTime() + number;
 
-        // Get today's date and time
-        var now = new Date().getTime();
+    const x = setInterval(function () {
 
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
+        const now = new Date().getTime();
 
-        // Time calculations for days, hours, minutes and seconds
+        const distance = countDownDate - now;
 
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // Display the result in the element with id="demo"
-        document.getElementById("demo").innerHTML = hours + "h "
+        document.getElementById("time").innerHTML = hours + "h "
             + minutes + "m " + seconds + "s ";
 
-        // If the count down is finished, write some text
 
     }, 1000);
 </script>

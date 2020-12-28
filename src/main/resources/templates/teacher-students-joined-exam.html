@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Exams</title>
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<body>
+
+<div class="sidenav lang" id="mySidenav">
+    <a href="/student/home"><p th:text="#{home}"></p></a>
+    <a href="/student/edit-user" th:text="#{edit_account}"></a>
+    <a href="/student/show-courses" th:text="#{courses}"></a>
+    <a href="/logout" th:text="#{logout}"></a>
+</div>
+
+<div class="table-bordered main lang">
+    <table class="table  lang">
+
+        <tr class="light-text bg-dark">
+            <th colspan="8" th:text="#{students}"></th>
+        </tr>
+        <tr>
+            <th th:text="#{firstname}"></th>
+            <th th:text="#{lastname}"></th>
+            <th th:text="#{username}"></th>
+            <th th:text="#{studentcode}"></th>
+
+        </tr>
+
+
+        <tr th:if="${exam.students.isEmpty()}">
+            <td colspan="5" th:text="#{no_exams}"></td>
+        </tr>
+
+        <tr th:each="student : ${exam.students}">
+
+            <td><p th:text="${student.firstName}"></p></td>
+            <td><p th:text="${student.lastName}"></p></td>
+            <td><p th:text="${student.userName}"></p></td>
+            <td><p th:text="${student.studentCode}"></p></td>
+            <td><a class="btn btn-primary card-link" role="button"
+                   th:href="@{/teacher/correct-exam/__${exam.id}__/__${student.id}__}"
+                   th:text="#{show_exam}"></a></td>
+
+
+        </tr>
+    </table>
+</div>
+</body>
+</html>

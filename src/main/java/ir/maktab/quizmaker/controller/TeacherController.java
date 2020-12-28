@@ -43,6 +43,12 @@ public class TeacherController {
     @Autowired
     private QuestionExamScoreService questionExamScoreService;
 
+    @Autowired
+    private StudentQuestionScoreService studentQuestionScoreService;
+
+    @Autowired
+    private StudentService studentService;
+
 
     private QuestionExamScore tempQuestionExamScore;
 
@@ -338,8 +344,11 @@ public class TeacherController {
     }
 
     @GetMapping("edit-multiple-choice-question/{examId}/{questionId}")
-    private String sendEditMultipleChoiceQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) {
+    private String sendEditMultipleChoiceQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
         MultipleChoiceQuestion multipleChoiceQuestion = (MultipleChoiceQuestion) questionService.findById(questionId);
         QuestionExamScore questionExamScore = questionExamScoreService.create(exam);
         tempQuestionExamScore = questionExamScore;
@@ -350,8 +359,11 @@ public class TeacherController {
     }
 
     @GetMapping("edit-descriptive-question/{examId}/{questionId}")
-    private String sendEditDescriptiveQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) {
+    private String sendEditDescriptiveQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
         DescriptiveQuestion descriptiveQuestion = (DescriptiveQuestion) questionService.findById(questionId);
         QuestionExamScore questionExamScore = questionExamScoreService.create(exam);
         tempQuestionExamScore = questionExamScore;
@@ -359,6 +371,54 @@ public class TeacherController {
         model.addAttribute("descriptiveQuestion", descriptiveQuestion);
         model.addAttribute("score", questionExamScore);
         return "teacher-descriptive-question";
+    }
+
+    @GetMapping("students-joined-exam/{examId}")
+    public String showStudentsJoinedExam(@PathVariable Long examId, Model model) throws Exception {
+        Exam exam = examService.findById(examId);
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
+        model.addAttribute("exam",exam);
+        return "teacher-students-joined-exam";
+    }
+
+    @GetMapping("correct-exam/{examId}/{studentId}")
+    public String correctExam(@PathVariable Long examId,@PathVariable Long studentId,Model model) throws Exception {
+        Exam exam = examService.findById(examId);
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
+        Student student = studentService.findById(studentId);
+        List<QuestionExamScore> questionExamScores = exam.getScores();
+        List<StudentQuestionScore> studentQuestionScores = studentQuestionScoreService
+                .findByQuestionExamScoresAndStudent(questionExamScores, student);
+        model.addAttribute("questionExamScores",questionExamScores);
+        model.addAttribute("studentQuestionScores",studentQuestionScores);
+        model.addAttribute("exam",exam);
+        model.addAttribute("student",student);
+        model.addAttribute("multipleChoice",examService.findMultipleChoiceQuestions(exam));
+        model.addAttribute("descriptive",examService.findDescriptiveQuestions(exam));
+
+        return "teacher-correct-exam";
+    }
+
+    @PostMapping("correct-exam")
+    public String sendMarkDescriptive(HttpServletRequest request) throws Exception {
+        Exam exam = examService.findById(Long.valueOf(request.getParameter("exam")));
+        Student student = studentService.findById(Long.valueOf(request.getParameter("student")));
+        List<MultipleChoiceQuestion> multipleChoiceQuestions = examService.findMultipleChoiceQuestions(exam);
+        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new Exception("403 Forbidden!");
+        }
+        List<DescriptiveQuestion> descriptiveQuestions = examService.findDescriptiveQuestions(exam);
+        for(int i = 0 ; i < descriptiveQuestions.size() ; i++){
+            int score = Integer.parseInt(request.getParameter(String.valueOf(i + multipleChoiceQuestions.size())));
+            List<QuestionExamScore> questionExamScores = descriptiveQuestions.get(i).getScores();
+            studentQuestionScoreService.assignScore(questionExamScores,student,score);
+        }
+
+        return "redirect:/teacher/show-courses";
     }
 
 

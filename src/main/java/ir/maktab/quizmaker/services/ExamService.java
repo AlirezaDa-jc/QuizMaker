@@ -74,4 +74,12 @@ public class ExamService {
                 .collect(Collectors.toList());
     }
 
+    public boolean checkStudentJoinedExam(Student student, Exam exam) {
+        for (Student temp : exam.getStudents()) {
+            if (temp.getId().equals(student.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

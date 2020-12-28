@@ -3,7 +3,9 @@ package ir.maktab.quizmaker.domains;
 import ir.maktab.quizmaker.base.domains.BaseEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,7 +22,7 @@ public class Question extends BaseEntity<Long> {
     private String answer;
 
     @OneToMany(mappedBy = "question" , orphanRemoval = true)
-    Set<QuestionExamScore> scores = new HashSet<>();
+    List<QuestionExamScore> scores = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "teacherid")
@@ -127,11 +129,11 @@ public class Question extends BaseEntity<Long> {
         scores.add(questionExamScore);
     }
 
-    public Set<QuestionExamScore> getScores() {
+    public List<QuestionExamScore> getScores() {
         return scores;
     }
 
-    public void setScores(Set<QuestionExamScore> scores) {
+    public void setScores(List<QuestionExamScore> scores) {
         this.scores = scores;
     }
 

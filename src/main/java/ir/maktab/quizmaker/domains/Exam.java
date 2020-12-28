@@ -128,6 +128,11 @@ public class Exam extends BaseEntity<Long> {
         return scores;
     }
 
+    public void addStudent(Student student){
+        students.add(student);
+        student.addExam(this);
+    }
+
     public void setScores(List<QuestionExamScore>  scores) {
         this.scores = scores;
     }

@@ -94,22 +94,33 @@ public class StudentController {
     }
 
     @GetMapping("join-exam/{examId}")
-    public String joinExam(@PathVariable Long examId, Model model) {
+    public String joinExam(@PathVariable Long examId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
-        if(exam.getStudents().contains(student)){
+//        if(exam.getStudents().contains(student)){
+        if (examService.checkStudentJoinedExam(student, exam)) {
             model.addAttribute("exams", exam.getCourse().getExams());
             model.addAttribute("joined", true);
             return "student-show-exams";
+
         }
         model.addAttribute("exam", exam);
         model.addAttribute("multipleChoice", examService.findMultipleChoiceQuestions(exam));
         model.addAttribute("descriptive", examService.findDescriptiveQuestions(exam));
+        exam.addStudent(student);
+        examService.save(exam);
         return "student-join-exam";
     }
 
     @PostMapping("correct-exam/{examId}")
     public String correctExam(@PathVariable Long examId, HttpServletRequest request, Model model) {
         Exam exam = examService.findById(examId);
+
+        if (examService.checkStudentJoinedExam(student, exam)) {
+            model.addAttribute("exams", exam.getCourse().getExams());
+            model.addAttribute("joined", true);
+            return "student-show-exams";
+        }
+
         String[] answers = new String[exam.getScores().size()];
         int i = 0;
         String answer = request.getParameter(String.valueOf(i));
@@ -119,9 +130,8 @@ public class StudentController {
             answer = request.getParameter(String.valueOf(i));
         }
         studentQuestionScoreService.correctAnswers(exam, student, answers);
-//TODO Teacher Can See Answer of Descriptive and Give a mark! . Quiz Front!
-        model.addAttribute("student", student);
-        return "student-home";
+//TODO Quiz Front!
+        return "redirect:/student/home";
 
     }
 

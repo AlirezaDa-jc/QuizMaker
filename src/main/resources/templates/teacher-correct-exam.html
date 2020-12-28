@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<div class="sidenav lang" id="mySidenav">
+    <a href="/teacher/home"><p th:text="#{home}"></p></a>
+    <a href="/teacher/show-courses"><p th:text="#{courses}"></p></a>
+    <a href="/teacher/show-exams"><p th:text="#{exams}"></p></a>
+    <a href="/teacher/edit-user" th:text="#{edit_account}"></a>
+    <a href="/logout" th:text="#{logout}"></a>
+</div>
+
+<body class="black">
+<div class="card main" >
+    <div style="padding: 3%">
+        <div class="row">
+            <div><h3 th:text="${exam.title}"></h3></div>
+
+        </div>
+        <hr>
+
+        <form action="#" method="post" th:action="@{/teacher/correct-exam}">
+
+            <input hidden name="exam" th:value="${exam.id}">
+            <input hidden name="student" th:value="${student.id}">
+
+
+            <h2 th:if="${!multipleChoice.isEmpty()}" th:text="#{multiple_choice_questions}"></h2>
+            <br>
+
+            <div class="card " th:each="question , li: ${multipleChoice}">
+                <div class="card-body">
+                    <h4><span class="card-title" th:text="${li.index + 1}"></span>- <span class="card-title"
+                                                                                      th:text="${question.title}"></span>
+                    </h4>
+                    <h5 class="card-text" th:text="${question.question}"></h5>
+
+                    <div th:each="option : ${question.options}">
+                    <span style="font-family: Arial Unicode MS, Lucida Grande,sans-serif"
+                          th:if="${question.answer} == ${option}">
+                        &#10004;
+                    </span>
+                        <!--            <input th:name="${li.index}" th:value="${option}" type="radio">-->
+                        <span th:text="${option}"></span><br>
+                    </div>
+                </div>
+                <br>
+                <div th:each="studentQuestionScore , i: ${studentQuestionScores}">
+                    <div th:if="${i.index} == ${li.index}">
+                        <span th:text="#{answer}"></span>
+                        <p th:text="${studentQuestionScore.answer}"></p>
+                        <span th:text="#{score}"></span>
+                        <p th:text="${studentQuestionScore.score}"></p>
+                    </div>
+                </div>
+            </div>
+
+    <h2 th:if="${!descriptive.isEmpty()}" th:text="#{descriptive_questions}"></h2>
+
+    <div th:each="question , li: ${descriptive}">
+        <h4><span class="card-title" th:text="${li.index + 1}"></span>- <span class="card-title"
+                                                                          th:text="${question.title}"></span></h4>
+        <h5 class="card-text" th:text="${question.question}"></h5>
+        <div th:each="studentQuestionScore , i: ${studentQuestionScores}">
+            <div th:if="${i.index} == (${li.index}+${multipleChoice.size()})">
+                <span th:text="#{answer}"></span>
+                <p th:text="${studentQuestionScore.answer}"></p>
+                <span th:text="#{score}"></span>
+                <input th:name="${li.index}+${multipleChoice.size()}" type="text">
+                <p th:text="${studentQuestionScore.score}"></p>
+            </div>
+        </div>
+    </div>
+
+     <input class="btn btn-primary card-link" role="button" th:value="#{end_exam}" type="submit">
+
+
+    </form>
+        <script src="/../static/js/jquery-3.5.1.min.js"></script>
+        <script crossorigin="anonymous"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script crossorigin="anonymous"
+                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

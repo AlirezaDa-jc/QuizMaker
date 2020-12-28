@@ -13,4 +13,6 @@ import java.util.Set;
 @Repository
 public interface ExamRepository extends JpaRepository<Exam, Long> {
     Set<Exam> findAllByTeacher(Teacher teacher);
+
+
 }

@@ -24,7 +24,7 @@ public class Student extends User {
     Set<StudentQuestionScore> scores = new HashSet<>();
 
 
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany(mappedBy = "students",fetch = FetchType.EAGER)
     private Set<Exam> exams = new HashSet<>();
 
     @ManyToMany(mappedBy = "students",fetch = FetchType.EAGER)
@@ -89,5 +89,9 @@ public class Student extends User {
     public void removeCourse(Course course) {
         courses.remove(course);
         course.removeStudent(this);
+    }
+
+    public void addExam(Exam exam) {
+        exams.add(exam);
     }
 }

@@ -86,18 +86,18 @@ public class QuestionService {
         return bank;
     }
 
-    public Set<MultipleChoiceQuestion> findMultipleChoiceQuestions(Set<Question> questions) {
+    public List<MultipleChoiceQuestion> findMultipleChoiceQuestions(Set<Question> questions) {
         return questions.stream()
                 .filter(c -> c instanceof MultipleChoiceQuestion)
                 .map(c -> (MultipleChoiceQuestion) c)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
-    public Set<Question>findDescriptiveQuestions(Set<Question> questions) {
+    public List<DescriptiveQuestion>findDescriptiveQuestions(Set<Question> questions) {
         return questions.stream()
                 .filter(c -> c instanceof DescriptiveQuestion)
                 .map(c -> (DescriptiveQuestion) c)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public void deleteAllOption(){
