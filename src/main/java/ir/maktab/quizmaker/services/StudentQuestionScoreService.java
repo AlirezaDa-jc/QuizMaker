@@ -82,8 +82,10 @@ public class StudentQuestionScoreService {
 //        studentQuestionScore.setQuestionExamScore(questionExamScore);
         QuestionExamScore questionExamScore = studentQuestionScore.getQuestionExamScore();
         if (questionExamScore.getQuestion() instanceof MultipleChoiceQuestion) {
-            if (studentQuestionScore.getAnswer().equals(questionExamScore.getQuestion().getAnswer())) {
-                studentQuestionScore.setScore(questionExamScore.getScore());
+            if (studentQuestionScore.getAnswer() != null) {
+                if (studentQuestionScore.getAnswer().equals(questionExamScore.getQuestion().getAnswer())) {
+                    studentQuestionScore.setScore(questionExamScore.getScore());
+                }
             } else {
                 studentQuestionScore.setScore(0);
             }

@@ -1,5 +1,6 @@
 package ir.maktab.quizmaker.controller;
 
+import ir.maktab.quizmaker.base.CustomTimer;
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
@@ -46,6 +47,8 @@ public class StudentController {
     private UserService userService;
 
     private Set<Course> courses;
+
+    private CustomTimer customTimer;
 
 
 //    private int time;
@@ -120,11 +123,20 @@ public class StudentController {
     @GetMapping("join-exam/{examId}/{questionId}")
     public String joinExam(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
+        if(customTimer == null){
+            customTimer = new CustomTimer();
+        }else if(customTimer.elapsedTime() == (exam.getTime()*60)){
+            exam.addStudent(student);
+            examService.save(exam);
+            return "redirect:/student/home";
+        }
         if (questionId < exam.getScores().size()) {
             List<MultipleChoiceQuestion> multipleChoiceQuestions = examService.findMultipleChoiceQuestions(exam);
             List<DescriptiveQuestion> descriptiveQuestions = examService.findDescriptiveQuestions(exam);
             model.addAttribute("exam", exam);
             model.addAttribute("questionId", questionId);
+            double timer = exam.getTime() * 60000 - customTimer.elapsedTime();
+            model.addAttribute("time",timer);
             if (questionId < multipleChoiceQuestions.size()) {
                 MultipleChoiceQuestion question = multipleChoiceQuestions.get(Math.toIntExact(questionId));
                 QuestionExamScore questionExamScore = questionExamScoreService.findByExamAndQuestion(exam, question);
@@ -168,15 +180,14 @@ public class StudentController {
 //    }
 
     @PostMapping("correct-exam")
-    public String correctExam(@ModelAttribute StudentQuestionScore studentQuestionScore
-            , Model model) {
+    public String correctExam(@ModelAttribute StudentQuestionScore studentQuestionScore) {
         studentQuestionScoreService.correctAnswer(studentQuestionScore);
         QuestionExamScore questionExamScore = studentQuestionScore.getQuestionExamScore();
         Long examId = questionExamScore.getExam().getId();
         int questionId =  questionExamScore.getExam().getScores().indexOf(questionExamScore)+1;
         return "redirect:/student/join-exam/"+examId+"/"+questionId;
     }
-//TODO Options Multiple Choice Add HTML / Timer / Joined Student Cant Join Again
+//TODO Options Multiple Choice Add HTML / Joined Student Cant Join Again
 
 
     @ExceptionHandler(UniqueException.class)
