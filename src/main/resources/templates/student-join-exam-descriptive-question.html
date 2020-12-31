@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html th:lang="${lang}"
+      th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam</title>
+    <link rel="stylesheet" th:href="@{/css/user-styles.css}">
+    <link rel="stylesheet" th:href="@{/css/general-styles.css}">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+</head>
+<body class="black">
+<div class="card" style="width: 90%;margin: auto;padding: 0">
+    <div style="padding: 3%">
+        <div class="row">
+            <div><h3 th:text="${exam.title}"></h3></div>
+            <div><strong id="time"></strong></div>
+        </div>
+        <hr>
+
+        <form action="#" method="post" th:action="@{/student/correct-exam}" th:object="${studentQuestionScore}">
+            <input hidden th:value="${DescriptiveQuestion}">
+            <div class="card-body">
+                <h4><span class="card-title" th:text="${DescriptiveQuestion.title}"></span></h4>
+                <h5 class="card-text" th:text="${DescriptiveQuestion.question}"></h5>
+                <h6 class="card-text" th:text="${score.score}"></h6>
+                <input  name="answer" th:field="*{answer}" type="text">
+                <input  hidden name="answer" th:field="*{student}" th:value="${studentQuestionScore.student}" type="text">
+                <input  hidden name="answer" th:field="*{questionExamScore}" th:value="${studentQuestionScore.questionExamScore}" type="text">
+                <input  hidden name="answer" th:field="*{id}" th:value="${studentQuestionScore.id}" type="text">
+            </div>
+        <input class="btn btn-primary card-link" role="button" th:value="#{send_answer}" type="submit">
+        </form>
+
+
+        <div th:each="obj , li : ${exam.getScores()}">
+            <a class="" role="button" th:href="@{/student/join-exam/__${exam.id}__/__${li.index}__}"></a>
+        </div>
+    </div>
+
+</body>
+</html>

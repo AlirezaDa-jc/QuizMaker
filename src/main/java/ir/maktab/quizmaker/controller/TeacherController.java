@@ -346,6 +346,7 @@ public class TeacherController {
     @GetMapping("edit-multiple-choice-question/{examId}/{questionId}")
     private String sendEditMultipleChoiceQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
+//        First Token Check After Session
         if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
             throw new Exception("403 Forbidden!");
         }
@@ -390,7 +391,7 @@ public class TeacherController {
             throw new Exception("403 Forbidden!");
         }
         Student student = studentService.findById(studentId);
-        List<QuestionExamScore> questionExamScores = exam.getScores();
+        List<QuestionExamScore> questionExamScores = questionExamScoreService.getScores(exam);
         List<StudentQuestionScore> studentQuestionScores = studentQuestionScoreService
                 .findByQuestionExamScoresAndStudent(questionExamScores, student);
         model.addAttribute("questionExamScores",questionExamScores);

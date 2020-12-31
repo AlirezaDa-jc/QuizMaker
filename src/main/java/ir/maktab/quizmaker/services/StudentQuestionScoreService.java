@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Alireza.d.a
@@ -19,7 +20,17 @@ public class StudentQuestionScoreService {
 
     public void correctAnswers(Exam exam, Student student, String[] answers) {
         List<Question> questions = new LinkedList<>();
-        exam.getScores().forEach(c -> questions.add(c.getQuestion()));
+        List<MultipleChoiceQuestion> multipleChoice = new LinkedList<>();
+        List<DescriptiveQuestion> decriptive = new LinkedList<>();
+        exam.getScores().forEach(c -> {
+            if (c.getQuestion() instanceof MultipleChoiceQuestion) {
+                multipleChoice.add((MultipleChoiceQuestion) c.getQuestion());
+            } else {
+                decriptive.add((DescriptiveQuestion) c.getQuestion());
+            }
+        });
+        questions.addAll(multipleChoice);
+        questions.addAll(decriptive);
         for (int i = 0; i < questions.size(); i++) {
             StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
             studentQuestionScore.setStudent(student);
@@ -39,6 +50,7 @@ public class StudentQuestionScoreService {
             }
             studentQuestionScore.setAnswer(answers[i]);
             studentQuestionScoreRepository.save(studentQuestionScore);
+
         }
     }
 
@@ -54,12 +66,44 @@ public class StudentQuestionScoreService {
     }
 
     public void assignScore(List<QuestionExamScore> questionExamScores, Student student, int score) {
-        for (QuestionExamScore questionExamScore : questionExamScores
-        ) {
+        for (QuestionExamScore questionExamScore : questionExamScores) {
             StudentQuestionScore studentQuestionScore = studentQuestionScoreRepository.
                     findDistinctByQuestionExamScoreAndStudent(questionExamScore, student);
             studentQuestionScore.setScore(score);
             studentQuestionScoreRepository.save(studentQuestionScore);
         }
+    }
+
+
+    public void correctAnswer(StudentQuestionScore studentQuestionScore) {
+//        StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
+//        studentQuestionScore.setStudent(student);
+//        studentQuestionScore.setAnswer(answer);
+//        studentQuestionScore.setQuestionExamScore(questionExamScore);
+        QuestionExamScore questionExamScore = studentQuestionScore.getQuestionExamScore();
+        if (questionExamScore.getQuestion() instanceof MultipleChoiceQuestion) {
+            if (studentQuestionScore.getAnswer().equals(questionExamScore.getQuestion().getAnswer())) {
+                studentQuestionScore.setScore(questionExamScore.getScore());
+            } else {
+                studentQuestionScore.setScore(0);
+            }
+        } else {
+            studentQuestionScore.setScore(Integer.MIN_VALUE);
+        }
+        studentQuestionScoreRepository.save(studentQuestionScore);
+
+    }
+
+    public StudentQuestionScore findByStudentAndQuestionExamScore(Student student, QuestionExamScore questionExamScore) {
+        List<StudentQuestionScore> studentQuestionScores = studentQuestionScoreRepository.findAll().stream().filter(c -> c.getStudent() == student && c.getQuestionExamScore() == questionExamScore).collect(Collectors.toList());
+
+        if (studentQuestionScores.size() == 0) {
+            StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
+            studentQuestionScore.setStudent(student);
+            studentQuestionScore.setQuestionExamScore(questionExamScore);
+            studentQuestionScoreRepository.save(studentQuestionScore);
+            return studentQuestionScore;
+        }
+        return studentQuestionScores.get(0);
     }
 }

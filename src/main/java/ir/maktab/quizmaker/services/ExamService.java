@@ -5,6 +5,7 @@ import ir.maktab.quizmaker.repository.ExamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -81,5 +82,12 @@ public class ExamService {
             }
         }
         return false;
+    }
+
+    public List<Question> getQuestions(List<QuestionExamScore> scores) {
+        List<Question> questions = new ArrayList<>();
+        scores.forEach(c -> questions.add(c.getQuestion()));
+
+        return questions;
     }
 }

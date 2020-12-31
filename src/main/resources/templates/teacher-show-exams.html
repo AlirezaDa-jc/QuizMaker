@@ -23,7 +23,7 @@
     <table class="table  lang">
 
         <tr class="light-text bg-dark">
-            <th colspan="8" th:text="#{exams}"></th>
+            <th colspan="9" th:text="#{exams}"></th>
         </tr>
         <tr>
             <th th:text="#{title}"></th>
@@ -32,12 +32,11 @@
             <th th:text="#{course}"></th>
             <th th:text="#{availability}"></th>
 
-
         </tr>
 
 
         <tr th:if="${exams.isEmpty()}">
-            <td colspan="8" th:text="#{no_exams}"></td>
+            <td colspan="9" th:text="#{no_exams}"></td>
         </tr>
 
         <tr th:each="exam : ${exams}">
@@ -57,7 +56,8 @@
             <td th:if="${!exam.isAvailable}"><a class="btn btn-primary card-link" role="button"
                                                 th:href="@{/teacher/set-exam-available/__${exam.id}__}"
                                                 th:text="#{set_available}"></a></td>
-            <td><a class="btn btn-primary card-link" role="button" th:href="@{/teacher/edit-exam/__${exam.id}__}" th:text="#{edit_exam}"></a></td>
+            <td><a class="btn btn-primary card-link" role="button" th:href="@{/teacher/edit-exam/__${exam.id}__}"
+                   th:text="#{edit_exam}"></a></td>
             <td><a class="btn btn-primary card-link" role="button" th:href="@{/teacher/students-joined-exam/__${exam.id}__}" th:text="#{students_joined_exam}"></a></td>
 
 

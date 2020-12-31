@@ -14,7 +14,7 @@ import java.util.Set;
  */
 @Entity
 public class QuestionExamScore extends BaseEntity<Long> {
-
+//Junction Or Tree*
     private int score;
 
     @ManyToOne
@@ -66,5 +66,8 @@ public class QuestionExamScore extends BaseEntity<Long> {
     public void setQuestion(Question question) {
         this.question = question;
         question.addScores(this);
+    }
+    public void addScoreStudent(StudentQuestionScore studentQuestionScore) {
+        scores.add(studentQuestionScore);
     }
 }

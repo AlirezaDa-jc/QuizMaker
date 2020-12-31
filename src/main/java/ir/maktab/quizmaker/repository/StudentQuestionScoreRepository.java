@@ -16,4 +16,7 @@ public interface StudentQuestionScoreRepository extends JpaRepository<StudentQue
     List<StudentQuestionScore> findAllByQuestionExamScoreAndStudent(QuestionExamScore questionExamScores, Student student);
 
     StudentQuestionScore findDistinctByQuestionExamScoreAndStudent(QuestionExamScore questionExamScore, Student student);
+    StudentQuestionScore findDistinctByQuestionExamScoreContainsAndStudentContains(QuestionExamScore questionExamScore, Student student);
+
+    List<StudentQuestionScore> findAllByQuestionExamScoreContains(QuestionExamScore questionExamScore);
 }

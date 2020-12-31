@@ -1,8 +1,6 @@
 package ir.maktab.quizmaker.controller;
 
-import ir.maktab.quizmaker.domains.Course;
-import ir.maktab.quizmaker.domains.Exam;
-import ir.maktab.quizmaker.domains.Student;
+import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +40,16 @@ public class StudentController {
     private StudentQuestionScoreService studentQuestionScoreService;
 
     @Autowired
+    private QuestionExamScoreService questionExamScoreService;
+
+    @Autowired
     private UserService userService;
 
     private Set<Course> courses;
+
+
+//    private int time;
+//    private boolean joined = false;
 
     @GetMapping("home")
     public String showHome(Model model) {
@@ -93,47 +98,85 @@ public class StudentController {
         return "student-show-exams";
     }
 
-    @GetMapping("join-exam/{examId}")
-    public String joinExam(@PathVariable Long examId, Model model) throws Exception {
-        Exam exam = examService.findById(examId);
-//        if(exam.getStudents().contains(student)){
-        if (examService.checkStudentJoinedExam(student, exam)) {
-            model.addAttribute("exams", exam.getCourse().getExams());
-            model.addAttribute("joined", true);
-            return "student-show-exams";
+//    @GetMapping("join-exam/{examId}")
+//    public String joinExam(@PathVariable Long examId, Model model) throws Exception {
+//        Exam exam = examService.findById(examId);
+////        if (!joined)
+////            time = exam.getTime();
+//        if (examService.checkStudentJoinedExam(student, exam) ) {
+//            model.addAttribute("exams", exam.getCourse().getExams());
+//            model.addAttribute("joined", true);
+//            return "student-show-exams";
+//
+//        }
+//        model.addAttribute("exam", exam);
+//        model.addAttribute("multipleChoice", examService.findMultipleChoiceQuestions(exam));
+//        model.addAttribute("descriptive", examService.findDescriptiveQuestions(exam));
+//        exam.addStudent(student);
+//        examService.save(exam);
+//        return "student-join-exam";
+//    }
 
+    @GetMapping("join-exam/{examId}/{questionId}")
+    public String joinExam(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
+        Exam exam = examService.findById(examId);
+        if (questionId < exam.getScores().size()) {
+            List<MultipleChoiceQuestion> multipleChoiceQuestions = examService.findMultipleChoiceQuestions(exam);
+            List<DescriptiveQuestion> descriptiveQuestions = examService.findDescriptiveQuestions(exam);
+            model.addAttribute("exam", exam);
+            model.addAttribute("questionId", questionId);
+            if (questionId < multipleChoiceQuestions.size()) {
+                MultipleChoiceQuestion question = multipleChoiceQuestions.get(Math.toIntExact(questionId));
+                QuestionExamScore questionExamScore = questionExamScoreService.findByExamAndQuestion(exam, question);
+                StudentQuestionScore studentQuestionScore = studentQuestionScoreService
+                        .findByStudentAndQuestionExamScore(student, questionExamScore);
+                model.addAttribute("MultipleChoiceQuestion", question);
+                model.addAttribute("studentQuestionScore",studentQuestionScore);
+                model.addAttribute("score", questionExamScore);
+                return "student-join-exam-multiple-choice-question";
+            } else if ((questionId - multipleChoiceQuestions.size()) < descriptiveQuestions.size()) {
+                DescriptiveQuestion question = descriptiveQuestions.get(Math.toIntExact(questionId- multipleChoiceQuestions.size()));
+                QuestionExamScore questionExamScore = questionExamScoreService.findByExamAndQuestion(exam, question);
+                StudentQuestionScore studentQuestionScore = studentQuestionScoreService
+                        .findByStudentAndQuestionExamScore(student, questionExamScore);
+                model.addAttribute("studentQuestionScore",studentQuestionScore);
+                model.addAttribute("DescriptiveQuestion", question);
+                model.addAttribute("score", questionExamScore);
+                return "student-join-exam-descriptive-question";
+            }
         }
-        model.addAttribute("exam", exam);
-        model.addAttribute("multipleChoice", examService.findMultipleChoiceQuestions(exam));
-        model.addAttribute("descriptive", examService.findDescriptiveQuestions(exam));
         exam.addStudent(student);
         examService.save(exam);
-        return "student-join-exam";
-    }
-
-    @PostMapping("correct-exam/{examId}")
-    public String correctExam(@PathVariable Long examId, HttpServletRequest request, Model model) {
-        Exam exam = examService.findById(examId);
-
-        if (examService.checkStudentJoinedExam(student, exam)) {
-            model.addAttribute("exams", exam.getCourse().getExams());
-            model.addAttribute("joined", true);
-            return "student-show-exams";
-        }
-
-        String[] answers = new String[exam.getScores().size()];
-        int i = 0;
-        String answer = request.getParameter(String.valueOf(i));
-        while (answer != null) {
-            answers[i] = answer;
-            i++;
-            answer = request.getParameter(String.valueOf(i));
-        }
-        studentQuestionScoreService.correctAnswers(exam, student, answers);
-//TODO Options Multiple Choice Add HTML ,
         return "redirect:/student/home";
 
     }
+
+    //    @PostMapping("correct-exam/{examId}")
+//    public String correctExam(@PathVariable Long examId, HttpServletRequest request, Model model) {
+//        Exam exam = examService.findById(examId);
+//
+//        String[] answers = new String[exam.getScores().size()];
+//        int i = 0;
+//        String answer = request.getParameter(String.valueOf(i));
+//        while (answer != null) {
+//            answers[i] = answer;
+//            i++;
+//            answer = request.getParameter(String.valueOf(i));
+//        }
+//        studentQuestionScoreService.correctAnswers(exam, student, answers);
+
+//    }
+
+    @PostMapping("correct-exam")
+    public String correctExam(@ModelAttribute StudentQuestionScore studentQuestionScore
+            , Model model) {
+        studentQuestionScoreService.correctAnswer(studentQuestionScore);
+        QuestionExamScore questionExamScore = studentQuestionScore.getQuestionExamScore();
+        Long examId = questionExamScore.getExam().getId();
+        int questionId =  questionExamScore.getExam().getScores().indexOf(questionExamScore)+1;
+        return "redirect:/student/join-exam/"+examId+"/"+questionId;
+    }
+//TODO Options Multiple Choice Add HTML / Timer / Joined Student Cant Join Again
 
 
     @ExceptionHandler(UniqueException.class)
