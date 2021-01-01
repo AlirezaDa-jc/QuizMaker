@@ -1,8 +1,7 @@
 package ir.maktab.quizmaker.domains;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Alireza.d.a
@@ -25,7 +24,7 @@ public class Student extends User {
 
 
     @ManyToMany(mappedBy = "students",fetch = FetchType.EAGER)
-    private Set<Exam> exams = new HashSet<>();
+    private List<Exam> exams = new ArrayList<>();
 
     @ManyToMany(mappedBy = "students",fetch = FetchType.EAGER)
     private Set<Course> courses = new HashSet<>();
@@ -34,11 +33,19 @@ public class Student extends User {
         setRole("STUDENT");
     }
 
-    public Set<Exam> getExams() {
+    public Set<StudentQuestionScore> getScores() {
+        return scores;
+    }
+
+    public void setScores(Set<StudentQuestionScore> scores) {
+        this.scores = scores;
+    }
+
+    public List<Exam> getExams() {
         return exams;
     }
 
-    public void setExams(Set<Exam> exams) {
+    public void setExams(List<Exam> exams) {
         this.exams = exams;
     }
 
@@ -95,4 +102,17 @@ public class Student extends User {
         exams.add(exam);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return studentCode.equals(student.studentCode) &&
+                nationalCode.equals(student.nationalCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(studentCode, nationalCode);
+    }
 }

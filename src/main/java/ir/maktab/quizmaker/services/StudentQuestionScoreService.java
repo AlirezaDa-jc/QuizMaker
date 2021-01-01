@@ -69,25 +69,21 @@ public class StudentQuestionScoreService {
         for (QuestionExamScore questionExamScore : questionExamScores) {
             StudentQuestionScore studentQuestionScore = studentQuestionScoreRepository.
                     findDistinctByQuestionExamScoreAndStudent(questionExamScore, student);
-            studentQuestionScore.setScore(score);
-            studentQuestionScoreRepository.save(studentQuestionScore);
+            if(score <= questionExamScore.getScore()) {
+                studentQuestionScore.setScore(score);
+                studentQuestionScoreRepository.save(studentQuestionScore);
+            }
         }
     }
 
 
     public void correctAnswer(StudentQuestionScore studentQuestionScore) {
-//        StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
-//        studentQuestionScore.setStudent(student);
-//        studentQuestionScore.setAnswer(answer);
-//        studentQuestionScore.setQuestionExamScore(questionExamScore);
         QuestionExamScore questionExamScore = studentQuestionScore.getQuestionExamScore();
         if (questionExamScore.getQuestion() instanceof MultipleChoiceQuestion) {
             if (studentQuestionScore.getAnswer() != null) {
                 if (studentQuestionScore.getAnswer().equals(questionExamScore.getQuestion().getAnswer())) {
                     studentQuestionScore.setScore(questionExamScore.getScore());
                 }
-            } else {
-                studentQuestionScore.setScore(0);
             }
         } else {
             studentQuestionScore.setScore(Integer.MIN_VALUE);
@@ -97,15 +93,32 @@ public class StudentQuestionScoreService {
     }
 
     public StudentQuestionScore findByStudentAndQuestionExamScore(Student student, QuestionExamScore questionExamScore) {
-        List<StudentQuestionScore> studentQuestionScores = studentQuestionScoreRepository.findAll().stream().filter(c -> c.getStudent() == student && c.getQuestionExamScore() == questionExamScore).collect(Collectors.toList());
+        List<StudentQuestionScore> studentQuestionScores = studentQuestionScoreRepository.findAll().stream().filter(c -> c.getStudent().getId().equals(student.getId()) && c.getQuestionExamScore().getId().equals(questionExamScore.getId())).collect(Collectors.toList());
 
-        if (studentQuestionScores.size() == 0) {
-            StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
-            studentQuestionScore.setStudent(student);
-            studentQuestionScore.setQuestionExamScore(questionExamScore);
-            studentQuestionScoreRepository.save(studentQuestionScore);
-            return studentQuestionScore;
-        }
+//        if (studentQuestionScores.size() == 0) {
+//            StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
+//            studentQuestionScore.setStudent(student);
+//            studentQuestionScore.setQuestionExamScore(questionExamScore);
+//            studentQuestionScoreRepository.save(studentQuestionScore);
+//            return studentQuestionScore;
+//        }
         return studentQuestionScores.get(0);
+    }
+
+    public void createStudentQuestionExamScores(Student student,List<QuestionExamScore> questionExamScores){
+        List<StudentQuestionScore> studentQuestionScores = studentQuestionScoreRepository.findAll().stream().filter(c -> c.getStudent().getId().equals(student.getId()) && c.getQuestionExamScore().getId().equals(questionExamScores.get(0).getId())).collect(Collectors.toList());
+        if(studentQuestionScores.size() == 0){
+            for (QuestionExamScore questionExamScore:questionExamScores) {
+                StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
+                studentQuestionScore.setStudent(student);
+                studentQuestionScore.setQuestionExamScore(questionExamScore);
+                studentQuestionScore.setScore(0);
+                studentQuestionScoreRepository.save(studentQuestionScore);
+            }
+        }
+    }
+
+    public int getSumOfScores(List<StudentQuestionScore> studentQuestionScores) {
+        return studentQuestionScores.stream().filter(c -> c != null &&c.getScore() >= 0).mapToInt(StudentQuestionScore::getScore).sum();
     }
 }

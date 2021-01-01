@@ -21,60 +21,66 @@
         <form action="#" method="post" th:action="@{/student/correct-exam}" th:object="${studentQuestionScore}">
             <input hidden th:value="${DescriptiveQuestion}">
             <div class="card-body">
-                <h4><span class="card-title" th:text="${DescriptiveQuestion.title}"></span></h4>
-                <h5 class="card-text" th:text="${DescriptiveQuestion.question}"></h5>
-                <h6 class="card-text" th:text="${score.score}"></h6>
-                <input  name="answer" th:field="*{answer}" type="text">
-                <input  hidden name="answer" th:field="*{student}" th:value="${studentQuestionScore.student}" type="text">
-                <input  hidden name="answer" th:field="*{questionExamScore}" th:value="${studentQuestionScore.questionExamScore}" type="text">
-                <input  hidden name="answer" th:field="*{id}" th:value="${studentQuestionScore.id}" type="text">
+                <h4><span class="card-title" th:text="#{title}"></span>: <span class="card-title" th:text="${DescriptiveQuestion.title}"></span></h4>
+                <h5><span class="card-text" th:text="#{question}"></span>: <span class="card-text" th:text="${DescriptiveQuestion.question}"></span></h5>
+                <h6><span class="card-text" th:text="#{score}"></span>: <span class="card-text" th:text="${score.score}"></span></h6>
+                <input name="answer" th:field="*{answer}" th:value="${studentQuestionScore.answer}" type="text">
+                <input hidden name="answer" th:field="*{student}" th:value="${studentQuestionScore.student}"
+                       type="text">
+                <input hidden name="answer" th:field="*{questionExamScore}"
+                       th:value="${studentQuestionScore.questionExamScore}" type="text">
+                <input hidden name="answer" th:field="*{id}" th:value="${studentQuestionScore.id}" type="text">
             </div>
-        <input class="btn btn-primary card-link" role="button" th:value="#{send_answer}" type="submit">
+            <input class="btn btn-primary card-link" role="button" th:value="#{send_answer}" type="submit">
         </form>
 
-
-        <div th:each="obj , li : ${exam.getScores()}">
-            <a class="" role="button" th:href="@{/student/join-exam/__${exam.id}__/__${li.index}__}"></a>
+        <div class="row">
+            <div th:each="obj , li : ${exam.getScores()}">
+                <div style="padding: 2%">
+                <a class="btn btn-primary" role="button" th:href="@{/student/join-exam/__${exam.id}__/__${li.index}__}"
+                   th:text="${li.index}+1"></a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script src="/../static/js/jquery-3.5.1.min.js"></script>
-    <script crossorigin="anonymous"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script crossorigin="anonymous"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
 
-        /*]]>*/
+    /*]]>*/
 
-        let number = /*[[${time}]]*/
-            //TODO TIMER Backend
-            console.log(number)
+    let number = /*[[${time}]]*/
+        //TODO TIMER Backend
+        console.log(number)
 
-        setTimeout('document.forms[0].submit();', number);
-
-
-        const countDownDate = new Date().getTime() + number;
-
-        const x = setInterval(function () {
-
-            const now = new Date().getTime();
-
-            const distance = countDownDate - now;
-
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("time").innerHTML = hours + "h "
-                + minutes + "m " + seconds + "s ";
+    setTimeout('document.forms[0].submit();', number);
 
 
-        }, 1000);
-    </script>
+    const countDownDate = new Date().getTime() + number;
+
+    const x = setInterval(function () {
+
+        const now = new Date().getTime();
+
+        const distance = countDownDate - now;
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("time").innerHTML = hours + "h "
+            + minutes + "m " + seconds + "s ";
+
+
+    }, 1000);
+</script>
 </body>
 </html>

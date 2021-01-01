@@ -25,12 +25,6 @@ public class Exam extends BaseEntity<Long> {
     @OneToMany(mappedBy = "exam" , orphanRemoval = true)
     List<QuestionExamScore> scores = new LinkedList<>();
 
-//    @ManyToMany
-//    @JoinTable(name = "Question_Exam",
-//            joinColumns = {@JoinColumn(name = "exam_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "question_id")})
-//    private Set<Question> questions = new HashSet<>();
-
     @ManyToMany
     @JoinTable(name = "Student_Exam",
             joinColumns = {@JoinColumn(name = "exam_id")},

@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,7 +49,7 @@ public class StudentController {
 
     private Set<Course> courses;
 
-    private CustomTimer customTimer;
+    private List<CustomTimer> customTimers;
 
 
 //    private int time;
@@ -123,20 +124,41 @@ public class StudentController {
     @GetMapping("join-exam/{examId}/{questionId}")
     public String joinExam(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
-        if(customTimer == null){
-            customTimer = new CustomTimer();
-        }else if(customTimer.elapsedTime() == (exam.getTime()*60)){
-            exam.addStudent(student);
-            examService.save(exam);
-            return "redirect:/student/home";
+        CustomTimer customTimer;
+        List<Student> students = exam.getStudents().stream().filter(c -> c.equals(student)).collect(Collectors.toList());
+        if(students.size() != 0){
+            model.addAttribute("exams", exam.getCourse().getExams());
+            model.addAttribute("joined", true);
+            return "student-show-exams";
         }
+        if(customTimers != null){
+            List<CustomTimer> timer = customTimers.stream().filter(c -> c.getExamId() == examId).collect(Collectors.toList());
+            if(timer.size() != 0) {
+                customTimer = timer.get(0);
+                if (customTimer.elapsedTime() == (exam.getTime() * 60)) {
+                    exam.addStudent(student);
+                    examService.save(exam);
+                    return "redirect:/student/home";
+                }
+            }else{
+                customTimer = new CustomTimer(examId);
+                customTimers = new ArrayList<>();
+                customTimers.add(customTimer);
+            }
+        }else{
+            customTimer = new CustomTimer(examId);
+            customTimers = new ArrayList<>();
+            customTimers.add(customTimer);
+        }
+
         if (questionId < exam.getScores().size()) {
             List<MultipleChoiceQuestion> multipleChoiceQuestions = examService.findMultipleChoiceQuestions(exam);
             List<DescriptiveQuestion> descriptiveQuestions = examService.findDescriptiveQuestions(exam);
             model.addAttribute("exam", exam);
             model.addAttribute("questionId", questionId);
-            double timer = exam.getTime() * 60000 - customTimer.elapsedTime();
-            model.addAttribute("time",timer);
+            double time = exam.getTime() * 60000 - customTimer.elapsedTime();
+            model.addAttribute("time",time);
+            studentQuestionScoreService.createStudentQuestionExamScores(student,exam.getScores());
             if (questionId < multipleChoiceQuestions.size()) {
                 MultipleChoiceQuestion question = multipleChoiceQuestions.get(Math.toIntExact(questionId));
                 QuestionExamScore questionExamScore = questionExamScoreService.findByExamAndQuestion(exam, question);
@@ -187,7 +209,7 @@ public class StudentController {
         int questionId =  questionExamScore.getExam().getScores().indexOf(questionExamScore)+1;
         return "redirect:/student/join-exam/"+examId+"/"+questionId;
     }
-//TODO Options Multiple Choice Add HTML / Joined Student Cant Join Again
+//TODO Options Multiple Choice Add HTML
 
 
     @ExceptionHandler(UniqueException.class)

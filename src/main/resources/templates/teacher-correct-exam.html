@@ -18,12 +18,13 @@
 </div>
 
 <body class="black">
-<div class="card main" >
+<div class="card main">
     <div style="padding: 3%">
         <div class="row">
             <div><h3 th:text="${exam.title}"></h3></div>
-
         </div>
+        <h4 th:text="#{firstname}"></h4>: <h4 th:text="${student.firstName}"></h4><br>
+        <h4 th:text="#{lastname}"></h4>: <h4 th:text="${student.lastName}"></h4>
         <hr>
 
         <form action="#" method="post" th:action="@{/teacher/correct-exam}">
@@ -35,10 +36,10 @@
             <h2 th:if="${!multipleChoice.isEmpty()}" th:text="#{multiple_choice_questions}"></h2>
             <br>
 
-            <div class="card " th:each="question , li: ${multipleChoice}">
+            <div class="card" th:each="question , li: ${multipleChoice}">
                 <div class="card-body">
                     <h4><span class="card-title" th:text="${li.index + 1}"></span>- <span class="card-title"
-                                                                                      th:text="${question.title}"></span>
+                                                                                          th:text="${question.title}"></span>
                     </h4>
                     <h5 class="card-text" th:text="${question.question}"></h5>
 
@@ -47,42 +48,57 @@
                           th:if="${question.answer} == ${option}">
                         &#10004;
                     </span>
-                        <!--            <input th:name="${li.index}" th:value="${option}" type="radio">-->
                         <span th:text="${option}"></span><br>
                     </div>
+                    <br>
+                    <div th:each="studentQuestionScore , i: ${studentQuestionScores}">
+                        <div th:if="${i.index} == ${li.index}">
+                            <span th:text="#{answer}"></span>
+                            <p th:text="${studentQuestionScore?.answer}"></p>
+                            <!--                            <p th:text="#{no_answer}" th:if="${studentQuestionScore.answer == null}"></p>-->
+                            <span th:text="#{score}"></span>
+                            <p th:text="${studentQuestionScore.score}"></p>
+                        </div>
+                    </div>
                 </div>
-                <br>
-                <div th:each="studentQuestionScore , i: ${studentQuestionScores}">
-                    <div th:if="${i.index} == ${li.index}">
-                        <span th:text="#{answer}"></span>
-                        <p th:text="${studentQuestionScore.answer}"></p>
-                        <span th:text="#{score}"></span>
-                        <p th:text="${studentQuestionScore.score}"></p>
+            </div>
+            <hr>
+            <h2 th:if="${!descriptive.isEmpty()}" th:text="#{descriptive_questions}"></h2>
+            <br>
+            <div class="card" th:each="question , li: ${descriptive}">
+                <div class="card-body">
+
+                    <h4><span class="card-title" th:text="${li.index + 1}"></span>- <span class="card-title"
+                                                                                          th:text="${question.title}"></span>
+                    </h4>
+                    <h5 class="card-text" th:text="${question.question}"></h5>
+                    <br>
+                    <div th:each="studentQuestionScore , i: ${studentQuestionScores}">
+                        <div th:if="${i.index} == (${li.index}+${multipleChoice.size()})">
+                            <span th:text="#{answer}"></span>
+                            <p th:text="${studentQuestionScore?.answer}"></p>
+                            <!--                            <p th:text="#{no_answer}" th:if="${studentQuestionScore.answer == null}"></p>-->
+                            <span th:text="#{score}"></span>
+                            <input th:name="${li.index}+${multipleChoice.size()}" type="text">
+                            <p th:if="${studentQuestionScore.score >= 0}" th:text="${studentQuestionScore.score}"></p>
+                            <p th:if="${studentQuestionScore.score < 0}" th:text="#{undefined}"></p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-    <h2 th:if="${!descriptive.isEmpty()}" th:text="#{descriptive_questions}"></h2>
-
-    <div th:each="question , li: ${descriptive}">
-        <h4><span class="card-title" th:text="${li.index + 1}"></span>- <span class="card-title"
-                                                                          th:text="${question.title}"></span></h4>
-        <h5 class="card-text" th:text="${question.question}"></h5>
-        <div th:each="studentQuestionScore , i: ${studentQuestionScores}">
-            <div th:if="${i.index} == (${li.index}+${multipleChoice.size()})">
-                <span th:text="#{answer}"></span>
-                <p th:text="${studentQuestionScore.answer}"></p>
-                <span th:text="#{score}"></span>
-                <input th:name="${li.index}+${multipleChoice.size()}" type="text">
-                <p th:text="${studentQuestionScore.score}"></p>
+            <div class="card">
+                <div class="card-body">
+                    <span th:text="#{sum}"></span>: <span th:text="${sumStudent}"></span>/<span
+                        th:text="${sumExam}"></span>
+                </div>
             </div>
-        </div>
-    </div>
-
-     <input class="btn btn-primary card-link" role="button" th:value="#{end_exam}" type="submit">
 
 
-    </form>
+            <input class="btn btn-primary card-link" role="button" th:value="#{set_score}" type="submit">
+
+
+        </form>
         <script src="/../static/js/jquery-3.5.1.min.js"></script>
         <script crossorigin="anonymous"
                 integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"

@@ -381,6 +381,8 @@ public class TeacherController {
             throw new Exception("403 Forbidden!");
         }
         model.addAttribute("exam",exam);
+
+
         return "teacher-students-joined-exam";
     }
 
@@ -394,12 +396,16 @@ public class TeacherController {
         List<QuestionExamScore> questionExamScores = questionExamScoreService.getScores(exam);
         List<StudentQuestionScore> studentQuestionScores = studentQuestionScoreService
                 .findByQuestionExamScoresAndStudent(questionExamScores, student);
+        int sumStudent = studentQuestionScoreService.getSumOfScores(studentQuestionScores);
+        int sumExam = questionExamScores.stream().mapToInt(QuestionExamScore::getScore).sum();
         model.addAttribute("questionExamScores",questionExamScores);
         model.addAttribute("studentQuestionScores",studentQuestionScores);
         model.addAttribute("exam",exam);
         model.addAttribute("student",student);
         model.addAttribute("multipleChoice",examService.findMultipleChoiceQuestions(exam));
         model.addAttribute("descriptive",examService.findDescriptiveQuestions(exam));
+        model.addAttribute("sumStudent",sumStudent);
+        model.addAttribute("sumExam",sumExam);
 
         return "teacher-correct-exam";
     }
@@ -414,12 +420,15 @@ public class TeacherController {
         }
         List<DescriptiveQuestion> descriptiveQuestions = examService.findDescriptiveQuestions(exam);
         for(int i = 0 ; i < descriptiveQuestions.size() ; i++){
-            int score = Integer.parseInt(request.getParameter(String.valueOf(i + multipleChoiceQuestions.size())));
-            List<QuestionExamScore> questionExamScores = descriptiveQuestions.get(i).getScores();
-            studentQuestionScoreService.assignScore(questionExamScores,student,score);
+            String input = request.getParameter(String.valueOf(i + multipleChoiceQuestions.size()));
+            if(input != null && !input.equals("")) {
+                int score = Integer.parseInt(input);
+                List<QuestionExamScore> questionExamScores = descriptiveQuestions.get(i).getScores();
+                studentQuestionScoreService.assignScore(questionExamScores, student, score);
+            }
         }
 
-        return "redirect:/teacher/show-courses";
+        return "redirect:/teacher/correct-exam/"+exam.getId()+"/"+student.getId();
     }
 
 

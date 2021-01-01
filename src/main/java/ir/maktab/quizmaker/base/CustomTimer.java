@@ -6,20 +6,17 @@ package ir.maktab.quizmaker.base;
 public class CustomTimer {
 
     private final long start;
+    private final long examId;
 
-    /**
-     * Initializes a new stopwatch.
-     */
-    public CustomTimer() {
+    public CustomTimer(long examId) {
         start = System.currentTimeMillis();
+        this.examId = examId;
     }
 
+    public long getExamId() {
+        return examId;
+    }
 
-    /**
-     * Returns the elapsed CPU time (in seconds) since the stopwatch was created.
-     *
-     * @return elapsed CPU time (in seconds) since the stopwatch was created
-     */
     public double elapsedTime() {
         long now = System.currentTimeMillis();
         return (now - start);
