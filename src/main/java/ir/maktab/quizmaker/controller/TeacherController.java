@@ -21,9 +21,6 @@ import java.util.Set;
 @RequestMapping("teacher")
 public class TeacherController {
 
-    private static final String AJAX_HEADER_NAME = "X-Requested-With";
-    private static final String AJAX_HEADER_VALUE = "XMLHttpRequest";
-
     private Teacher teacher;
 
     @Autowired
@@ -262,26 +259,6 @@ public class TeacherController {
         model.addAttribute("exam", exam);
         model.addAttribute("multipleChoiceQuestion", new MultipleChoiceQuestion(exam));
         return "teacher-multiple-question";
-    }
-
-    @PostMapping(params = "addItem", path = {"multiple-question", "multiple-question/{id}"})
-    public String addMultipleQuestionOption(MultipleChoiceQuestion multipleChoiceQuestion, HttpServletRequest request) {
-        multipleChoiceQuestion.addOptions("");
-        if (AJAX_HEADER_VALUE.equals(request.getHeader(AJAX_HEADER_NAME))) {
-            return "teacher-multiple-question::#items";
-        } else {
-            return "teacher-multiple-question";
-        }
-
-    }
-    @PostMapping(params = "removeItem", path = {"multiple-question", "multiple-question/{id}"})
-    public String removeOrder(MultipleChoiceQuestion multipleChoiceQuestion, @RequestParam("removeItem") int index, HttpServletRequest request) {
-        multipleChoiceQuestion.removeOption(index);
-        if (AJAX_HEADER_VALUE.equals(request.getHeader(AJAX_HEADER_NAME))) {
-            return "teacher-multiple-question::#items";
-        } else {
-            return "teacher-multiple-question";
-        }
     }
 
     @PostMapping("descriptive-question")

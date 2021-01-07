@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,7 +49,7 @@ public class StudentController {
 
     private Set<Course> courses;
 
-    private List<CustomTimer> customTimers;
+    private CustomTimer customTimer = null;
 
 
 //    private int time;
@@ -105,54 +104,25 @@ public class StudentController {
         return "student-show-exams";
     }
 
-//    @GetMapping("join-exam/{examId}")
-//    public String joinExam(@PathVariable Long examId, Model model) throws Exception {
-//        Exam exam = examService.findById(examId);
-////        if (!joined)
-////            time = exam.getTime();
-//        if (examService.checkStudentJoinedExam(student, exam) ) {
-//            model.addAttribute("exams", exam.getCourse().getExams());
-//            model.addAttribute("joined", true);
-//            return "student-show-exams";
-//
-//        }
-//        model.addAttribute("exam", exam);
-//        model.addAttribute("multipleChoice", examService.findMultipleChoiceQuestions(exam));
-//        model.addAttribute("descriptive", examService.findDescriptiveQuestions(exam));
-//        exam.addStudent(student);
-//        examService.save(exam);
-//        return "student-join-exam";
-//    }
-
     @GetMapping("join-exam/{examId}/{questionId}")
     public String joinExam(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
-        CustomTimer customTimer;
         List<Student> students = exam.getStudents().stream().filter(c -> c.equals(student)).collect(Collectors.toList());
         if(students.size() != 0){
             model.addAttribute("exams", exam.getCourse().getExams());
             model.addAttribute("joined", true);
             return "student-show-exams";
         }
-        if(customTimers != null){
-            List<CustomTimer> timer = customTimers.stream().filter(c -> c.getExamId() == examId).collect(Collectors.toList());
-            if(timer.size() != 0) {
-                customTimer = timer.get(0);
+        if(customTimer != null){
                 if (customTimer.elapsedTime() == (exam.getTime() * 60)) {
                     exam.addStudent(student);
                     examService.save(exam);
+                    customTimer = null;
                     return "redirect:/student/home";
                 }
             }else{
                 customTimer = new CustomTimer(examId);
-                customTimers = new ArrayList<>();
-                customTimers.add(customTimer);
             }
-        }else{
-            customTimer = new CustomTimer(examId);
-            customTimers = new ArrayList<>();
-            customTimers.add(customTimer);
-        }
 
         if (questionId < exam.getScores().size()) {
             List<MultipleChoiceQuestion> multipleChoiceQuestions = examService.findMultipleChoiceQuestions(exam);
@@ -184,6 +154,7 @@ public class StudentController {
         }
         exam.addStudent(student);
         examService.save(exam);
+        customTimer = null;
         return "redirect:/student/home";
 
     }
