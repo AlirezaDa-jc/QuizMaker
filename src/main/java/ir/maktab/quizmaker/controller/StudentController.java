@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -56,11 +57,13 @@ public class StudentController {
 //    private boolean joined = false;
 
     @GetMapping("home")
-    public String showHome(Model model) {
+    public String showHome(Model model, HttpSession session) {
         student = (Student) userService.findByUsername(
                 (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()
         );
         courses = student.getCourses();
+        session.setAttribute("userName",SecurityContextHolder.getContext().getAuthentication().getName());
+
         model.addAttribute("student", student);
         return "student-home";
     }

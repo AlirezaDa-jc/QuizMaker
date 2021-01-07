@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Set;
 
@@ -55,11 +56,12 @@ public class TeacherController {
     private Set<Course> courses;
 
     @GetMapping("home")
-    public String showHome(Model model) {
+    public String showHome(Model model, HttpSession session) {
         teacher = (Teacher) userService.findByUsername(
                 (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()
         );
         courses = teacher.getCourses();
+        session.setAttribute("userName",SecurityContextHolder.getContext().getAuthentication().getName());
         model.addAttribute("teacher", teacher);
         return "teacher-home";
     }

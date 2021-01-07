@@ -3,7 +3,7 @@
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Teacher Add Descriptive Question</title>
+    <title>Add Multiple Question</title>
     <link rel="stylesheet" th:href="@{/css/user-styles.css}">
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
     <link href="../static/minified/themes/default.min.css" rel="stylesheet"/>
@@ -12,12 +12,33 @@
 </head>
 <body>
 
+<nav class="navbar navbar-expand-lg navbar-dark black fixedNav navbar-color">
+    <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation"
+            class="navbar-toggler"
+            data-target="#navbarText" data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                   data-toggle="dropdown" href="#" id="navbarDropdown" role="button" th:text="${session.userName}">
+                </a>
+                <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                    <a class="dropdown-item" href="/teacher/edit-user" th:text="#{edit_account}"></a>
+                    <a class="dropdown-item" href="/logout" th:text="#{logout}"> </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
 <div class="sidenav lang" id="mySidenav">
     <a href="/teacher/home"><p th:text="#{home}"></p></a>
     <a href="/teacher/show-courses"><p th:text="#{courses}"></p></a>
     <a href="/teacher/show-exams"><p th:text="#{exams}"></p></a>
-    <a href="/teacher/edit-user" th:text="#{edit_account}"></a>
-    <a href="/logout" th:text="#{logout}"></a>
+    <br>
+    <img alt="aboutUs" height="150px" src="../static/css/img/QuizMaker.png" th:src="@{/css/img/QuizMaker.png}" width="150px">
 </div>
 <!--TODO NAVBAR ESME TARAF BASHE DROPDOWN VA LOGIN O INA LOGOUT O EDIT ACC O INA TOSH BIAD-->
 <div class="main lang ">
@@ -69,22 +90,15 @@
                     <input aria-describedby="question" class="form-control" id="answer" name="answer"
                            th:field="*{answer}" type="text">
                 </div>
-                <div class="form-group" id="add-choice">
-<!--                    <button type="button" th:text="#{add_another_option}" onclick="addOption()"></button>-->
-                    <label th:text="#{content}"></label>
-                    <div th:each="li, iter: *{options}">
-                        <input th:field="*{options[__${iter.index}__]}" type="text">
+                <fieldset id="items">
+                    <div th:each="li, stat : ${multipleChoiceQuestion.options}">
+                        <label th:name="${stat.index}">Name</label>
+                        <input th:field="${multipleChoiceQuestion.options[__${stat.index}__]}" th:id="${stat.index}">
+                        <button onclick="removeCustom(this)" th:name="${stat.index}" th:value="${stat.index}" type="button">Remove item</button>
                     </div>
-                </div>
-<!--                <fieldset id="items">-->
-<!--                    <div th:each="li, stat : ${multipleChoiceQuestion.options}">-->
-<!--                        <label >Name</label>-->
-<!--                        <input th:field="${multipleChoiceQuestion.options[__${stat.index}__]}">-->
-<!--                        <button type="button" name="removeItem" th:value="${stat.index}">Remove item</button>-->
-<!--                    </div>-->
-<!--                </fieldset>-->
+                </fieldset>
 
-<!--                <button type="button" name="addItem">Add item</button>-->
+                <button name="addItem" type="button">Add item</button>
 
 
                 <div class="form-group">
@@ -114,47 +128,6 @@
 <!--<script src="/../static/minified/sceditor.min.js"></script>-->
 <!--<script src="/../static/minified/formats/bbcode.js"></script>-->
 <!--<script src="/../static/minified/formats/xhtml.js"></script>-->
-<script>
-    // const textarea = document.getElementById('question');
-    //
-    // sceditor.create(textarea, {
-    //     format: 'xhtml',
-    //     style: '/../static/minified/themes/content/default.min.css'
-    // });
-
-
-    // function replaceItems (html) {
-    //     $('#items').replaceWith($(html));
-    // }
-    //
-    // $('button[name="addItem"]').click(function (event) {
-    //     event.preventDefault();
-    //     let data = $('form').serialize();
-    //     data += 'addItem';
-    //     $.post('/multiple-question', data, replaceItems);
-    // });
-    //
-    // $('button[name="removeItem"]').click(function (event) {
-    //     event.preventDefault();
-    //     let data = $('form').serialize();
-    //     data += 'removeItem=' + $(this).val();
-    //     $.post('/multiple-question', data, replaceItems);
-    // });
-    // let addChoice;
-    // let option = 1;
-    // function addOption() {
-    //     addChoice =
-    //         "                    <label th:text=\"#{content}\"></label>\n" +
-    //         "                    <div th:each=\"li, iter: *{options}\" th:if=\"${iter.index} == " + option + "\">\n" +
-    //         "                        <input type=\"text\" th:field=\"*{options[__${iter.index}__]}\">\n" +
-    //         "                         <input type=\"text\" th:value=\"${iter.index}\" readonly>\n" +
-    //         "                    </div>\n"
-    //     if (option <= 6) {
-    //         document.getElementById("add-choice").innerHTML += addChoice;
-    //         option = option + 1;
-    //     }
-    // }
-
-</script>
+<script src="/../static/js/multiple_choice.js" th:src="@{/js/multiple_choice.js}"></script>
 </body>
 </html>

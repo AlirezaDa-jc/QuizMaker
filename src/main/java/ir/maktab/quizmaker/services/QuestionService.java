@@ -75,9 +75,14 @@ public class QuestionService {
                 .stream()
                 .filter(c -> {
                     Set<Exam> exams = new HashSet<>();
-                    c.getScores().forEach(x -> exams.add(x.getExam()));
+                    c.getScores()
+                            .forEach(x -> exams.add(x.getExam()));
                     return !exams.contains(exam);
                 })
+                .collect(Collectors.toSet());
+
+        subjectQuestions = subjectQuestions.stream()
+                .filter(Question::getPublic)
                 .collect(Collectors.toSet());
 
         Set<Question> bank = new HashSet<>();

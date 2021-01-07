@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -162,7 +163,7 @@ public class AdminController {
     public String sendListOfSubjectCourses(@PathVariable Long id, Model model) {
         Subject subject = subjectService.findById(id);
         model.addAttribute("courses", subject.getCourses());
-        return "subject-courses";
+        return "admin-subject-courses";
     }
 
     @GetMapping("add-course-to-subject/{subjectId}")
@@ -191,7 +192,7 @@ public class AdminController {
     }
 
     @GetMapping("home")
-    public String viewHome(Model model) {
+    public String viewHome(Model model, HttpSession session) {
         model.addAttribute("admin", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         model.addAttribute("teachers", teacherService.findAll());
         model.addAttribute("students", studentService.findAll());
@@ -199,6 +200,8 @@ public class AdminController {
         model.addAttribute("users_not_allowed", usersNotAllowedSize);
         model.addAttribute("courses", courseService.findAll());
         model.addAttribute("subjects", subjectService.findAll());
+        session.setAttribute("userName",SecurityContextHolder.getContext().getAuthentication().getName());
+
 
         return "admin-view";
     }

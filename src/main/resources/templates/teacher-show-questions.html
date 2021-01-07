@@ -3,7 +3,7 @@
       th:with="lang=${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Students</title>
+    <title>Questions</title>
     <link rel="stylesheet" th:href="@{/css/user-styles.css}">
     <link rel="stylesheet" th:href="@{/css/general-styles.css}">
     <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -11,12 +11,33 @@
 </head>
 <body>
 
+<nav class="navbar navbar-expand-lg navbar-dark black fixedNav navbar-color">
+    <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation"
+            class="navbar-toggler"
+            data-target="#navbarText" data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                   data-toggle="dropdown" href="#" id="navbarDropdown" role="button" th:text="${session.userName}">
+                </a>
+                <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                    <a class="dropdown-item" href="/teacher/edit-user" th:text="#{edit_account}"></a>
+                    <a class="dropdown-item" href="/logout" th:text="#{logout}"> </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
 <div class="sidenav lang" id="mySidenav">
     <a href="/teacher/home"><p th:text="#{home}"></p></a>
     <a href="/teacher/show-courses"><p th:text="#{courses}"></p></a>
     <a href="/teacher/show-exams"><p th:text="#{exams}"></p></a>
-    <a href="/teacher/edit-user" th:text="#{edit_account}"></a>
-    <a href="/logout" th:text="#{logout}"></a>
+    <br>
+    <img alt="aboutUs" height="150px" src="../static/css/img/QuizMaker.png" th:src="@{/css/img/QuizMaker.png}" width="150px">
 </div>
 <div class="main lang content">
     <div class="table-bordered lang">
@@ -51,36 +72,6 @@
                     <span th:text="${option}">Item description here...</span>
                         </span>
                 </td>
-<!--                <td>-->
-<!--                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">-->
-<!--                        Options-->
-<!--                    </button>-->
-
-<!--                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"-->
-<!--                         aria-labelledby="exampleModalLabel" aria-hidden="true">-->
-<!--                        <div class="modal-dialog" role="document">-->
-<!--                            <div class="modal-content">-->
-<!--                                <div class="modal-header">-->
-<!--                                    <h5 class="modal-title" id="exampleModalLabel">Options</h5>-->
-<!--                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--                                        <span aria-hidden="true">&times;</span>-->
-<!--                                    </button>-->
-<!--                                </div>-->
-<!--                                <div class="modal-body">-->
-<!--                                    <table>-->
-<!--                                        <tr th:each="option : ${question.options}">-->
-<!--                                            <td th:text="${option}"></td>-->
-<!--                                        </tr>-->
-<!--                                    </table>-->
-<!--                                </div>-->
-<!--                                <div class="modal-footer">-->
-<!--                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </td>-->
-<!--            </tr>-->
 
         </table>
     </div>
