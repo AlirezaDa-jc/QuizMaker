@@ -197,7 +197,6 @@ public class StudentController {
         questions++;
         return "redirect:/student/join-exam/" + examId + "/" + questions;
     }
-//TODO Options Multiple Choice Add HTML
 
 
     @ExceptionHandler(UniqueException.class)
