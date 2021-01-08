@@ -1,11 +1,11 @@
 package ir.maktab.quizmaker.controller;
 
+import ir.maktab.quizmaker.config.CustomUserDetailService;
 import ir.maktab.quizmaker.domains.Student;
 import ir.maktab.quizmaker.domains.Teacher;
 import ir.maktab.quizmaker.services.CourseService;
 import ir.maktab.quizmaker.services.StudentService;
 import ir.maktab.quizmaker.services.TeacherService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,14 +25,18 @@ import java.util.Collection;
 @Controller
 @RequestMapping("home")
 public class HomeController {
-    @Autowired
-    private StudentService studentService;
-    @Autowired
-    private TeacherService teacherService;
-    @Autowired
-    private CourseService courseService;
 
+    private final StudentService studentService;
 
+    private final TeacherService teacherService;
+
+    private final CourseService courseService;
+
+    public HomeController(StudentService studentService, TeacherService teacherService, CourseService courseService) {
+        this.studentService = studentService;
+        this.teacherService = teacherService;
+        this.courseService = courseService;
+    }
 
     @GetMapping
     public String showMenu() {
@@ -51,13 +55,6 @@ public class HomeController {
         }
     }
 
-    @RequestMapping("/login_error")
-    public String loginError(Model model) {
-        model.addAttribute("loginError", true);
-        return "home";
-    }
-
-
     @GetMapping("/sign-up/student")
     public String sendStudentSignUpForm(Model model) {
         model.addAttribute("student", new Student());
@@ -75,7 +72,8 @@ public class HomeController {
             model.addAttribute("error", true);
             return "student-sign-up";
         }
-        return "redirect:/home";
+        model.addAttribute("wait", true);
+        return "home";
     }
 
 
@@ -96,7 +94,8 @@ public class HomeController {
             model.addAttribute("error", true);
             return "teacher-sign-up";
         }
-        return "redirect:/home";
+        model.addAttribute("wait", true);
+        return "home";
     }
 
     @GetMapping("courses")
@@ -107,7 +106,14 @@ public class HomeController {
 
     @GetMapping("login_error")
     public String sendLoginError(Model model){
-        model.addAttribute("loginError",true);
+        if(CustomUserDetailService.getState()==1) {
+            model.addAttribute("loginError", true);
+            model.addAttribute("not_allowed", false);
+        }else if(CustomUserDetailService.getState() == 2){
+            model.addAttribute("not_allowed",true);
+            model.addAttribute("loginError",false);
+        }
+        model.addAttribute("wait", false);
         return "home";
     }
 }

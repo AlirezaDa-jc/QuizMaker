@@ -56,6 +56,13 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert"
+                                 th:if="${not_allowed}">
+                                <p class="error" th:text="#{not_allowed}"></p>
+                                <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                             <div class="modal-body mx-3">
                                 <div class="md-form mb-5">
                                     <i class="fas fa-envelope prefix grey-text"></i>
@@ -89,8 +96,15 @@
                 </div>
             </div>
         </nav>
+        <div class="alert alert-success alert-dismissible fade show" role="alert"
+             th:if="${wait}">
+            <p class="error" th:text="#{wait}"></p>
+            <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
         <div class="row position">
-            <img alt="aboutUs" src="../static/css/img/QuizMaker.png">
+            <img alt="aboutUs" src="../static/css/img/QuizMaker.png" th:src="@{/css/img/QuizMaker.png}">
             <div class="card inline-box transparent" >
                 <div class="card-body">
                     <h5 class="card-title" th:text="#{quiz_title}"></h5>

@@ -4,7 +4,6 @@ import ir.maktab.quizmaker.base.CustomTimer;
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,34 +25,41 @@ public class StudentController {
 
     private Student student;
 
-    @Autowired
-    private StudentService studentService;
 
-    @Autowired
-    private CourseService courseService;
+    private final StudentService studentService;
 
-    @Autowired
-    private ExamService examService;
 
-    @Autowired
-    private QuestionService questionService;
+    private final CourseService courseService;
 
-    @Autowired
-    private StudentQuestionScoreService studentQuestionScoreService;
 
-    @Autowired
-    private QuestionExamScoreService questionExamScoreService;
+    private final ExamService examService;
 
-    @Autowired
-    private UserService userService;
+
+    private final StudentQuestionScoreService studentQuestionScoreService;
+
+
+    private final QuestionExamScoreService questionExamScoreService;
+
+
+    private final UserService userService;
+    private int questions = 0;
 
     private Set<Course> courses;
 
     private CustomTimer customTimer = null;
 
-
-//    private int time;
-//    private boolean joined = false;
+    public StudentController(StudentService studentService,
+                             CourseService courseService,
+                             ExamService examService,
+                             StudentQuestionScoreService studentQuestionScoreService,
+                             QuestionExamScoreService questionExamScoreService, UserService userService) {
+        this.studentService = studentService;
+        this.courseService = courseService;
+        this.examService = examService;
+        this.studentQuestionScoreService = studentQuestionScoreService;
+        this.questionExamScoreService = questionExamScoreService;
+        this.userService = userService;
+    }
 
     @GetMapping("home")
     public String showHome(Model model, HttpSession session) {
@@ -61,7 +67,7 @@ public class StudentController {
                 (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()
         );
         courses = student.getCourses();
-        session.setAttribute("userName",SecurityContextHolder.getContext().getAuthentication().getName());
+        session.setAttribute("userName", SecurityContextHolder.getContext().getAuthentication().getName());
 
         model.addAttribute("student", student);
         return "student-home";
@@ -95,12 +101,20 @@ public class StudentController {
     }
 
     @GetMapping("show-exams/{courseId}")
-    public String showExams(Model model, @PathVariable Long courseId) {
+    public String showExams(Model model, @PathVariable Long courseId) throws Exception {
         List<Exam> exams = courseService.findById(courseId).getExams().stream()
                 .filter(Exam::isAvailable)
                 .collect(Collectors.toList());
         model.addAttribute("exams", exams);
         model.addAttribute("joined", false);
+        if(customTimer != null){
+            long examId = customTimer.getExamId();
+            Exam exam = examService.findById(examId);
+            if (examService.timeUp(customTimer,exam,student)) {
+                customTimer = null;
+                questions=0;
+            }
+        }
         return "student-show-exams";
     }
 
@@ -108,21 +122,20 @@ public class StudentController {
     public String joinExam(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
         Exam exam = examService.findById(examId);
         List<Student> students = exam.getStudents().stream().filter(c -> c.equals(student)).collect(Collectors.toList());
-        if(students.size() != 0){
+        if (students.size() != 0) {
             model.addAttribute("exams", exam.getCourse().getExams());
             model.addAttribute("joined", true);
             return "student-show-exams";
         }
-        if(customTimer != null){
-                if (customTimer.elapsedTime() == (exam.getTime() * 60)) {
-                    exam.addStudent(student);
-                    examService.save(exam);
-                    customTimer = null;
-                    return "redirect:/student/home";
-                }
-            }else{
-                customTimer = new CustomTimer(examId);
+        if (customTimer != null) {
+            if (examService.timeUp(customTimer,exam,student)) {
+                customTimer = null;
+                questions=0;
+                return "redirect:/student/home";
             }
+        } else {
+            customTimer = new CustomTimer(examId);
+        }
 
         if (questionId < exam.getScores().size()) {
             List<MultipleChoiceQuestion> multipleChoiceQuestions = examService.findMultipleChoiceQuestions(exam);
@@ -130,23 +143,23 @@ public class StudentController {
             model.addAttribute("exam", exam);
             model.addAttribute("questionId", questionId);
             double time = exam.getTime() * 60000 - customTimer.elapsedTime();
-            model.addAttribute("time",time);
-            studentQuestionScoreService.createStudentQuestionExamScores(student,exam.getScores());
+            model.addAttribute("time", time);
+            studentQuestionScoreService.createStudentQuestionExamScores(student, exam.getScores());
             if (questionId < multipleChoiceQuestions.size()) {
                 MultipleChoiceQuestion question = multipleChoiceQuestions.get(Math.toIntExact(questionId));
                 QuestionExamScore questionExamScore = questionExamScoreService.findByExamAndQuestion(exam, question);
                 StudentQuestionScore studentQuestionScore = studentQuestionScoreService
                         .findByStudentAndQuestionExamScore(student, questionExamScore);
                 model.addAttribute("MultipleChoiceQuestion", question);
-                model.addAttribute("studentQuestionScore",studentQuestionScore);
+                model.addAttribute("studentQuestionScore", studentQuestionScore);
                 model.addAttribute("score", questionExamScore);
                 return "student-join-exam-multiple-choice-question";
             } else if ((questionId - multipleChoiceQuestions.size()) < descriptiveQuestions.size()) {
-                DescriptiveQuestion question = descriptiveQuestions.get(Math.toIntExact(questionId- multipleChoiceQuestions.size()));
+                DescriptiveQuestion question = descriptiveQuestions.get(Math.toIntExact(questionId - multipleChoiceQuestions.size()));
                 QuestionExamScore questionExamScore = questionExamScoreService.findByExamAndQuestion(exam, question);
                 StudentQuestionScore studentQuestionScore = studentQuestionScoreService
                         .findByStudentAndQuestionExamScore(student, questionExamScore);
-                model.addAttribute("studentQuestionScore",studentQuestionScore);
+                model.addAttribute("studentQuestionScore", studentQuestionScore);
                 model.addAttribute("DescriptiveQuestion", question);
                 model.addAttribute("score", questionExamScore);
                 return "student-join-exam-descriptive-question";
@@ -155,6 +168,7 @@ public class StudentController {
         exam.addStudent(student);
         examService.save(exam);
         customTimer = null;
+        questions=0;
         return "redirect:/student/home";
 
     }
@@ -180,8 +194,8 @@ public class StudentController {
         studentQuestionScoreService.correctAnswer(studentQuestionScore);
         QuestionExamScore questionExamScore = studentQuestionScore.getQuestionExamScore();
         Long examId = questionExamScore.getExam().getId();
-        int questionId =  questionExamScore.getExam().getScores().indexOf(questionExamScore)+1;
-        return "redirect:/student/join-exam/"+examId+"/"+questionId;
+        questions++;
+        return "redirect:/student/join-exam/" + examId + "/" + questions;
     }
 //TODO Options Multiple Choice Add HTML
 

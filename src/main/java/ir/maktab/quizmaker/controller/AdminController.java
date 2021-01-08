@@ -3,7 +3,6 @@ package ir.maktab.quizmaker.controller;
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -21,21 +20,28 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private TeacherService teacherService;
-    @Autowired
-    private StudentService studentService;
 
-    @Autowired
-    private CourseService courseService;
+    private final UserService userService;
 
-    @Autowired
-    private SubjectService subjectService;
+    private final TeacherService teacherService;
 
-    @Autowired
-    private AdminService adminService;
+    private final StudentService studentService;
+
+    private final CourseService courseService;
+
+    private final SubjectService subjectService;
+
+    private final AdminService adminService;
+
+    public AdminController(UserService userService, TeacherService teacherService, StudentService studentService,
+                           CourseService courseService, SubjectService subjectService, AdminService adminService) {
+        this.userService = userService;
+        this.teacherService = teacherService;
+        this.studentService = studentService;
+        this.courseService = courseService;
+        this.subjectService = subjectService;
+        this.adminService = adminService;
+    }
 
     private Teacher tempTeacher;
     private Student tempStudent;
@@ -80,13 +86,15 @@ public class AdminController {
     @GetMapping("list-teachers")
     public String sendListOfTeachers(Model model) {
 
-        model.addAttribute("teachers",teacherService.findAll().stream().filter(Teacher::isAllowed).collect(Collectors.toList()));
+        model.addAttribute("teachers",teacherService.findAll().stream()
+                .filter(Teacher::isAllowed).collect(Collectors.toList()));
         return "admin-list-teachers";
     }
 
     @GetMapping("list-students")
     public String sendListOfStudents(Model model) {
-        model.addAttribute("students", studentService.findAll().stream().filter(Student::isAllowed).collect(Collectors.toList()));
+        model.addAttribute("students", studentService.findAll().stream()
+                .filter(Student::isAllowed).collect(Collectors.toList()));
         return "admin-list-students";
     }
 
@@ -203,7 +211,7 @@ public class AdminController {
         session.setAttribute("userName",SecurityContextHolder.getContext().getAuthentication().getName());
 
 
-        return "admin-view";
+        return "admin-home";
     }
 
     @GetMapping("edit-teacher/{id}")

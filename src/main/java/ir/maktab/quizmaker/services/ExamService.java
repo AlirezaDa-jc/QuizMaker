@@ -1,5 +1,6 @@
 package ir.maktab.quizmaker.services;
 
+import ir.maktab.quizmaker.base.CustomTimer;
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.repository.ExamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,5 +90,14 @@ public class ExamService {
         scores.forEach(c -> questions.add(c.getQuestion()));
 
         return questions;
+    }
+
+    public boolean timeUp(CustomTimer customTimer, Exam exam, Student student) throws Exception {
+        if(customTimer.elapsedTime() == (exam.getTime() * 60)){
+            exam.addStudent(student);
+            save(exam);
+            return true;
+        }
+        return false;
     }
 }

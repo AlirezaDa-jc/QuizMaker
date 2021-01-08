@@ -3,7 +3,6 @@ package ir.maktab.quizmaker.controller;
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,34 +22,43 @@ public class TeacherController {
 
     private Teacher teacher;
 
-    @Autowired
-    private TeacherService teacherService;
 
-    @Autowired
-    private CourseService courseService;
+    private final TeacherService teacherService;
 
-    @Autowired
-    private ExamService examService;
+    private final CourseService courseService;
 
-    @Autowired
-    private UserService userService;
+    private final ExamService examService;
 
-    @Autowired
-    private QuestionService questionService;
+    private final UserService userService;
 
-    @Autowired
-    private QuestionExamScoreService questionExamScoreService;
+    private final QuestionService questionService;
 
-    @Autowired
-    private StudentQuestionScoreService studentQuestionScoreService;
+    private final QuestionExamScoreService questionExamScoreService;
 
-    @Autowired
-    private StudentService studentService;
+    private final StudentQuestionScoreService studentQuestionScoreService;
 
+    private final StudentService studentService;
 
     private QuestionExamScore tempQuestionExamScore;
 
     private Set<Course> courses;
+
+    public TeacherController(TeacherService teacherService,
+                             CourseService courseService,
+                             ExamService examService,
+                             UserService userService,
+                             QuestionService questionService,
+                             QuestionExamScoreService questionExamScoreService,
+                             StudentQuestionScoreService studentQuestionScoreService, StudentService studentService) {
+        this.teacherService = teacherService;
+        this.courseService = courseService;
+        this.examService = examService;
+        this.userService = userService;
+        this.questionService = questionService;
+        this.questionExamScoreService = questionExamScoreService;
+        this.studentQuestionScoreService = studentQuestionScoreService;
+        this.studentService = studentService;
+    }
 
     @GetMapping("home")
     public String showHome(Model model, HttpSession session) {

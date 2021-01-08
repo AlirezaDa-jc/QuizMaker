@@ -10,12 +10,6 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
 </head>
 <body>
-<div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${joined}">
-    <p class="error" th:text="#{joined}"></p>
-    <button aria-label="Close" class="close" data-dismiss="alert" type="button">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
 <nav class="navbar navbar-expand-lg navbar-dark black fixedNav navbar-color">
     <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation"
             class="navbar-toggler"
@@ -36,7 +30,12 @@
         </ul>
     </div>
 </nav>
-
+<div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${joined}">
+    <p class="error" th:text="#{joined}"></p>
+    <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 <div class="sidenav lang" id="mySidenav">
     <a href="/student/home"><p th:text="#{home}"></p></a>
     <a href="/student/show-courses" th:text="#{courses}"></a>
