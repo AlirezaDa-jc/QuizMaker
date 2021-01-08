@@ -36,6 +36,12 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
+<div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${joined_exam}">
+    <p class="error" th:text="#{joined_exam}"></p>
+    <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 <div class="sidenav lang" id="mySidenav">
     <a href="/student/home"><p th:text="#{home}"></p></a>
     <a href="/student/show-courses" th:text="#{courses}"></a>

@@ -9,7 +9,7 @@ html[lang=en] {
 .sidenav {
     height: 100%;
     width: 20%;
-    position: absolute;
+    position: fixed;
     z-index: 1;
     top: 0;
     right: 0;

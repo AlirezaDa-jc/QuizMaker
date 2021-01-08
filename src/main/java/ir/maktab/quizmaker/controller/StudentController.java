@@ -48,6 +48,8 @@ public class StudentController {
 
     private CustomTimer customTimer = null;
 
+    Thread time;
+
     public StudentController(StudentService studentService,
                              CourseService courseService,
                              ExamService examService,
@@ -107,14 +109,7 @@ public class StudentController {
                 .collect(Collectors.toList());
         model.addAttribute("exams", exams);
         model.addAttribute("joined", false);
-        if(customTimer != null){
-            long examId = customTimer.getExamId();
-            Exam exam = examService.findById(examId);
-            if (examService.timeUp(customTimer,exam,student)) {
-                customTimer = null;
-                questions=0;
-            }
-        }
+        model.addAttribute("joined_exam", false);
         return "student-show-exams";
     }
 
@@ -125,18 +120,35 @@ public class StudentController {
         if (students.size() != 0) {
             model.addAttribute("exams", exam.getCourse().getExams());
             model.addAttribute("joined", true);
+            model.addAttribute("joined_exam", false);
             return "student-show-exams";
         }
-        if (customTimer != null) {
-            if (examService.timeUp(customTimer,exam,student)) {
-                customTimer = null;
-                questions=0;
-                return "redirect:/student/home";
-            }
-        } else {
+        if (customTimer == null) {
             customTimer = new CustomTimer(examId);
         }
 
+        if(customTimer.getExamId() == examId) {
+            if(time == null) {
+                time = new Thread("time") {
+                    public void run() {
+                        try {
+                            Thread.sleep(exam.getTime() * 60000);
+                            examService.endExam(exam, student);
+                            customTimer = null;
+                            questions = 0;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                time.start();
+            }
+        }else {
+            model.addAttribute("exams", exam.getCourse().getExams());
+            model.addAttribute("joined", false);
+            model.addAttribute("joined_exam", true);
+            return "student-show-exams";
+        }
         if (questionId < exam.getScores().size()) {
             List<MultipleChoiceQuestion> multipleChoiceQuestions = examService.findMultipleChoiceQuestions(exam);
             List<DescriptiveQuestion> descriptiveQuestions = examService.findDescriptiveQuestions(exam);
@@ -165,11 +177,10 @@ public class StudentController {
                 return "student-join-exam-descriptive-question";
             }
         }
-        exam.addStudent(student);
-        examService.save(exam);
+        examService.endExam(exam, student);
         customTimer = null;
         questions=0;
-        return "redirect:/student/home";
+        return "redirect:/student/show-exams/"+exam.getCourse().getId();
 
     }
 

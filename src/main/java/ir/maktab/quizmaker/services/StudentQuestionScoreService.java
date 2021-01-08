@@ -94,14 +94,6 @@ public class StudentQuestionScoreService {
 
     public StudentQuestionScore findByStudentAndQuestionExamScore(Student student, QuestionExamScore questionExamScore) {
         List<StudentQuestionScore> studentQuestionScores = studentQuestionScoreRepository.findAll().stream().filter(c -> c.getStudent().getId().equals(student.getId()) && c.getQuestionExamScore().getId().equals(questionExamScore.getId())).collect(Collectors.toList());
-
-//        if (studentQuestionScores.size() == 0) {
-//            StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
-//            studentQuestionScore.setStudent(student);
-//            studentQuestionScore.setQuestionExamScore(questionExamScore);
-//            studentQuestionScoreRepository.save(studentQuestionScore);
-//            return studentQuestionScore;
-//        }
         return studentQuestionScores.get(0);
     }
 
