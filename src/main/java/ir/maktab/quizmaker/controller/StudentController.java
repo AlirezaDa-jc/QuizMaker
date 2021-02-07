@@ -103,7 +103,7 @@ public class StudentController {
     }
 
     @GetMapping("show-exams/{courseId}")
-    public String showExams(Model model, @PathVariable Long courseId) throws Exception {
+    public String showExams(Model model, @PathVariable Long courseId) {
         List<Exam> exams = courseService.findById(courseId).getExams().stream()
                 .filter(Exam::isAvailable)
                 .collect(Collectors.toList());
@@ -183,22 +183,6 @@ public class StudentController {
         return "redirect:/student/show-exams/"+exam.getCourse().getId();
 
     }
-
-    //    @PostMapping("correct-exam/{examId}")
-//    public String correctExam(@PathVariable Long examId, HttpServletRequest request, Model model) {
-//        Exam exam = examService.findById(examId);
-//
-//        String[] answers = new String[exam.getScores().size()];
-//        int i = 0;
-//        String answer = request.getParameter(String.valueOf(i));
-//        while (answer != null) {
-//            answers[i] = answer;
-//            i++;
-//            answer = request.getParameter(String.valueOf(i));
-//        }
-//        studentQuestionScoreService.correctAnswers(exam, student, answers);
-
-//    }
 
     @PostMapping("correct-exam")
     public String correctExam(@ModelAttribute StudentQuestionScore studentQuestionScore) {

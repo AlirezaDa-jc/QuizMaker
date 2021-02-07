@@ -5,7 +5,6 @@ import ir.maktab.quizmaker.domains.Course;
 import ir.maktab.quizmaker.domains.Student;
 import ir.maktab.quizmaker.domains.Teacher;
 import ir.maktab.quizmaker.domains.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,13 +17,17 @@ import javax.transaction.Transactional;
 
 public class AdminService {
 
-    @Autowired
-    private TeacherService teacherService;
-    @Autowired
-    private StudentService studentService;
+    private final TeacherService teacherService;
 
-    @Autowired
-    private CourseService courseService;
+    private final StudentService studentService;
+
+    private final CourseService courseService;
+
+    public AdminService(TeacherService teacherService, StudentService studentService, CourseService courseService) {
+        this.teacherService = teacherService;
+        this.studentService = studentService;
+        this.courseService = courseService;
+    }
 
     public void deleteUserFromCourse(User user, Course tempCourse) {
         if (user.getRole().equals("TEACHER")) {

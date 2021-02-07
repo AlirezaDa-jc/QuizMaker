@@ -4,7 +4,6 @@ package ir.maktab.quizmaker.services;
 import ir.maktab.quizmaker.domains.User;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,10 +20,15 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class UserService {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final UserRepository userRepository;
+
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+    }
 
     public List<User> findAllByUsernameLike(String username) {
         return userRepository.findAllByUserNameContains(username);

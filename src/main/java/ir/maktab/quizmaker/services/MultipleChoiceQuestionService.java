@@ -2,7 +2,6 @@ package ir.maktab.quizmaker.services;
 
 import ir.maktab.quizmaker.domains.MultipleChoiceQuestion;
 import ir.maktab.quizmaker.repository.MultipleChoiceQuestionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -15,14 +14,11 @@ import java.util.List;
 @Service
 public class MultipleChoiceQuestionService {
 
-    @Autowired
-    private MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
+    private final MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
 
-    @Autowired
-    private SubjectService subjectService;
-
-    @Autowired
-    private ExamService examService;
+    public MultipleChoiceQuestionService(MultipleChoiceQuestionRepository multipleChoiceQuestionRepository) {
+        this.multipleChoiceQuestionRepository = multipleChoiceQuestionRepository;
+    }
 
     public MultipleChoiceQuestion save(MultipleChoiceQuestion multipleChoiceQuestion){
         List<String> options = multipleChoiceQuestion.getOptions();

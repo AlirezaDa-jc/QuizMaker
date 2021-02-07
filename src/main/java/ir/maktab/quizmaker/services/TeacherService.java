@@ -3,7 +3,6 @@ package ir.maktab.quizmaker.services;
 import ir.maktab.quizmaker.domains.Teacher;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.repository.TeacherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +20,17 @@ import java.util.stream.Collectors;
 @Transactional
 public class TeacherService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private TeacherRepository teacherRepository;
+    private final TeacherRepository teacherRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public TeacherService(PasswordEncoder passwordEncoder, TeacherRepository teacherRepository, UserService userService) {
+        this.passwordEncoder = passwordEncoder;
+        this.teacherRepository = teacherRepository;
+        this.userService = userService;
+    }
 
     public Teacher save(Teacher teacher) {
         return teacherRepository.save(teacher);
@@ -49,23 +51,11 @@ public class TeacherService {
                 .collect(Collectors.toList());
     }
 
-    public List<Teacher> findAllByFirstNameContains(String firstName) {
-        return teacherRepository.findAllByFirstNameContains(firstName);
-    }
-
-    public List<Teacher> findAllByLastNameContains(String lastName) {
-        return teacherRepository.findAllByLastNameContains(lastName);
-    }
-
     public Teacher findById(Long id) {
         Optional<Teacher> byId = teacherRepository.findById(id);
 
         return byId.get();
 
-    }
-
-    public List<Teacher> findAllByUserNameContains(String userName) {
-        return teacherRepository.findAllByUserNameContains(userName);
     }
 
     public List<Teacher> findAll() {

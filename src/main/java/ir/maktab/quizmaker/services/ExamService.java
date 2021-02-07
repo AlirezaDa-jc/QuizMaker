@@ -2,7 +2,6 @@ package ir.maktab.quizmaker.services;
 
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.repository.ExamRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,12 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class ExamService {
 
-    @Autowired
-    private ExamRepository examRepository;
+    private final ExamRepository examRepository;
 
-    @Autowired
-    private QuestionService questionService;
-
+    public ExamService(ExamRepository examRepository) {
+        this.examRepository = examRepository;
+    }
 
     public Exam save(Exam exam) throws Exception {
         if(exam.getTime() > 420){

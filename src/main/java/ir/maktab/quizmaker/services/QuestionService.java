@@ -2,10 +2,9 @@ package ir.maktab.quizmaker.services;
 
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.repository.QuestionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,17 +16,22 @@ import java.util.stream.Collectors;
 @Service
 public class QuestionService {
 
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
-    @Autowired
-    private DescriptiveQuestionService descriptiveQuestionService;
+    private final DescriptiveQuestionService descriptiveQuestionService;
 
-    @Autowired
-    private MultipleChoiceQuestionService multipleChoiceQuestionService;
+    private final MultipleChoiceQuestionService multipleChoiceQuestionService;
 
-    @Autowired
-    private QuestionExamScoreService questionExamScoreService;
+    private final QuestionExamScoreService questionExamScoreService;
+
+    public QuestionService(QuestionRepository questionRepository, DescriptiveQuestionService descriptiveQuestionService
+            , MultipleChoiceQuestionService multipleChoiceQuestionService,
+                           QuestionExamScoreService questionExamScoreService) {
+        this.questionRepository = questionRepository;
+        this.descriptiveQuestionService = descriptiveQuestionService;
+        this.multipleChoiceQuestionService = multipleChoiceQuestionService;
+        this.questionExamScoreService = questionExamScoreService;
+    }
 
     public Question findById(Long questionId) {
         return questionRepository.findById(questionId).get();
@@ -98,20 +102,18 @@ public class QuestionService {
                 .collect(Collectors.toList());
     }
 
-    public List<DescriptiveQuestion>findDescriptiveQuestions(Set<Question> questions) {
+    public List<DescriptiveQuestion> findDescriptiveQuestions(Set<Question> questions) {
         return questions.stream()
                 .filter(c -> c instanceof DescriptiveQuestion)
                 .map(c -> (DescriptiveQuestion) c)
                 .collect(Collectors.toList());
     }
 
-    public void deleteAllOption(){
+    public void deleteAllOption() {
         questionRepository.findAll().forEach(multipleChoiceQuestion -> {
-            if(multipleChoiceQuestion instanceof MultipleChoiceQuestion) {
+            if (multipleChoiceQuestion instanceof MultipleChoiceQuestion) {
                 MultipleChoiceQuestion question = (MultipleChoiceQuestion) multipleChoiceQuestion;
-                List<String> options = question.getOptions();
-                options.removeAll(Collections.singleton(""));
-                question.setOptions(options);
+                question.setOptions(new ArrayList<>());
                 questionRepository.save(question);
             }
         });

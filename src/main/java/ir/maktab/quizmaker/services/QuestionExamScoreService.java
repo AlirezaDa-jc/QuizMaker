@@ -5,7 +5,6 @@ import ir.maktab.quizmaker.domains.MultipleChoiceQuestion;
 import ir.maktab.quizmaker.domains.Question;
 import ir.maktab.quizmaker.domains.QuestionExamScore;
 import ir.maktab.quizmaker.repository.QuestionExamRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,8 +15,12 @@ import java.util.List;
  */
 @Service
 public class QuestionExamScoreService {
-    @Autowired
-    private QuestionExamRepository questionExamRepository;
+
+    private final QuestionExamRepository questionExamRepository;
+
+    public QuestionExamScoreService(QuestionExamRepository questionExamRepository) {
+        this.questionExamRepository = questionExamRepository;
+    }
 
     public QuestionExamScore save(QuestionExamScore questionExamScore){
         return questionExamRepository.save(questionExamScore);

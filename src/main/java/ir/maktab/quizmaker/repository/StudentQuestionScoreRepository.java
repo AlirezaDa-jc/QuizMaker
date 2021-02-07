@@ -6,17 +6,12 @@ import ir.maktab.quizmaker.domains.StudentQuestionScore;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 /**
  * @author Alireza.d.a
  */
 @Repository
 public interface StudentQuestionScoreRepository extends JpaRepository<StudentQuestionScore,Long> {
-    List<StudentQuestionScore> findAllByQuestionExamScoreAndStudent(QuestionExamScore questionExamScores, Student student);
 
     StudentQuestionScore findDistinctByQuestionExamScoreAndStudent(QuestionExamScore questionExamScore, Student student);
-    StudentQuestionScore findDistinctByQuestionExamScoreContainsAndStudentContains(QuestionExamScore questionExamScore, Student student);
 
-    List<StudentQuestionScore> findAllByQuestionExamScoreContains(QuestionExamScore questionExamScore);
 }

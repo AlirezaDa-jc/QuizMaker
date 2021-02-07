@@ -3,7 +3,6 @@ package ir.maktab.quizmaker.services;
 import ir.maktab.quizmaker.domains.Subject;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.repository.SubjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +14,11 @@ import java.util.List;
 @Service
 public class SubjectService {
 
-    @Autowired
-    private SubjectRepository subjectRepository;
+    private final SubjectRepository subjectRepository;
+
+    public SubjectService(SubjectRepository subjectRepository) {
+        this.subjectRepository = subjectRepository;
+    }
 
     public Subject save(Subject subject) {
         if (subjectRepository.findByName(subject.getName()) == null)

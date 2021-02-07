@@ -37,6 +37,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/home/courses" th:text="#{courses}"></a>
                     </li>
+                    <li class="nav-item dropdown" style="font-size: small">
+                        <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                           data-toggle="dropdown" href="#" id="navbarDropdown" role="button" th:text="#{change_lang}">
+                        </a>
+                        <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                            <a class="dropdown-item" href="/home/?lang=fa" th:text="#{fa}"></a>
+                            <a class="dropdown-item" href="/home/?lang=en" th:text="#{en}"> </a>
+                        </div>
+                    </li>
                 </ul>
                 <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="modalLoginForm"
                      role="dialog"

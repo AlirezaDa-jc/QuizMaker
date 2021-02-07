@@ -12,7 +12,6 @@ import javax.persistence.InheritanceType;
  * @author Alireza.d.a
  */
 
-//Inherint
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity<Long> {

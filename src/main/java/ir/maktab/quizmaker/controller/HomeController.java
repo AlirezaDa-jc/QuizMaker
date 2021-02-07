@@ -85,7 +85,7 @@ public class HomeController {
     }
 
     @PostMapping("/sign-up/teacher")
-    public String signUp(@ModelAttribute Teacher teacher, Model model) throws Exception {
+    public String signUp(@ModelAttribute Teacher teacher, Model model) {
         try {
             teacherService.signUp(teacher);
         } catch (Exception ex) {

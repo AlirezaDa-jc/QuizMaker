@@ -1,12 +1,13 @@
 package ir.maktab.quizmaker.services;
 
-import ir.maktab.quizmaker.domains.*;
+import ir.maktab.quizmaker.domains.MultipleChoiceQuestion;
+import ir.maktab.quizmaker.domains.QuestionExamScore;
+import ir.maktab.quizmaker.domains.Student;
+import ir.maktab.quizmaker.domains.StudentQuestionScore;
 import ir.maktab.quizmaker.repository.StudentQuestionScoreRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,44 +16,50 @@ import java.util.stream.Collectors;
  */
 @Service
 public class StudentQuestionScoreService {
-    @Autowired
-    private StudentQuestionScoreRepository studentQuestionScoreRepository;
 
-    public void correctAnswers(Exam exam, Student student, String[] answers) {
-        List<Question> questions = new LinkedList<>();
-        List<MultipleChoiceQuestion> multipleChoice = new LinkedList<>();
-        List<DescriptiveQuestion> decriptive = new LinkedList<>();
-        exam.getScores().forEach(c -> {
-            if (c.getQuestion() instanceof MultipleChoiceQuestion) {
-                multipleChoice.add((MultipleChoiceQuestion) c.getQuestion());
-            } else {
-                decriptive.add((DescriptiveQuestion) c.getQuestion());
-            }
-        });
-        questions.addAll(multipleChoice);
-        questions.addAll(decriptive);
-        for (int i = 0; i < questions.size(); i++) {
-            StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
-            studentQuestionScore.setStudent(student);
-            QuestionExamScore questionExamScore = null;
-            for (QuestionExamScore examScore : questions.get(i).getScores()) {
-                if (examScore.getExam() == exam) {
-                    questionExamScore = examScore;
-                    break;
-                }
-            }
-            studentQuestionScore.setQuestionExamScore(questionExamScore);
-            if (questions.get(i).getAnswer().equals(answers[i])) {
-                assert questionExamScore != null;
-                studentQuestionScore.setScore(questionExamScore.getScore());
-            } else {
-                studentQuestionScore.setScore(0);
-            }
-            studentQuestionScore.setAnswer(answers[i]);
-            studentQuestionScoreRepository.save(studentQuestionScore);
+    private final StudentQuestionScoreRepository studentQuestionScoreRepository;
 
-        }
+    public StudentQuestionScoreService(StudentQuestionScoreRepository studentQuestionScoreRepository) {
+        this.studentQuestionScoreRepository = studentQuestionScoreRepository;
     }
+/*
+    Correct Answer For Template student-join-exam!
+     */
+//    public void correctAnswers(Exam exam, Student student, String[] answers) {
+//        List<Question> questions = new LinkedList<>();
+//        List<MultipleChoiceQuestion> multipleChoice = new LinkedList<>();
+//        List<DescriptiveQuestion> decriptive = new LinkedList<>();
+//        exam.getScores().forEach(c -> {
+//            if (c.getQuestion() instanceof MultipleChoiceQuestion) {
+//                multipleChoice.add((MultipleChoiceQuestion) c.getQuestion());
+//            } else {
+//                decriptive.add((DescriptiveQuestion) c.getQuestion());
+//            }
+//        });
+//        questions.addAll(multipleChoice);
+//        questions.addAll(decriptive);
+//        for (int i = 0; i < questions.size(); i++) {
+//            StudentQuestionScore studentQuestionScore = new StudentQuestionScore();
+//            studentQuestionScore.setStudent(student);
+//            QuestionExamScore questionExamScore = null;
+//            for (QuestionExamScore examScore : questions.get(i).getScores()) {
+//                if (examScore.getExam() == exam) {
+//                    questionExamScore = examScore;
+//                    break;
+//                }
+//            }
+//            studentQuestionScore.setQuestionExamScore(questionExamScore);
+//            if (questions.get(i).getAnswer().equals(answers[i])) {
+//                assert questionExamScore != null;
+//                studentQuestionScore.setScore(questionExamScore.getScore());
+//            } else {
+//                studentQuestionScore.setScore(0);
+//            }
+//            studentQuestionScore.setAnswer(answers[i]);
+//            studentQuestionScoreRepository.save(studentQuestionScore);
+//
+//        }
+//    }
 
     public List<StudentQuestionScore> findByQuestionExamScoresAndStudent(List<QuestionExamScore> questionExamScores, Student student) {
         List<StudentQuestionScore> studentQuestionScores = new ArrayList<>();

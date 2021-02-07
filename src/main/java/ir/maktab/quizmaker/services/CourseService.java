@@ -5,7 +5,6 @@ import ir.maktab.quizmaker.domains.Student;
 import ir.maktab.quizmaker.domains.Teacher;
 import ir.maktab.quizmaker.domains.User;
 import ir.maktab.quizmaker.repository.CourseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,9 +18,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class CourseService {
 
-    @Autowired
-    private CourseRepository courseRepository;
 
+    private final CourseRepository courseRepository;
+
+    public CourseService(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
 
     public List<Course> findAllWithoutTeacher(){
         return courseRepository.findAll().stream().filter(course -> course.getTeacher()==null).collect(Collectors.toList());
