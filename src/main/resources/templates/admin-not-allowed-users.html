@@ -51,7 +51,7 @@
     <table class="table lang">
 
         <tr>
-            <th colspan="5" th:text="#{teachers}">Teachers</th>
+            <th colspan="6" th:text="#{teachers}">Teachers</th>
         </tr>
         <tr>
             <th th:text="#{firstname}">First Name</th>
@@ -62,7 +62,7 @@
 
 
         <tr th:if="${teachers.isEmpty()}">
-            <td colspan="5" th:text="#{no_teachers}">There Are No Forbidden Teachers</td>
+            <td colspan="6" th:text="#{no_teachers}">There Are No Forbidden Teachers</td>
         </tr>
 
         <tr th:each="teacher : ${teachers}">
@@ -79,10 +79,10 @@
 
         </tr>
         <tr>
-            <th colspan="5">Students</th>
+            <th colspan="6">Students</th>
         </tr>
         <tr th:if="${students.isEmpty()}">
-            <td colspan="5" th:text="#{no_students}">There Are No Forbidden Students</td>
+            <td colspan="6" th:text="#{no_students}">There Are No Forbidden Students</td>
         </tr>
 
         <tr th:each="student : ${students}">
