@@ -125,4 +125,15 @@ public class Course extends BaseEntity<Long> {
     public void addQuestion(Question question) {
         questions.add(question);
     }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "name='" + name + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", subject=" + subject +
+                ", teacher=" + teacher +
+                '}';
+    }
 }

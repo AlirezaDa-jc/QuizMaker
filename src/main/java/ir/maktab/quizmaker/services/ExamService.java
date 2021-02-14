@@ -1,7 +1,10 @@
 package ir.maktab.quizmaker.services;
 
 import ir.maktab.quizmaker.domains.*;
+import ir.maktab.quizmaker.dto.ExamDTO;
 import ir.maktab.quizmaker.repository.ExamRepository;
+import ir.maktab.quizmaker.services.mappers.ExamMapperImpl;
+import ir.maktab.quizmaker.services.mappers.TeacherMapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,12 +21,12 @@ public class ExamService {
 
     private final ExamRepository examRepository;
 
-    public ExamService(ExamRepository examRepository) {
+    public ExamService( ExamRepository examRepository) {
         this.examRepository = examRepository;
     }
 
     public Exam save(Exam exam) throws Exception {
-        if(exam.getTime() > 420){
+        if(exam.getTime() > 420 || exam.getTime() <= 0){
             throw new Exception("Invalid Time");
         }
         return examRepository.save(exam);
@@ -92,5 +95,17 @@ public class ExamService {
     public void endExam(Exam exam, Student student) throws Exception {
             exam.addStudent(student);
             save(exam);
+    }
+    public ExamDTO convertToDto(Exam exam){
+
+        ExamDTO examDTO = new ExamMapperImpl().sourceToDestination(exam);
+        examDTO.setTeacher(new TeacherMapperImpl().sourceToDestination(exam.getTeacher()));
+        return examDTO;
+    }
+
+    public Exam convertToEntity(ExamDTO examDTO) {
+        Exam exam = new ExamMapperImpl().destinationToSource(examDTO);
+//        exam.setTeacher(new TeacherMapperImpl().destinationToSource(examDTO.getTeacher()));
+        return exam;
     }
 }

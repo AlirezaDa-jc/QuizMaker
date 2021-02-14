@@ -18,4 +18,6 @@ public class DescriptiveQuestion extends Question {
     public DescriptiveQuestion(Exam exam) {
         super(exam);
     }
+
+
 }

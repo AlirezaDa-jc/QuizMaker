@@ -1,5 +1,6 @@
 package ir.maktab.quizmaker.domains;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -13,10 +14,12 @@ import java.util.Set;
 public class Teacher extends User {
 
     private String firstName;
+
     private String lastName;
+
+    @Column(unique = true)
     private Long nationalCode;
 
-    //How To Avoid Lazy Initialization
     @OneToMany(mappedBy = "teacher", orphanRemoval = true,fetch = FetchType.EAGER)
     private Set<Course> courses = new HashSet<>();
 
@@ -85,5 +88,14 @@ public class Teacher extends User {
     public void removeCourse(Course course) {
         courses.remove(course);
         course.removeTeacher();
+    }
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", nationalCode=" + nationalCode +
+                '}';
     }
 }

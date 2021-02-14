@@ -16,11 +16,14 @@ import javax.persistence.InheritanceType;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity<Long> {
 
+
     private String role;
     @Column(nullable = false,unique = true)
     private String userName;
     @Column(nullable = false)
+
     private String password;
+
     private boolean isAllowed = false;
 
 
@@ -55,5 +58,15 @@ public class User extends BaseEntity<Long> {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "role='" + role + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", isAllowed=" + isAllowed +
+                '}';
     }
 }

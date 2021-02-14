@@ -14,7 +14,8 @@ import java.util.Set;
  */
 @Entity
 public class QuestionExamScore extends BaseEntity<Long> {
-//Junction Or Tree*
+    //Junction Or Tree*
+
     private int score;
 
     @ManyToOne
@@ -25,7 +26,7 @@ public class QuestionExamScore extends BaseEntity<Long> {
     @JoinColumn(name = "questionid")
     private Question question;
 
-    @OneToMany(mappedBy = "questionExamScore" , orphanRemoval = true)
+    @OneToMany(mappedBy = "questionExamScore", orphanRemoval = true)
     Set<StudentQuestionScore> scores = new HashSet<>();
 
     public QuestionExamScore() {
@@ -65,9 +66,20 @@ public class QuestionExamScore extends BaseEntity<Long> {
 
     public void setQuestion(Question question) {
         this.question = question;
-        question.addScores(this);
+//        question.addScores(this);
     }
+
     public void addScoreStudent(StudentQuestionScore studentQuestionScore) {
         scores.add(studentQuestionScore);
+    }
+
+    @Override
+    public String toString() {
+        return "QuestionExamScore{" +
+                "score=" + score +
+                ", exam=" + exam +
+                ", question=" + question +
+
+                '}';
     }
 }

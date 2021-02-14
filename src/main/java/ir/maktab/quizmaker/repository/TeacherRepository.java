@@ -14,4 +14,7 @@ public interface TeacherRepository  extends JpaRepository<Teacher,Long> {
     List<Teacher> findAllByFirstNameContains(String firstName);
     List<Teacher> findAllByLastNameContains(String lastName);
     List<Teacher> findAllByUserNameContains(String userName);
+    List<Teacher> findAllByIsAllowedFalse();
+
+    List<Teacher> findAllByNationalCode(Long nationalCode);
 }

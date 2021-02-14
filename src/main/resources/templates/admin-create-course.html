@@ -64,24 +64,24 @@
                   th:object="${course}">
                 <div class="form-group">
                     <label for="subject" th:text="#{subject}">Subject</label><br>
-                    <input disabled id="subject" readonly th:value="${subject.name}">
-                    <input aria-describedby="subject" class="form-control" hidden name="subject" readonly
-                           th:field="*{subject}" th:value="${subject}" type="text">
+                    <input disabled id="subject" readonly required th:value="${subject.name}">
+<!--                    <input aria-describedby="subject" class="form-control" hidden name="subject" readonly-->
+<!--                           th:field="*{subjectDTO}" th:value="${subject}" type="text">-->
                 </div>
                 <div class="form-group">
                     <label for="name" th:text="#{name}">Name</label>
-                    <input aria-describedby="name" class="form-control" id="name" name="name"
+                    <input aria-describedby="name" class="form-control" id="name" name="name" required
                            th:field="*{name}" type="text">
                 </div>
                 <div class="form-group">
                     <label for="startDate" th:text="#{startdate}">Start Date</label>
-                    <input aria-describedby="startDate" class="form-control" id="startDate" name="startDate"
+                    <input aria-describedby="startDate" class="form-control" id="startDate" name="startDate" required
                            th:field="*{startDate}" type="date">
 
                 </div>
                 <div class="form-group">
                     <label for="endDate" th:text="#{enddate}">End Date</label>
-                    <input aria-describedby="endDate" class="form-control" id="endDate" name="endDate"
+                    <input aria-describedby="endDate" class="form-control" id="endDate" name="endDate" required
                            th:field="*{endDate}" type="date">
 
                 </div>

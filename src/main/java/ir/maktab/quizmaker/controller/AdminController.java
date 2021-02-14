@@ -1,6 +1,7 @@
 package ir.maktab.quizmaker.controller;
 
 import ir.maktab.quizmaker.domains.*;
+import ir.maktab.quizmaker.dto.*;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -9,8 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,8 +47,10 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    private Teacher tempTeacher;
-    private Student tempStudent;
+    private TeacherDTO tempTeacherDTO;
+    private StudentDTO tempStudentDTO;
+    private SubjectDTO subjectDTO;
+    private boolean flag = false;
 
     @GetMapping("allow-user")
     public String sendUsersList(Model model) {
@@ -86,7 +92,7 @@ public class AdminController {
     @GetMapping("list-teachers")
     public String sendListOfTeachers(Model model) {
 
-        model.addAttribute("teachers",teacherService.findAll().stream()
+        model.addAttribute("teachers", teacherService.findAll().stream()
                 .filter(Teacher::isAllowed).collect(Collectors.toList()));
         return "admin-list-teachers";
     }
@@ -102,7 +108,8 @@ public class AdminController {
     @GetMapping("assign-course-user/{id}")
     public String sendListOfCourses(@PathVariable Long id, Model model) {
         User tempUser = userService.findById(id);
-        if (tempUser.getRole().equals("TEACHER")) {
+        UserDTO userDTO = adminService.convertToDto(tempUser);
+        if (userDTO.getRole().equals("TEACHER")) {
             model.addAttribute("courses", courseService.findAllWithoutTeacher());
         } else {
             model.addAttribute("courses", courseService.findAllWithoutThisStudent((Student) tempUser));
@@ -113,13 +120,12 @@ public class AdminController {
 
 
     @GetMapping("assign-course-by-role/{courseId}/{userId}")
-    public String assignCourse(@PathVariable Long courseId, @PathVariable Long userId, Model model) throws Exception {
+    public String assignCourse(@PathVariable Long courseId, @PathVariable Long userId, Model model) {
         Course course = courseService.findById(courseId);
-        if (courseService.addUser(course, userService.findById(userId)) != null) {
-            model.addAttribute("courses", courseService.findAll());
-            return "admin-list-courses";
-        }
-        throw new Exception("500 , Server Encountered An Error!");
+        courseService.addUser(course, userService.findById(userId));
+        model.addAttribute("courses", courseService.findAll());
+        return "admin-list-courses";
+
     }
 
     @GetMapping("list-courses")
@@ -146,13 +152,14 @@ public class AdminController {
 
     @GetMapping("create-subject")
     public String sendFormCreateSubject(Model model) {
-        model.addAttribute("subject", new Subject());
+        model.addAttribute("subject", new SubjectDTO());
         return "admin-create-subject";
     }
 
     @PostMapping("create-subject")
-    public String createSubject(@ModelAttribute Subject subject, Model model) throws UniqueException {
+    public String createSubject(@Valid @ModelAttribute SubjectDTO subjectDto, Model model) throws UniqueException {
         try {
+            Subject subject = subjectService.convertToEntity(subjectDto);
             subjectService.save(subject);
             model.addAttribute("subjects", subjectService.findAll());
             return "admin-list-subjects";
@@ -177,26 +184,27 @@ public class AdminController {
     @GetMapping("add-course-to-subject/{subjectId}")
     public String sendCreateCourseForm(@PathVariable Long subjectId, Model model) {
         Subject subject = subjectService.findById(subjectId);
-        model.addAttribute("course", new Course(subject));
-        model.addAttribute("subject", subject);
+        subjectDTO = subjectService.convertToDto(subject);
+        CourseDTO courseDTO = new CourseDTO();
+        model.addAttribute("course",courseDTO);
+        model.addAttribute("subject", subjectDTO );
         return "admin-create-course";
     }
 
     @PostMapping("create-course")
-    public String createCourse(@ModelAttribute Course course, Model model) throws Exception {
-        try {
-            if(courseService.checkDate(course)){
-                model.addAttribute("date_error",true);
-                model.addAttribute("course", course);
-                model.addAttribute("subject", course.getSubject());
-                return "admin-create-course";
-            }
-            courseService.save(course);
-            model.addAttribute("courses", courseService.findAll());
-            return "admin-list-courses";
-        } catch (Exception ex) {
-            throw new Exception("500,Server Encountered An Error!");
+    public String createCourse(@Valid @ModelAttribute  CourseDTO courseDTO, Model model) {
+        courseDTO.setSubject(subjectDTO);
+        Course course = courseService.convertToEntity(courseDTO);
+        if (courseService.checkDate(course)) {
+            model.addAttribute("date_error", true);
+            model.addAttribute("course", courseDTO);
+            model.addAttribute("subject", courseDTO.getSubject());
+            return "admin-create-course";
         }
+        courseService.save(course);
+        model.addAttribute("courses", courseService.findAll());
+        subjectDTO = null;
+        return "admin-list-courses";
     }
 
     @GetMapping("home")
@@ -208,7 +216,7 @@ public class AdminController {
         model.addAttribute("users_not_allowed", usersNotAllowedSize);
         model.addAttribute("courses", courseService.findAll());
         model.addAttribute("subjects", subjectService.findAll());
-        session.setAttribute("userName",SecurityContextHolder.getContext().getAuthentication().getName());
+        session.setAttribute("userName", SecurityContextHolder.getContext().getAuthentication().getName());
 
 
         return "admin-home";
@@ -217,16 +225,21 @@ public class AdminController {
     @GetMapping("edit-teacher/{id}")
     public String sendEditTeacherForm(@PathVariable Long id, Model model) {
         Teacher teacher = teacherService.findById(id);
-        tempTeacher = teacher;
-        model.addAttribute("teacher", teacher);
+        TeacherDTO teacherDTO = teacherService.convertToDto(teacher);
+        tempTeacherDTO = teacherDTO;
+        model.addAttribute("teacher", teacherDTO);
+        model.addAttribute("id", id);
         return "admin-edit-teacher";
     }
 
     @GetMapping("edit-student/{id}")
     public String sendEditStudentForm(@PathVariable Long id, Model model) {
         Student student = studentService.findById(id);
-        tempStudent = student;
-        model.addAttribute("student", student);
+        StudentDTO studentDTO = studentService.convertToDto(student);
+        tempStudentDTO = studentDTO;
+        model.addAttribute("student", studentDTO);
+        model.addAttribute("id", id);
+
         return "admin-edit-student";
     }
 
@@ -245,41 +258,69 @@ public class AdminController {
     }
 
     @PostMapping("edit-teacher")
-    public String editTeacher(@ModelAttribute Teacher teacher, Model model) {
-        teacherService.save(teacher,tempTeacher);
+    public String editTeacher(@Valid @ModelAttribute TeacherDTO teacherDTO, Model model,ServletRequest request) throws SQLIntegrityConstraintViolationException {
+        Teacher teacher = teacherService.convertToEntity(teacherDTO);
+        Teacher tempTeacher = teacherService.convertToEntity(tempTeacherDTO);
+        Long id = Long.valueOf(request.getParameter("id"));
+        teacher.setId(id);
+        if(request.getParameter("password") != null && !request.getParameter("password").equals("")){
+            teacher.setPassword(request.getParameter("password"));
+        }else{
+            teacher.setPassword(tempTeacher.getPassword());
+        }
+        teacherService.save(teacher, tempTeacher);
         model.addAttribute("teachers", teacherService.findAll());
         return "admin-list-teachers";
     }
 
     @PostMapping("edit-student")
-    public String editStudent(@ModelAttribute Student student, Model model) {
-        studentService.save(student,tempStudent);
+    public String editStudent(@Valid @ModelAttribute StudentDTO studentDTO, Model model ,ServletRequest request) throws SQLIntegrityConstraintViolationException {
+        Student student = studentService.convertToEntity(studentDTO);
+        Student tempStudent = studentService.convertToEntity(tempStudentDTO);
+        Long id = Long.valueOf(request.getParameter("id"));
+        student.setId(id);
+        if(request.getParameter("password") != null && !request.getParameter("password").equals("")){
+            student.setPassword(request.getParameter("password"));
+        }else{
+            student.setPassword(tempStudent.getPassword());
+        }
+        studentService.save(student, tempStudent);
         model.addAttribute("students", studentService.findAll());
         return "admin-list-students";
     }
 
     @GetMapping("edit-course/{id}")
     public String sendEditCourseForm(@PathVariable Long id, Model model) {
-        model.addAttribute("course", courseService.findById(id));
-        model.addAttribute("subjects", subjectService.findAll());
+        Course course = courseService.findById(id);
+        CourseDTO courseDTO = courseService.convertToDto(course);
+        subjectDTO = courseDTO.getSubject();
+        courseDTO.setSubject(null);
+        model.addAttribute("course", courseDTO);
+        model.addAttribute("subject", subjectDTO);
+        model.addAttribute("id", id);
         return "admin-edit-course";
     }
 
     @PostMapping("edit-course")
-    public String editCourse(@ModelAttribute Course course, Model model) {
-        if(!courseService.checkDate(course)){
+    public String editCourse(@Valid @ModelAttribute CourseDTO courseDTO, Model model,ServletRequest request) {
+        courseDTO.setSubject(subjectDTO);
+        Course course = courseService.convertToEntity(courseDTO);
+        Long id = Long.valueOf(request.getParameter("id"));
+        if (!courseService.checkDate(course)) {
+            course.setId(id);
             courseService.save(course);
             model.addAttribute("courses", courseService.findAll());
             return "admin-list-courses";
         }
-        model.addAttribute("date_error",true);
-        model.addAttribute("course", course);
-        model.addAttribute("subject", course.getSubject());
+        model.addAttribute("date_error", true);
+        model.addAttribute("course", courseService.convertToDto(course));
+        model.addAttribute("subject", courseDTO.getSubject());
+        model.addAttribute("id", id);
         return "admin-edit-course";
     }
 
     @GetMapping("delete-course/{courseId}")
-    public String deleteCourse(@PathVariable Long courseId,Model model){
+    public String deleteCourse(@PathVariable Long courseId, Model model) {
         courseService.deleteById(courseId);
         model.addAttribute("courses", courseService.findAll());
         return "admin-list-courses";
@@ -287,7 +328,8 @@ public class AdminController {
 
     @GetMapping("edit-subject/{id}")
     public String sendEditSubjectForm(@PathVariable Long id, Model model) {
-        model.addAttribute("subject",subjectService.findById(id));
+        model.addAttribute("subject", subjectService.convertToDto(subjectService.findById(id)));
+        model.addAttribute("id", id);
         return "admin-edit-subject";
     }
 
@@ -299,23 +341,26 @@ public class AdminController {
     }
 
     @PostMapping("edit-subject")
-    public String editSubject(@ModelAttribute Subject subject,Model model) {
+    public String editSubject(@Valid @ModelAttribute SubjectDTO subjectDTO, Model model, ServletRequest req) {
+        Subject subject = subjectService.convertToEntity(subjectDTO);
+        Long id = Long.valueOf(req.getParameter("id"));
+        subject.setId(id);
         subjectService.save(subject);
         model.addAttribute("subjects", subjectService.findAll());
         return "admin-list-subjects";
     }
 
     @GetMapping("edit-admin")
-    public String sendEditAdminForm(Model model){
-        model.addAttribute("admin",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        model.addAttribute("edited",false);
+    public String sendEditAdminForm(Model model) {
+        model.addAttribute("admin", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        model.addAttribute("edited", false);
         return "admin-edit-user";
     }
 
     @PostMapping("edit-admin")
-    public String editAdmin(Model model,HttpServletRequest req) throws ResourceNotFoundException {
-        userService.editUser(req,model);
-        model.addAttribute("admin",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public String editAdmin(Model model, HttpServletRequest req) throws ResourceNotFoundException {
+        userService.editUser(req, model);
+        model.addAttribute("admin", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return "admin-edit-user";
     }
 

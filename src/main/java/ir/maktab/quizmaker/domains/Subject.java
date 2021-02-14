@@ -50,4 +50,11 @@ public class Subject extends BaseEntity<Long> {
     public void addQuestion(Question question) {
         questions.add(question);
     }
+
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "name='" + name +
+                '}';
+    }
 }

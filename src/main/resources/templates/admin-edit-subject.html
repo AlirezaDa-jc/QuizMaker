@@ -54,12 +54,12 @@
                 <div class="form-group">
                     <label for="subject" th:text="#{subject}"></label>
                     <input aria-describedby="username" class="form-control" id="subject" name="subject"
-                           th:field="*{name}" type="text">
+                           required th:field="*{name}" type="text">
                     <input aria-describedby="id" class="form-control" hidden id="id" name="id" readonly
-                           th:field="*{id}" type="text">
+                           required th:value="${id}" type="text">
                 </div>
 
-                <a class="btn btn-primary"  role="button" th:href="@{/admin/delete-subject/__${subject.id}__}"
+                <a class="btn btn-primary"  role="button" th:href="@{/admin/delete-subject/__${id}__}"
                    th:text="#{delete-subject}"></a>
                 <button class="btn btn-primary" th:text="#{edit_subject}" type="submit">Submit</button>
                 <button class="btn btn-primary" th:text="#{resetfields}" type="reset">Reset</button>

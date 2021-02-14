@@ -15,6 +15,7 @@ public class MultipleChoiceQuestion extends Question {
     @ElementCollection
     @CollectionTable(name="options", joinColumns=@JoinColumn(name="question_id"))
     @Column(name="options")
+
     private List<String> options = new LinkedList<>();
 
     public MultipleChoiceQuestion() {
@@ -44,5 +45,12 @@ public class MultipleChoiceQuestion extends Question {
 
     public void removeOption(int index) {
         options.remove(index);
+    }
+
+    @Override
+    public String toString() {
+        return "MultipleChoiceQuestion{" +
+                "options=" + options +
+                '}';
     }
 }

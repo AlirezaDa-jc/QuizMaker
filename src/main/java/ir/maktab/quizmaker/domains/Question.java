@@ -13,11 +13,14 @@ import java.util.Set;
  */
 @Entity
 public class Question extends BaseEntity<Long> {
+
+    @Column(unique = true)
     private String title;
+
 
     private String question;
 
-    private Boolean isPublic;
+    private Boolean isPublic = false;
 
     private String answer;
 
@@ -39,9 +42,6 @@ public class Question extends BaseEntity<Long> {
             inverseJoinColumns = {@JoinColumn(name = "subject_id")})
     private Set<Subject> subjects = new HashSet<>();
 
-//    @ManyToMany(mappedBy = "questions")
-//    private Set<Exam> exams = new HashSet<>();
-
     public Question() {
     }
 
@@ -49,8 +49,6 @@ public class Question extends BaseEntity<Long> {
         course = exam.getCourse();
         teacher = exam.getTeacher();
     }
-
-//    private Blob Baraye Image . Sakhtan !
 
     public String getAnswer() {
         return answer;
@@ -139,5 +137,18 @@ public class Question extends BaseEntity<Long> {
 
     public void addScores(QuestionExamScore score) {
         scores.add(score);
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "title='" + title + '\'' +
+                ", question='" + question + '\'' +
+                ", isPublic=" + isPublic +
+                ", answer='" + answer + '\'' +
+                ", teacher=" + teacher +
+                ", course=" + course +
+                ", subjects=" + subjects +
+                '}';
     }
 }

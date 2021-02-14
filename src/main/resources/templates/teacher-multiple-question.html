@@ -49,44 +49,44 @@
                     <label for="exam" th:text="#{exam}"></label><br>
                     <input disabled id="exam" readonly th:value="${exam.title}">
                     <input aria-describedby="course" class="form-control" hidden name="examId" readonly
-                           th:value="${exam.id}" type="text">
+                           th:value="${examid}" type="text">
                 </div>
                 <div class="form-group">
                     <label for="course" th:text="#{course}"></label><br>
                     <input disabled id="course" readonly th:value="${exam.course.name}">
-                    <input aria-describedby="course" class="form-control" hidden name="course" readonly
-                           th:field="*{course}" th:value="${exam.course}" type="text">
+<!--                    <input aria-describedby="course" class="form-control" hidden name="course" readonly-->
+<!--                           th:field="*{course}" th:value="${exam.course}" type="text">-->
                 </div>
                 <div class="form-group">
                     <label for="subject" th:text="#{subject}"></label><br>
                     <input disabled id="subject" readonly th:value="${exam.course.subject.name}">
-                    <input aria-describedby="course" class="form-control" hidden name="course" readonly
-                           th:value="${exam.course.subject}" type="text">
+<!--                    <input aria-describedby="course" class="form-control" hidden name="course" readonly-->
+<!--                           th:value="${exam.course.subjectDTO}" type="text">-->
                 </div>
                 <div class="form-group">
                     <label for="teacher" th:text="#{teacher}"></label><br>
                     <input disabled id="teacher" readonly th:value="${exam.teacher.userName}">
-                    <input aria-describedby="teacher" class="form-control" hidden name="teacher" readonly
-                           th:field="*{teacher}" th:value="${exam.teacher}" type="text">
+<!--                    <input aria-describedby="teacher" class="form-control" hidden name="teacher" readonly-->
+<!--                           th:field="*{teacher}" th:value="${exam.teacher}" type="text">-->
                 </div>
                 <div class="form-group">
                     <label for="title" th:text="#{title}"></label>
-                    <input aria-describedby="name" class="form-control" id="title" name="title"
+                    <input aria-describedby="name" class="form-control" id="title" name="title" required
                            th:field="*{title}" type="text">
                 </div>
                 <div class="form-group">
                     <label for="question" th:text="#{question}"></label>
-                    <input aria-describedby="question" class="form-control" id="question" name="question"
+                    <input aria-describedby="question" class="form-control" id="question" name="question" required
                            th:field="*{question}" type="text">
                 </div>
                 <div class="form-group">
                     <label for="score" th:text="#{score}"></label>
-                    <input aria-describedby="score" class="form-control" id="score" name="score"
-                           type="number">
+                    <input aria-describedby="score" class="form-control" id="score" min="0" name="score"
+                           required  type="number">
                 </div>
                 <div class="form-group">
                     <label for="answer" th:text="#{answer}"></label>
-                    <input aria-describedby="question" class="form-control" id="answer" name="answer"
+                    <input aria-describedby="question" class="form-control" id="answer" name="answer" required
                            th:field="*{answer}" type="text">
                 </div>
                 <fieldset id="items">
@@ -97,19 +97,17 @@
                     </div>
                 </fieldset>
 
-                <button name="addItem" type="button">Add item</button>
 
 
                 <div class="form-group">
                     <label for="isPublic" th:text="#{isPublic}"></label>
                     <input id="isPublic" th:field="*{public}" type="checkbox"/>
                 </div>
-                <!--                TODO Pagination -->
                 <a class="btn btn-dark card-link" role="button"
-                   th:href="@{/teacher/descriptive-question/__${exam.id}__}"
+                   th:href="@{/teacher/descriptive-question/__${examid}__}"
                    th:text="#{add_descriptive_question}"></a>
                 <a class="btn btn-dark card-link" role="button"
-                   th:href="@{/teacher/add_question_from_bank/__${exam.id}__}"
+                   th:href="@{/teacher/add_question_from_bank/__${examid}__}"
                    th:text="#{add_question_from_bank}"></a>
                 <button class="btn btn-primary" th:text="#{add_question}" type="submit"></button>
                 <button class="btn btn-primary" th:text="#{resetfields}" type="reset"></button>

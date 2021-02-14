@@ -5,16 +5,14 @@ import ir.maktab.quizmaker.domains.Course;
 import ir.maktab.quizmaker.domains.Student;
 import ir.maktab.quizmaker.domains.Teacher;
 import ir.maktab.quizmaker.domains.User;
+import ir.maktab.quizmaker.dto.UserDTO;
+import ir.maktab.quizmaker.services.mappers.UserMapperImpl;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 /**
  * @author Alireza.d.a
  */
 @Service
-@Transactional
-
 public class AdminService {
 
     private final TeacherService teacherService;
@@ -22,6 +20,7 @@ public class AdminService {
     private final StudentService studentService;
 
     private final CourseService courseService;
+
 
     public AdminService(TeacherService teacherService, StudentService studentService, CourseService courseService) {
         this.teacherService = teacherService;
@@ -41,4 +40,13 @@ public class AdminService {
         }
         courseService.save(tempCourse);
     }
+
+    public UserDTO convertToDto(User user){
+        return new UserMapperImpl().sourceToDestination(user);
+    }
+
+    public User convertToEntity(UserDTO userDTO) {
+        return new UserMapperImpl().destinationToSource(userDTO);
+    }
 }
+

@@ -13,9 +13,13 @@ import java.util.Set;
  */
 @Entity
 public class Exam extends BaseEntity<Long> {
+
+    @Column(unique = true)
     private String title;
 
+
     private String description;
+
 
     private int time;
 
@@ -129,5 +133,18 @@ public class Exam extends BaseEntity<Long> {
 
     public void setScores(List<QuestionExamScore>  scores) {
         this.scores = scores;
+    }
+
+    @Override
+    public String toString() {
+        return "Exam{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", time=" + time +
+                ", isAvailable=" + isAvailable +
+                ", students=" + students +
+                ", course=" + course +
+                ", teacher=" + teacher +
+                '}';
     }
 }

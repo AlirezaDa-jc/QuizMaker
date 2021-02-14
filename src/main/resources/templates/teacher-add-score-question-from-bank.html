@@ -47,25 +47,25 @@
             <form action="#" class="forms" method="post" style="margin: auto;"
                   th:action="@{/teacher/add-score-question-from-bank}"
                   th:object="${questionExamScore}">
-                <input aria-describedby="id" class="form-control"   hidden name="id" readonly
-                       th:field="*{id}" type="text">
+<!--                <input aria-describedby="id" class="form-control"   hidden name="id" readonly required-->
+<!--                       th:field="*{id}" type="text">-->
                 <div class="form-group">
                     <label th:text="#{exam}"></label><br>
                     <label aria-describedby="exam" class="form-control" th:text="${exam.title}"></label>
-                    <input aria-describedby="exam" class="form-control"   hidden name="exam" readonly
-                           th:field="*{exam}" th:value="${exam}" type="text">
+<!--                    <input aria-describedby="exam" class="form-control"   hidden name="exam" readonly required-->
+<!--                           th:field="*{exam}" th:value="${exam}" type="text">-->
                 </div>
                 <div class="form-group">
                     <label th:text="#{exam}"></label><br>
                     <label aria-describedby="question" class="form-control" th:text="${question.title}"></label>
-                    <input aria-describedby="question" class="form-control"   hidden name="question" readonly
-                           th:field="*{question}" th:value="${question.id}" type="text">
+<!--                    <input aria-describedby="question" class="form-control"   hidden name="question" readonly required-->
+<!--                           th:field="*{question}" th:value="${question.id}" type="text">-->
                 </div>
 
                 <div class="form-group">
                     <label for="score" th:text="#{score}"></label>
-                    <input aria-describedby="score" class="form-control" id="score" name="score" th:field="*{score}"
-                           type="number">
+                    <input aria-describedby="score" class="form-control" id="score" min="0" name="score" required
+                           th:field="*{score}"  type="number">
                 </div>
 
                 <button class="btn btn-primary" th:text="#{add_question}" type="submit"></button>

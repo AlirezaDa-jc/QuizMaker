@@ -1,7 +1,13 @@
 package ir.maktab.quizmaker.services;
 
 import ir.maktab.quizmaker.domains.*;
+import ir.maktab.quizmaker.dto.DescriptiveQuestionDTO;
+import ir.maktab.quizmaker.dto.MultipleChoiceQuestionDTO;
+import ir.maktab.quizmaker.dto.QuestionDTO;
 import ir.maktab.quizmaker.repository.QuestionRepository;
+import ir.maktab.quizmaker.services.mappers.DescriptiveQuestionMapperImpl;
+import ir.maktab.quizmaker.services.mappers.MultipleChoiceQuestionMapperImpl;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,9 +30,9 @@ public class QuestionService {
 
     private final QuestionExamScoreService questionExamScoreService;
 
-    public QuestionService(QuestionRepository questionRepository, DescriptiveQuestionService descriptiveQuestionService
-            , MultipleChoiceQuestionService multipleChoiceQuestionService,
-                           QuestionExamScoreService questionExamScoreService) {
+
+
+    public QuestionService(QuestionRepository questionRepository, DescriptiveQuestionService descriptiveQuestionService, MultipleChoiceQuestionService multipleChoiceQuestionService, QuestionExamScoreService questionExamScoreService) {
         this.questionRepository = questionRepository;
         this.descriptiveQuestionService = descriptiveQuestionService;
         this.multipleChoiceQuestionService = multipleChoiceQuestionService;
@@ -46,11 +52,10 @@ public class QuestionService {
     }
 
     public Question create(Question question, Exam exam, QuestionExamScore questionExamScore) {
-        Subject subject = exam.getCourse().getSubject();
         if (questionRepository.findAll().contains(question))
             questionRepository.deleteById(question.getId());
-        question.addSubject(subject);
         questionExamScore.setQuestion(question);
+        questionExamScore.setExam(exam);
         if (question instanceof MultipleChoiceQuestion) {
             MultipleChoiceQuestion multipleChoiceQuestion = multipleChoiceQuestionService.save((MultipleChoiceQuestion) question);
             questionExamScoreService.save(questionExamScore);
@@ -62,7 +67,9 @@ public class QuestionService {
         }
     }
 
-    public Set<Question> getQuestionBank(Exam exam) {
+//    public Set<Question> getQuestionBank(Exam exam,int page) {
+    public Set<Question> getQuestionBank(@NotNull Exam exam) {
+
         Set<Question> teacherQuestions = exam.getTeacher().getQuestions()
                 .stream()
                 .filter(c -> c.getSubjects().contains(exam.getCourse().getSubject()))
@@ -83,15 +90,25 @@ public class QuestionService {
                             .forEach(x -> exams.add(x.getExam()));
                     return !exams.contains(exam);
                 })
-                .collect(Collectors.toSet());
-
-        subjectQuestions = subjectQuestions.stream()
                 .filter(Question::getPublic)
                 .collect(Collectors.toSet());
+
+//        subjectQuestions = subjectQuestions.stream()
+//                .filter(Question::getPublic)
+//                .collect(Collectors.toSet());
 
         Set<Question> bank = new HashSet<>();
         bank.addAll(subjectQuestions);
         bank.addAll(teacherQuestions);
+//        Set<Question> questions = new HashSet<>();
+//        int i = page - 1;
+//        for (Question question:bank) {
+//            questions.add(question);
+//            i++;
+//            if(i > page * 10){
+//                break;
+//            }
+//        }
         return bank;
     }
 
@@ -117,5 +134,20 @@ public class QuestionService {
                 questionRepository.save(question);
             }
         });
+    }
+
+    public QuestionDTO convertToDto(Question question) {
+        if (question instanceof DescriptiveQuestion)
+            return new DescriptiveQuestionMapperImpl().sourceToDestination((DescriptiveQuestion) question);
+        return new MultipleChoiceQuestionMapperImpl().sourceToDestination((MultipleChoiceQuestion) question);
+
+
+    }
+
+    public Question convertToEntity(QuestionDTO questionDTO) {
+        if (questionDTO instanceof DescriptiveQuestionDTO)
+            return new DescriptiveQuestionMapperImpl().destinationToSource((DescriptiveQuestionDTO) questionDTO);
+        return new MultipleChoiceQuestionMapperImpl().destinationToSource((MultipleChoiceQuestionDTO) questionDTO);
+
     }
 }

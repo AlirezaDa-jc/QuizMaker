@@ -50,8 +50,8 @@
 
         <form action="#" method="post" th:action="@{/teacher/correct-exam}">
 
-            <input hidden name="exam" th:value="${exam.id}">
-            <input hidden name="student" th:value="${student.id}">
+            <input hidden name="exam" required th:value="${exam.id}">
+            <input hidden name="student" required th:value="${student.id}">
 
 
             <h2 th:if="${!multipleChoice.isEmpty()}" th:text="#{multiple_choice_questions}"></h2>
@@ -100,7 +100,7 @@
                             <p th:text="${studentQuestionScore?.answer}"></p>
                             <!--                            <p th:text="#{no_answer}" th:if="${studentQuestionScore.answer == null}"></p>-->
                             <span th:text="#{score}"></span>
-                            <input th:name="${li.index}+${multipleChoice.size()}" type="text">
+                            <input th:name="${li.index}+${multipleChoice.size()}" type="number">
                             <p th:if="${studentQuestionScore.score >= 0}" th:text="${studentQuestionScore.score}"></p>
                             <p th:if="${studentQuestionScore.score < 0}" th:text="#{undefined}"></p>
                         </div>

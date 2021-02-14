@@ -4,7 +4,9 @@ import ir.maktab.quizmaker.domains.MultipleChoiceQuestion;
 import ir.maktab.quizmaker.domains.QuestionExamScore;
 import ir.maktab.quizmaker.domains.Student;
 import ir.maktab.quizmaker.domains.StudentQuestionScore;
+import ir.maktab.quizmaker.dto.StudentQuestionScoreDTO;
 import ir.maktab.quizmaker.repository.StudentQuestionScoreRepository;
+import ir.maktab.quizmaker.services.mappers.StudentQuestionScoreMapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,9 +21,12 @@ public class StudentQuestionScoreService {
 
     private final StudentQuestionScoreRepository studentQuestionScoreRepository;
 
+
     public StudentQuestionScoreService(StudentQuestionScoreRepository studentQuestionScoreRepository) {
         this.studentQuestionScoreRepository = studentQuestionScoreRepository;
+
     }
+
 /*
     Correct Answer For Template student-join-exam!
      */
@@ -119,5 +124,13 @@ public class StudentQuestionScoreService {
 
     public int getSumOfScores(List<StudentQuestionScore> studentQuestionScores) {
         return studentQuestionScores.stream().filter(c -> c != null &&c.getScore() >= 0).mapToInt(StudentQuestionScore::getScore).sum();
+    }
+    public StudentQuestionScoreDTO convertToDto(StudentQuestionScore studentQuestionScore){
+        return new StudentQuestionScoreMapperImpl().sourceToDestination(studentQuestionScore);
+    }
+
+    public StudentQuestionScore convertToEntity(StudentQuestionScoreDTO studentQuestionScore) {
+        return new StudentQuestionScoreMapperImpl().destinationToSource(studentQuestionScore);
+
     }
 }

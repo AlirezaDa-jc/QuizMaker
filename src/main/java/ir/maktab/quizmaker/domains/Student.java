@@ -1,20 +1,23 @@
 package ir.maktab.quizmaker.domains;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alireza.d.a
  */
 @Entity
 public class Student extends User {
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false,unique  = true)
     private Integer studentCode;
+
 
     private String firstName;
 
     private String lastName;
-
 
     @Column(nullable = false,unique = true)
     private Long nationalCode;
@@ -103,16 +106,13 @@ public class Student extends User {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Student student = (Student) o;
-        return studentCode.equals(student.studentCode) &&
-                nationalCode.equals(student.nationalCode);
+    public String toString() {
+        return "Student{" +
+                "studentCode=" + studentCode +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", nationalCode=" + nationalCode +
+                '}';
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(studentCode, nationalCode);
-    }
 }

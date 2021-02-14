@@ -85,7 +85,7 @@ public class StudentController {
     }
 
     @PostMapping("edit-user")
-    public String editUser(Model model, HttpServletRequest req) throws Exception {
+    public String editUser(Model model, HttpServletRequest req) {
         userService.editUser(req, model);
         String firstName = req.getParameter("firstName");
         String lastName = req.getParameter("lastName");

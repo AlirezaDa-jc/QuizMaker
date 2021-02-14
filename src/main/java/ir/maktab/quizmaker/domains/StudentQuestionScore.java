@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class StudentQuestionScore extends BaseEntity<Long> {
 
+
     private int score;
 
     private String answer;
@@ -54,5 +55,15 @@ public class StudentQuestionScore extends BaseEntity<Long> {
 
     public void setQuestionExamScore(QuestionExamScore questionExamScore) {
         this.questionExamScore = questionExamScore;
+    }
+
+    @Override
+    public String toString() {
+        return "StudentQuestionScore{" +
+                "score=" + score +
+                ", answer='" + answer + '\'' +
+                ", student=" + student +
+                ", questionExamScore=" + questionExamScore +
+                '}';
     }
 }

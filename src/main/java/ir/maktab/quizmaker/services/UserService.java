@@ -2,8 +2,9 @@ package ir.maktab.quizmaker.services;
 
 
 import ir.maktab.quizmaker.domains.User;
-import ir.maktab.quizmaker.exception.UniqueException;
+import ir.maktab.quizmaker.dto.User_;
 import ir.maktab.quizmaker.repository.UserRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,6 @@ import org.springframework.ui.Model;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Alireza.d.a
@@ -24,6 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
+
 
     public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
         this.passwordEncoder = passwordEncoder;
@@ -39,6 +40,7 @@ public class UserService {
     }
 
     public User save(User user) {
+
         user.setPassword(
                 this.passwordEncoder.encode(
                         user.getPassword()
@@ -49,11 +51,14 @@ public class UserService {
 
 
     public List<User> getNotAllowedUsers() {
-        List<User> all = userRepository.findAll();
-        return all.stream()
-                .filter(user -> !user.isAllowed())
-                .collect(Collectors.toList());
+//        return userRepository.findAllByIsAllowedFalse();
+        return userRepository.findAll(notAllowed());
     }
+    private Specification<User> notAllowed(){
+        return (root, query, criteriaBuilder)
+                -> criteriaBuilder.equal(root.get(User_.IS_ALLOWED),false);
+    }
+
 
     public User allowUser(Long id) {
         User user = userRepository.findById(id).get();
@@ -69,38 +74,34 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public boolean editUser(HttpServletRequest req, Model model) throws UniqueException {
-        try {
-            String userName = req.getParameter("userName");
-            String password = req.getParameter("currentPassword");
-            String newPassword = req.getParameter("newPassword");
-            String confirmPassword = req.getParameter("confirmPassword");
-            String oldUserName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User user = userRepository.findByUserName(oldUserName);
-            if (passwordEncoder.matches(password, user.getPassword())) {
+    public boolean editUser(HttpServletRequest req, Model model) {
 
-                if (userRepository.findByUserName(userName) == null) {
-                    user.setUserName(userName);
+        String userName = req.getParameter("userName");
+        String password = req.getParameter("currentPassword");
+        String newPassword = req.getParameter("newPassword");
+        String confirmPassword = req.getParameter("confirmPassword");
+        String oldUserName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByUserName(oldUserName);
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            if (userRepository.findByUserName(userName) == null) {
+                user.setUserName(userName);
 
-                    if (!newPassword.equals("") && confirmPassword.equals(newPassword)) {
-                        user.setPassword(newPassword);
-                    } else {
-                        model.addAttribute("unmatched_error", true);
-                    }
-
-                    userRepository.save(user);
-                    model.addAttribute("edited", true);
-                    return true;
-
+                if (!newPassword.equals("") && confirmPassword.equals(newPassword)) {
+                    user.setPassword(newPassword);
                 } else {
-                    model.addAttribute("duplicate_username", true);
+                    model.addAttribute("unmatched_error", true);
                 }
 
+                userRepository.save(user);
+                model.addAttribute("edited", true);
+                return true;
+
             } else {
-                model.addAttribute("current_password_error", true);
+                model.addAttribute("duplicate_username", true);
             }
-        } catch (Exception ex) {
-            throw new UniqueException("Invalid UserName");
+
+        } else {
+            model.addAttribute("current_password_error", true);
         }
         return false;
     }
