@@ -37,7 +37,8 @@
     <a href="/teacher/show-courses"><p th:text="#{courses}"></p></a>
     <a href="/teacher/show-exams"><p th:text="#{exams}"></p></a>
     <br>
-    <img alt="aboutUs" height="150px" src="../static/css/img/QuizMaker.png" th:src="@{/css/img/QuizMaker.png}" width="150px">
+    <img alt="aboutUs" height="150px" src="../static/css/img/QuizMaker.png" th:src="@{/css/img/QuizMaker.png}"
+         width="150px">
 </div>
 <div class="main lang content">
     <div class="table-bordered lang">
@@ -111,9 +112,18 @@
                        th:href="@{/teacher/add_question/__${examId}__/__${question.id}__}"
                        th:text="#{add_question}"></a></td>
             </tr>
-
         </table>
     </div>
+
+    <div class="row page">
+        <div th:each="i : ${#numbers.sequence(1, page)}">
+                <a class="btn btn-primary" role="button"
+                   th:href="@{/teacher/add_question_from_bank/__${examId}__/__${i}__}"
+                   th:text="${i}"></a>
+            &nbsp;
+        </div>
+    </div>
+
 </div>
 
 <script crossorigin="anonymous"

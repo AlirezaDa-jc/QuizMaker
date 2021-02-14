@@ -32,7 +32,7 @@ public class SubjectService {
     }
 
     public Subject findById(Long id) {
-        return subjectRepository.findById(id).get();
+        return subjectRepository.findById(id).isPresent() ? subjectRepository.findById(id).get() : null;
     }
 
     public void deleteById(Long id) {

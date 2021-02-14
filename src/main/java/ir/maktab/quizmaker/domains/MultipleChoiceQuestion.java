@@ -12,7 +12,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class MultipleChoiceQuestion extends Question {
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name="options", joinColumns=@JoinColumn(name="question_id"))
     @Column(name="options")
 

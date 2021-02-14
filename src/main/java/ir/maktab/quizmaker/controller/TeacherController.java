@@ -3,7 +3,6 @@ package ir.maktab.quizmaker.controller;
 import ir.maktab.quizmaker.aspect.Authentication;
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.dto.*;
-import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -358,16 +357,19 @@ public class TeacherController {
         return "teacher-descriptive-question";
     }
 
-    @GetMapping("add_question_from_bank/{examId}")
-    public String sendBankQuestions(@PathVariable Long examId, Model model) throws Exception {
+    @GetMapping("add_question_from_bank/{examId}/{page}")
+    public String sendBankQuestions(@PathVariable Long examId,@PathVariable int page, Model model) throws Exception {
         Exam exam = examService.findById(examId);
         if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
             throw new Exception("403 Forbidden!");
         }
-        Set<Question> questions = questionService.getQuestionBank(exam);
+        List<Question> questions = questionService.getQuestionBank(exam,page);
+        int size = questionService.getSize();
+        int pages = (int) Math.ceil((double) size/10);
         model.addAttribute("multipleChoice", questionService.findMultipleChoiceQuestions(questions));
         model.addAttribute("descriptive", questionService.findDescriptiveQuestions(questions));
         model.addAttribute("examId", examId);
+        model.addAttribute("page", pages);
         return "teacher-add-question-from-bank";
     }
 
@@ -378,7 +380,6 @@ public class TeacherController {
             throw new Exception("403 Forbidden!");
         }
         question = questionService.findById(questionId);
-//        QuestionExamScore questionExamScore = questionExamScoreService.create(exam, question);
        questionExamScoreDTO = new QuestionExamScoreDTO();
         ExamDTO examDTO = examService.convertToDto(exam);
 
@@ -399,7 +400,7 @@ public class TeacherController {
         }
         questionExamScore.setQuestion(question);
         questionExamScoreService.save(questionExamScore);
-        return "redirect:/teacher/add_question_from_bank/"+exam.getId();
+        return "redirect:/teacher/add_question_from_bank/"+exam.getId()+"/"+"1";
     }
 
     @GetMapping("edit-multiple-choice-question/{examId}/{questionId}")
@@ -494,24 +495,24 @@ public class TeacherController {
     }
 
 
-    @ExceptionHandler(Exception.class)
-    public String handle(Exception ex, Model model) {
-        model.addAttribute("message", ex.getMessage());
-        ex.printStackTrace();
-        return "user-exception";
-    }
-
-    @ExceptionHandler(UniqueException.class)
-    public String handle(UniqueException ex, Model model) {
-
-        model.addAttribute("message", ex.getMessage());
-        return "user-exception";
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String handle(IllegalArgumentException ex, Model model) {
-
-        model.addAttribute("message", ex.getMessage());
-        return "user-exception";
-    }
+//    @ExceptionHandler(Exception.class)
+//    public String handle(Exception ex, Model model) {
+//        model.addAttribute("message", ex.getMessage());
+//        ex.printStackTrace();
+//        return "user-exception";
+//    }
+//
+//    @ExceptionHandler(UniqueException.class)
+//    public String handle(UniqueException ex, Model model) {
+//
+//        model.addAttribute("message", ex.getMessage());
+//        return "user-exception";
+//    }
+//
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public String handle(IllegalArgumentException ex, Model model) {
+//
+//        model.addAttribute("message", ex.getMessage());
+//        return "user-exception";
+//    }
 }

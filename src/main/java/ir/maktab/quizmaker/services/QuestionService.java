@@ -7,7 +7,6 @@ import ir.maktab.quizmaker.dto.QuestionDTO;
 import ir.maktab.quizmaker.repository.QuestionRepository;
 import ir.maktab.quizmaker.services.mappers.DescriptiveQuestionMapperImpl;
 import ir.maktab.quizmaker.services.mappers.MultipleChoiceQuestionMapperImpl;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ public class QuestionService {
     private final QuestionExamScoreService questionExamScoreService;
 
 
-
     public QuestionService(QuestionRepository questionRepository, DescriptiveQuestionService descriptiveQuestionService, MultipleChoiceQuestionService multipleChoiceQuestionService, QuestionExamScoreService questionExamScoreService) {
         this.questionRepository = questionRepository;
         this.descriptiveQuestionService = descriptiveQuestionService;
@@ -39,8 +37,19 @@ public class QuestionService {
         this.questionExamScoreService = questionExamScoreService;
     }
 
+    private List<Question> bankQuestions;
+    private int size;
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
     public Question findById(Long questionId) {
-        return questionRepository.findById(questionId).get();
+        return questionRepository.findById(questionId).isPresent() ? questionRepository.findById(questionId).get() : null;
     }
 
     public Question save(Question question) {
@@ -67,59 +76,56 @@ public class QuestionService {
         }
     }
 
-//    public Set<Question> getQuestionBank(Exam exam,int page) {
-    public Set<Question> getQuestionBank(@NotNull Exam exam) {
+    public List<Question> getQuestionBank(Exam exam, int page) {
+        if (page == 1) {
+            Set<Question> teacherQuestions = exam.getTeacher().getQuestions()
+                    .stream()
+                    .filter(c -> c.getSubjects().contains(exam.getCourse().getSubject()))
+                    .filter(c -> {
+                        Set<Exam> exams = new HashSet<>();
+                        c.getScores().forEach(x -> exams.add(x.getExam()));
+                        return !exams.contains(exam);
+                    })
+                    .collect(Collectors.toSet());
 
-        Set<Question> teacherQuestions = exam.getTeacher().getQuestions()
-                .stream()
-                .filter(c -> c.getSubjects().contains(exam.getCourse().getSubject()))
-                .filter(c -> {
-                    Set<Exam> exams = new HashSet<>();
-                    c.getScores().forEach(x -> exams.add(x.getExam()));
-                    return !exams.contains(exam);
-                })
-                .collect(Collectors.toSet());
+            Set<Question> subjectQuestions = exam.getCourse()
+                    .getSubject()
+                    .getQuestions()
+                    .stream()
+                    .filter(c -> {
+                        Set<Exam> exams = new HashSet<>();
+                        c.getScores()
+                                .forEach(x -> exams.add(x.getExam()));
+                        return !exams.contains(exam);
+                    })
+                    .filter(Question::getPublic)
+                    .collect(Collectors.toSet());
 
-        Set<Question> subjectQuestions = exam.getCourse()
-                .getSubject()
-                .getQuestions()
-                .stream()
-                .filter(c -> {
-                    Set<Exam> exams = new HashSet<>();
-                    c.getScores()
-                            .forEach(x -> exams.add(x.getExam()));
-                    return !exams.contains(exam);
-                })
-                .filter(Question::getPublic)
-                .collect(Collectors.toSet());
 
-//        subjectQuestions = subjectQuestions.stream()
-//                .filter(Question::getPublic)
-//                .collect(Collectors.toSet());
+            Set<Question> bank = new HashSet<>();
+            bank.addAll(subjectQuestions);
+            bank.addAll(teacherQuestions);
+            size = bank.size();
+            bankQuestions = new ArrayList<>(bank);
+        }
+        List<Question> questions = new ArrayList<>();
+        for (int j = ((page - 1)*10); j < page * 10 && j < bankQuestions.size(); j++) {
 
-        Set<Question> bank = new HashSet<>();
-        bank.addAll(subjectQuestions);
-        bank.addAll(teacherQuestions);
-//        Set<Question> questions = new HashSet<>();
-//        int i = page - 1;
-//        for (Question question:bank) {
-//            questions.add(question);
-//            i++;
-//            if(i > page * 10){
-//                break;
-//            }
-//        }
-        return bank;
+            questions.add(bankQuestions.get(j));
+
+        }
+
+        return questions;
     }
 
-    public List<MultipleChoiceQuestion> findMultipleChoiceQuestions(Set<Question> questions) {
+    public List<MultipleChoiceQuestion> findMultipleChoiceQuestions(List<Question> questions) {
         return questions.stream()
                 .filter(c -> c instanceof MultipleChoiceQuestion)
                 .map(c -> (MultipleChoiceQuestion) c)
                 .collect(Collectors.toList());
     }
 
-    public List<DescriptiveQuestion> findDescriptiveQuestions(Set<Question> questions) {
+    public List<DescriptiveQuestion> findDescriptiveQuestions(List<Question> questions) {
         return questions.stream()
                 .filter(c -> c instanceof DescriptiveQuestion)
                 .map(c -> (DescriptiveQuestion) c)

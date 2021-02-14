@@ -364,17 +364,17 @@ public class AdminController {
         return "admin-edit-user";
     }
 
-    @ExceptionHandler(UniqueException.class)
-    public String handle(UniqueException ex, Model model) {
-
-        model.addAttribute("message", ex.getMessage());
-        return "admin-exception";
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String handle(IllegalArgumentException ex, Model model) {
-
-        model.addAttribute("message", ex.getMessage());
-        return "admin-exception";
-    }
+//    @ExceptionHandler(UniqueException.class)
+//    public String handle(UniqueException ex, Model model) {
+//
+//        model.addAttribute("message", ex.getMessage());
+//        return "admin-exception";
+//    }
+//
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public String handle(IllegalArgumentException ex, Model model) {
+//
+//        model.addAttribute("message", ex.getMessage());
+//        return "admin-exception";
+//    }
 }

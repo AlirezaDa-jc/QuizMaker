@@ -34,7 +34,7 @@ public class CourseService {
     }
 
     public Course findById(Long id) {
-        return courseRepository.findById(id).get();
+        return courseRepository.findById(id).isPresent() ? courseRepository.findById(id).get() : null;
     }
 
     public Course save(Course course) {

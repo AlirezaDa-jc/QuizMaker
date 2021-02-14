@@ -21,12 +21,12 @@ public class ExamService {
 
     private final ExamRepository examRepository;
 
-    public ExamService( ExamRepository examRepository) {
+    public ExamService(ExamRepository examRepository) {
         this.examRepository = examRepository;
     }
 
     public Exam save(Exam exam) throws Exception {
-        if(exam.getTime() > 420 || exam.getTime() <= 0){
+        if (exam.getTime() > 420 || exam.getTime() <= 0) {
             throw new Exception("Invalid Time");
         }
         return examRepository.save(exam);
@@ -37,19 +37,25 @@ public class ExamService {
     }
 
     public Exam setExamAvailable(Long examId) {
-        Exam exam = examRepository.findById(examId).get();
-        exam.setAvailable(true);
-        return examRepository.save(exam);
+        if(examRepository.findById(examId).isPresent()) {
+            Exam exam = examRepository.findById(examId).get();
+            exam.setAvailable(true);
+            return examRepository.save(exam);
+        }
+        return null;
     }
 
     public Exam setExamUnAvailable(Long examId) {
-        Exam exam = examRepository.findById(examId).get();
-        exam.setAvailable(false);
-        return examRepository.save(exam);
+        if (examRepository.findById(examId).isPresent()) {
+            Exam exam = examRepository.findById(examId).get();
+            exam.setAvailable(false);
+            return examRepository.save(exam);
+        }
+        return null;
     }
 
     public Exam findById(Long examId) {
-        return examRepository.findById(examId).get();
+        return examRepository.findById(examId).isPresent() ? examRepository.findById(examId).get() : null;
     }
 
     public void deleteById(Long examId) {
@@ -64,7 +70,6 @@ public class ExamService {
                 .map(c -> (MultipleChoiceQuestion) c)
                 .collect(Collectors.toList());
     }
-
 
 
     public List<DescriptiveQuestion> findDescriptiveQuestions(Exam exam) {
@@ -93,10 +98,11 @@ public class ExamService {
     }
 
     public void endExam(Exam exam, Student student) throws Exception {
-            exam.addStudent(student);
-            save(exam);
+        exam.addStudent(student);
+        save(exam);
     }
-    public ExamDTO convertToDto(Exam exam){
+
+    public ExamDTO convertToDto(Exam exam) {
 
         ExamDTO examDTO = new ExamMapperImpl().sourceToDestination(exam);
         examDTO.setTeacher(new TeacherMapperImpl().sourceToDestination(exam.getTeacher()));
@@ -104,8 +110,6 @@ public class ExamService {
     }
 
     public Exam convertToEntity(ExamDTO examDTO) {
-        Exam exam = new ExamMapperImpl().destinationToSource(examDTO);
-//        exam.setTeacher(new TeacherMapperImpl().destinationToSource(examDTO.getTeacher()));
-        return exam;
+        return new ExamMapperImpl().destinationToSource(examDTO);
     }
 }

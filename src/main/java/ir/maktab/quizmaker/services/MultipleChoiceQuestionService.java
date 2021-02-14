@@ -7,6 +7,7 @@ import ir.maktab.quizmaker.dto.MultipleChoiceQuestionDTO;
 import ir.maktab.quizmaker.repository.MultipleChoiceQuestionRepository;
 import ir.maktab.quizmaker.services.mappers.CourseMapperImpl;
 import ir.maktab.quizmaker.services.mappers.MultipleChoiceQuestionMapperImpl;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -21,14 +22,12 @@ public class MultipleChoiceQuestionService {
 
 
     private final MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
-    private final CourseService courseService;
 
-    public MultipleChoiceQuestionService(MultipleChoiceQuestionRepository multipleChoiceQuestionRepository, CourseService courseService) {
+    public MultipleChoiceQuestionService(MultipleChoiceQuestionRepository multipleChoiceQuestionRepository) {
         this.multipleChoiceQuestionRepository = multipleChoiceQuestionRepository;
-        this.courseService = courseService;
     }
 
-    public MultipleChoiceQuestion save(MultipleChoiceQuestion multipleChoiceQuestion){
+    public MultipleChoiceQuestion save(@NotNull MultipleChoiceQuestion multipleChoiceQuestion){
         List<String> options = multipleChoiceQuestion.getOptions();
         options.add(multipleChoiceQuestion.getAnswer());
         options.removeAll(Collections.singleton(""));

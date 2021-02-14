@@ -61,13 +61,16 @@ public class UserService {
 
 
     public User allowUser(Long id) {
-        User user = userRepository.findById(id).get();
-        user.setAllowed(true);
-        return userRepository.save(user);
+        if(userRepository.findById(id).isPresent()){
+            User user = userRepository.findById(id).get();
+            user.setAllowed(true);
+            return userRepository.save(user);
+        }
+        return null;
     }
 
     public User findById(Long id) {
-        return userRepository.findById(id).get();
+        return userRepository.findById(id).isPresent()? userRepository.findById(id).get() : null;
     }
 
     public void deleteById(Long id) {

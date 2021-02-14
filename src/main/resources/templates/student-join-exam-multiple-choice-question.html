@@ -21,9 +21,14 @@
         <form action="#" method="post" th:action="@{/student/correct-exam}" th:object="${studentQuestionScore}">
             <input hidden th:value="${MultipleChoiceQuestion}">
             <div class="card-body">
-                <h4><span class="card-title" th:text="#{title}"></span>: <span class="card-title" th:text="${MultipleChoiceQuestion.title}"></span></h4>
-                <h5><span class="card-text" th:text="#{question}"></span>: <span class="card-text" th:text="${MultipleChoiceQuestion.question}"></span></h5>
-                <h6><span class="card-text" th:text="#{score}"></span>: <span class="card-text" th:text="${score.score}"></span></h6>
+                <h4><span class="card-title" th:text="#{title}"></span>: <span class="card-title"
+                                                                               th:text="${MultipleChoiceQuestion.title}"></span>
+                </h4>
+                <h5><span class="card-text" th:text="#{question}"></span>: <span class="card-text"
+                                                                                 th:text="${MultipleChoiceQuestion.question}"></span>
+                </h5>
+                <h6><span class="card-text" th:text="#{score}"></span>: <span class="card-text"
+                                                                              th:text="${score.score}"></span></h6>
                 <div th:each="option : ${MultipleChoiceQuestion.options}">
                     <input name="answer" th:field="*{answer}" th:value="${option}" type="radio">
                     <span class="card-text" th:text="${option}"></span><br>
@@ -37,11 +42,9 @@
         </form>
         <hr>
         <div class="row">
-            <div th:each="obj , li : ${exam.getScores()}">
-                <div style="padding: 2%">
-                    <a class="btn btn-primary" role="button" th:href="@{/student/join-exam/__${exam.id}__/__${li.index}__}"
-                       th:text="${li.index}+1"></a>
-                </div>
+            <div style="padding: 0.3%" th:each="obj , li : ${exam.getScores()}">
+                <a class="btn btn-primary" role="button" th:href="@{/student/join-exam/__${exam.id}__/__${li.index}__}"
+                   th:text="${li.index}+1"></a>
             </div>
         </div>
 

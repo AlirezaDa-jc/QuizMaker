@@ -2,7 +2,6 @@ package ir.maktab.quizmaker.controller;
 
 import ir.maktab.quizmaker.base.CustomTimer;
 import ir.maktab.quizmaker.domains.*;
-import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -132,7 +131,7 @@ public class StudentController {
                 time = new Thread("time") {
                     public void run() {
                         try {
-                            Thread.sleep(exam.getTime() * 60000);
+                            Thread.sleep(exam.getTime() * 60000L);
                             examService.endExam(exam, student);
                             customTimer = null;
                             questions = 0;
@@ -194,18 +193,18 @@ public class StudentController {
     }
 
 
-    @ExceptionHandler(UniqueException.class)
-    public String handle(UniqueException ex, Model model) {
-
-        model.addAttribute("message", ex.getMessage());
-        return "user-exception";
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String handle(IllegalArgumentException ex, Model model) {
-
-        model.addAttribute("message", ex.getMessage());
-        return "user-exception";
-    }
+//    @ExceptionHandler(UniqueException.class)
+//    public String handle(UniqueException ex, Model model) {
+//
+//        model.addAttribute("message", ex.getMessage());
+//        return "user-exception";
+//    }
+//
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public String handle(IllegalArgumentException ex, Model model) {
+//
+//        model.addAttribute("message", ex.getMessage());
+//        return "user-exception";
+//    }
 
 }
