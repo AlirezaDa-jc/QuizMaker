@@ -4,13 +4,13 @@ import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.dto.*;
 import ir.maktab.quizmaker.exception.UniqueException;
 import ir.maktab.quizmaker.services.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -50,7 +50,6 @@ public class AdminController {
     private TeacherDTO tempTeacherDTO;
     private StudentDTO tempStudentDTO;
     private SubjectDTO subjectDTO;
-    private boolean flag = false;
 
     @GetMapping("allow-user")
     public String sendUsersList(Model model) {
@@ -69,12 +68,12 @@ public class AdminController {
     }
 
     @GetMapping("search-results")
-    public String searchResults(Model model, HttpServletRequest request) {
-        String userName = request.getParameter("userName");
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
+    public String searchResults(Model model, @RequestParam(required = false) String userName,
+                                @RequestParam(required = false) String firstName,
+                                @RequestParam(required = false) String lastName,
+                                @RequestParam String role) {
 
-        if (request.getParameter("role").equals("Teacher")) {
+        if (role.equals("Teacher")) {
             Set<Teacher> users = teacherService.getSearchResults(userName, firstName, lastName);
             model.addAttribute("users", users);
         } else {
@@ -157,7 +156,7 @@ public class AdminController {
     }
 
     @PostMapping("create-subject")
-    public String createSubject(@Valid @ModelAttribute SubjectDTO subjectDto, Model model) throws UniqueException {
+    public String createSubject(@NotNull @Valid @ModelAttribute SubjectDTO subjectDto, Model model) throws UniqueException {
         try {
             Subject subject = subjectService.convertToEntity(subjectDto);
             subjectService.save(subject);
@@ -186,13 +185,13 @@ public class AdminController {
         Subject subject = subjectService.findById(subjectId);
         subjectDTO = subjectService.convertToDto(subject);
         CourseDTO courseDTO = new CourseDTO();
-        model.addAttribute("course",courseDTO);
-        model.addAttribute("subject", subjectDTO );
+        model.addAttribute("course", courseDTO);
+        model.addAttribute("subject", subjectDTO);
         return "admin-create-course";
     }
 
     @PostMapping("create-course")
-    public String createCourse(@Valid @ModelAttribute  CourseDTO courseDTO, Model model) {
+    public String createCourse(@NotNull @Valid @ModelAttribute CourseDTO courseDTO, Model model) {
         courseDTO.setSubject(subjectDTO);
         Course course = courseService.convertToEntity(courseDTO);
         if (courseService.checkDate(course)) {
@@ -208,7 +207,7 @@ public class AdminController {
     }
 
     @GetMapping("home")
-    public String viewHome(Model model, HttpSession session) {
+    public String viewHome(Model model, @NotNull HttpSession session) {
         model.addAttribute("admin", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         model.addAttribute("teachers", teacherService.findAll());
         model.addAttribute("students", studentService.findAll());
@@ -258,14 +257,17 @@ public class AdminController {
     }
 
     @PostMapping("edit-teacher")
-    public String editTeacher(@Valid @ModelAttribute TeacherDTO teacherDTO, Model model,ServletRequest request) throws SQLIntegrityConstraintViolationException {
+    public String editTeacher(@NotNull @Valid @ModelAttribute TeacherDTO teacherDTO,
+                              Model model,
+                              @RequestParam Long id,
+                              @RequestParam(required = false) String password
+                              ) throws SQLIntegrityConstraintViolationException {
         Teacher teacher = teacherService.convertToEntity(teacherDTO);
         Teacher tempTeacher = teacherService.convertToEntity(tempTeacherDTO);
-        Long id = Long.valueOf(request.getParameter("id"));
         teacher.setId(id);
-        if(request.getParameter("password") != null && !request.getParameter("password").equals("")){
-            teacher.setPassword(request.getParameter("password"));
-        }else{
+        if (password != null && !password.equals("")) {
+            teacher.setPassword(password);
+        } else {
             teacher.setPassword(tempTeacher.getPassword());
         }
         teacherService.save(teacher, tempTeacher);
@@ -274,14 +276,15 @@ public class AdminController {
     }
 
     @PostMapping("edit-student")
-    public String editStudent(@Valid @ModelAttribute StudentDTO studentDTO, Model model ,ServletRequest request) throws SQLIntegrityConstraintViolationException {
+    public String editStudent(@NotNull @Valid @ModelAttribute StudentDTO studentDTO, Model model, @RequestParam Long id,
+                              @RequestParam(required = false) String password) throws SQLIntegrityConstraintViolationException {
         Student student = studentService.convertToEntity(studentDTO);
         Student tempStudent = studentService.convertToEntity(tempStudentDTO);
-        Long id = Long.valueOf(request.getParameter("id"));
+
         student.setId(id);
-        if(request.getParameter("password") != null && !request.getParameter("password").equals("")){
-            student.setPassword(request.getParameter("password"));
-        }else{
+        if (password != null && !password.equals("")) {
+            student.setPassword(password);
+        } else {
             student.setPassword(tempStudent.getPassword());
         }
         studentService.save(student, tempStudent);
@@ -302,10 +305,9 @@ public class AdminController {
     }
 
     @PostMapping("edit-course")
-    public String editCourse(@Valid @ModelAttribute CourseDTO courseDTO, Model model,ServletRequest request) {
+    public String editCourse(@NotNull @Valid @ModelAttribute CourseDTO courseDTO, Model model, @RequestParam Long id) {
         courseDTO.setSubject(subjectDTO);
         Course course = courseService.convertToEntity(courseDTO);
-        Long id = Long.valueOf(request.getParameter("id"));
         if (!courseService.checkDate(course)) {
             course.setId(id);
             courseService.save(course);
@@ -341,9 +343,8 @@ public class AdminController {
     }
 
     @PostMapping("edit-subject")
-    public String editSubject(@Valid @ModelAttribute SubjectDTO subjectDTO, Model model, ServletRequest req) {
+    public String editSubject(@NotNull @Valid @ModelAttribute SubjectDTO subjectDTO, Model model,@RequestParam Long id) {
         Subject subject = subjectService.convertToEntity(subjectDTO);
-        Long id = Long.valueOf(req.getParameter("id"));
         subject.setId(id);
         subjectService.save(subject);
         model.addAttribute("subjects", subjectService.findAll());
@@ -358,7 +359,7 @@ public class AdminController {
     }
 
     @PostMapping("edit-admin")
-    public String editAdmin(Model model, HttpServletRequest req) throws ResourceNotFoundException {
+    public String editAdmin(Model model, @NotNull HttpServletRequest req) throws ResourceNotFoundException {
         userService.editUser(req, model);
         model.addAttribute("admin", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return "admin-edit-user";

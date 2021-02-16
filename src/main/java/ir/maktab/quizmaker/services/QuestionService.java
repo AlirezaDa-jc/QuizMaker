@@ -109,10 +109,8 @@ public class QuestionService {
             bankQuestions = new ArrayList<>(bank);
         }
         List<Question> questions = new ArrayList<>();
-        for (int j = ((page - 1)*10); j < page * 10 && j < bankQuestions.size(); j++) {
-
+        for (int j = ((page - 1) * 10); j < page * 10 && j < bankQuestions.size(); j++) {
             questions.add(bankQuestions.get(j));
-
         }
 
         return questions;

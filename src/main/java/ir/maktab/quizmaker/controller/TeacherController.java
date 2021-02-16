@@ -4,6 +4,7 @@ import ir.maktab.quizmaker.aspect.Authentication;
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.dto.*;
 import ir.maktab.quizmaker.services.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,14 +43,21 @@ public class TeacherController {
     private final StudentQuestionScoreService studentQuestionScoreService;
 
     private final StudentService studentService;
+
     private final SubjectService subjectService;
-    CourseDTO tempCourse;
+
+    private CourseDTO tempCourse;
 
     private Set<Course> courses;
-    SubjectDTO tempSubject;
-    Exam exam ;
-    Question question;
+
+    private SubjectDTO tempSubject;
+
+    private Exam exam ;
+
+    private Question question;
+
     private QuestionExamScoreDTO questionExamScoreDTO;
+
     public TeacherController(TeacherService teacherService, CourseService courseService, ExamService examService,
                              UserService userService, QuestionService questionService,
                              QuestionExamScoreService questionExamScoreService, StudentQuestionScoreService
@@ -121,7 +129,7 @@ public class TeacherController {
     }
 
     @PostMapping("add-exam")
-    public String addExam(@Valid @ModelAttribute ExamDTO examDTO, Model model) {
+    public String addExam(@NotNull @Valid @ModelAttribute ExamDTO examDTO, Model model) {
         Exam exam = examService.convertToEntity(examDTO);
         try {
             Course course = courseService.convertToEntity(tempCourse);
@@ -219,7 +227,7 @@ public class TeacherController {
     }
 
     @PostMapping("edit-exam")
-    public String editExam(@Valid @ModelAttribute ExamDTO examDTO, Model model, ServletRequest request) {
+    public String editExam(@NotNull @Valid @ModelAttribute ExamDTO examDTO, Model model, ServletRequest request) {
         Exam exam = examService.convertToEntity(examDTO);
         Long id = Long.valueOf(request.getParameter("id"));
         exam.setId(id);
@@ -295,8 +303,8 @@ public class TeacherController {
     }
 
     @PostMapping("multiple-question")
-    public String addMultipleQuestion(@Valid @ModelAttribute MultipleChoiceQuestionDTO multipleChoiceQuestionDTO, Model model,
-                                      HttpServletRequest req) {
+    public String addMultipleQuestion(@NotNull @Valid @ModelAttribute MultipleChoiceQuestionDTO multipleChoiceQuestionDTO, Model model,
+                                      @NotNull HttpServletRequest req) {
         long examId = Long.parseLong(req.getParameter("examId"));
         int score = Integer.parseInt(req.getParameter("score"));
         Exam exam = examService.findById(examId);
@@ -327,7 +335,7 @@ public class TeacherController {
     }
 
     @PostMapping("descriptive-question")
-    public String addDescriptiveQuestion(@Valid @ModelAttribute DescriptiveQuestionDTO descriptiveQuestionDTO, Model model,
+    public String addDescriptiveQuestion(@NotNull @Valid @ModelAttribute DescriptiveQuestionDTO descriptiveQuestionDTO, @NotNull Model model,
                                          HttpServletRequest req) {
         long examId = Long.parseLong(req.getParameter("examId"));
         int score = Integer.parseInt(req.getParameter("score"));
@@ -369,6 +377,8 @@ public class TeacherController {
         model.addAttribute("multipleChoice", questionService.findMultipleChoiceQuestions(questions));
         model.addAttribute("descriptive", questionService.findDescriptiveQuestions(questions));
         model.addAttribute("examId", examId);
+        if(pages == 0)
+            pages = 1;
         model.addAttribute("page", pages);
         return "teacher-add-question-from-bank";
     }
@@ -391,7 +401,7 @@ public class TeacherController {
     }
 
     @PostMapping("add-score-question-from-bank")
-    public String addQuestionFromBank(@Valid @ModelAttribute QuestionExamScoreDTO questionExamScoreDTO) throws Exception {
+    public String addQuestionFromBank(@NotNull @Valid @ModelAttribute QuestionExamScoreDTO questionExamScoreDTO) throws Exception {
         QuestionExamScore questionExamScore = questionExamScoreService.convertToEntity(questionExamScoreDTO);
         questionExamScore.setExam(exam);
 
@@ -403,39 +413,39 @@ public class TeacherController {
         return "redirect:/teacher/add_question_from_bank/"+exam.getId()+"/"+"1";
     }
 
-    @GetMapping("edit-multiple-choice-question/{examId}/{questionId}")
-    private String sendEditMultipleChoiceQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
-        Exam exam = examService.findById(examId);
-//        First Token Check After Session
-        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-            throw new Exception("403 Forbidden!");
-        }
-        ExamDTO examDTO = examService.convertToDto(exam);
-        MultipleChoiceQuestionDTO multipleChoiceQuestionDTO = (MultipleChoiceQuestionDTO) questionService.convertToDto(questionService.findById(questionId));
-        questionExamScoreDTO = questionExamScoreService.convertToDto(questionExamScoreService.create(exam));
-        model.addAttribute("exam", examDTO);
-        model.addAttribute("descriptiveQuestion", multipleChoiceQuestionDTO);
-        model.addAttribute("score", questionExamScoreDTO);
-        model.addAttribute("id", questionId);
-        return "teacher-multiple-question";
-    }
+//    @GetMapping("edit-multiple-choice-question/{examId}/{questionId}")
+//    private String sendEditMultipleChoiceQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
+//        Exam exam = examService.findById(examId);
+////        First Token Check After Session
+//        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+//            throw new Exception("403 Forbidden!");
+//        }
+//        ExamDTO examDTO = examService.convertToDto(exam);
+//        MultipleChoiceQuestionDTO multipleChoiceQuestionDTO = (MultipleChoiceQuestionDTO) questionService.convertToDto(questionService.findById(questionId));
+//        questionExamScoreDTO = questionExamScoreService.convertToDto(questionExamScoreService.create(exam));
+//        model.addAttribute("exam", examDTO);
+//        model.addAttribute("multipleChoiceQuestion", multipleChoiceQuestionDTO);
+//        model.addAttribute("score", questionExamScoreDTO);
+//        model.addAttribute("id", questionId);
+//        return "teacher-multiple-question";
+//    }
 
-    @GetMapping("edit-descriptive-question/{examId}/{questionId}")
-    private String sendEditDescriptiveQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
-        Exam exam = examService.findById(examId);
-        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-            throw new Exception("403 Forbidden!");
-        }
-        ExamDTO examDTO = examService.convertToDto(exam);
-        DescriptiveQuestionDTO descriptiveQuestionDTO = (DescriptiveQuestionDTO) questionService.convertToDto(questionService.findById(questionId));
-        questionExamScoreDTO = questionExamScoreService.convertToDto(questionExamScoreService.create(exam));
-        model.addAttribute("exam", examDTO);
-        model.addAttribute("descriptiveQuestion", descriptiveQuestionDTO);
-        model.addAttribute("score", questionExamScoreDTO);
-        model.addAttribute("id", questionId);
-
-        return "teacher-descriptive-question";
-    }
+//    @GetMapping("edit-descriptive-question/{examId}/{questionId}")
+//    private String sendEditDescriptiveQuestionForm(@PathVariable Long examId, @PathVariable Long questionId, Model model) throws Exception {
+//        Exam exam = examService.findById(examId);
+//        if (!exam.getTeacher().getUserName().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+//            throw new Exception("403 Forbidden!");
+//        }
+//        ExamDTO examDTO = examService.convertToDto(exam);
+//        DescriptiveQuestionDTO descriptiveQuestionDTO = (DescriptiveQuestionDTO) questionService.convertToDto(questionService.findById(questionId));
+//        questionExamScoreDTO = questionExamScoreService.convertToDto(questionExamScoreService.create(exam));
+//        model.addAttribute("exam", examDTO);
+//        model.addAttribute("descriptiveQuestion", descriptiveQuestionDTO);
+//        model.addAttribute("score", questionExamScoreDTO);
+//        model.addAttribute("id", questionId);
+//
+//        return "teacher-descriptive-question";
+//    }
 
     @GetMapping("students-joined-exam/{examId}")
     public String showStudentsJoinedExam(@PathVariable Long examId, Model model) throws Exception {
@@ -474,7 +484,7 @@ public class TeacherController {
     }
 
     @PostMapping("correct-exam")
-    public String sendMarkDescriptive(HttpServletRequest request) throws Exception {
+    public String sendMarkDescriptive(@NotNull HttpServletRequest request) throws Exception {
         Exam exam = examService.findById(Long.valueOf(request.getParameter("exam")));
         Student student = studentService.findById(Long.valueOf(request.getParameter("student")));
         List<MultipleChoiceQuestion> multipleChoiceQuestions = examService.findMultipleChoiceQuestions(exam);

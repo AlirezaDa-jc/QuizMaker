@@ -2,10 +2,8 @@ package ir.maktab.quizmaker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,10 +18,9 @@ public class QuizMakerApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) {
         System.setProperty("file.encoding","UTF-8");
-        ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+//        ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
         SpringApplication.run(QuizMakerApplication.class, args);
     }
-
     @Bean
     public LocaleResolver localeResolver() {
         return new CookieLocaleResolver();

@@ -7,6 +7,7 @@ import ir.maktab.quizmaker.dto.TeacherDTO;
 import ir.maktab.quizmaker.services.CourseService;
 import ir.maktab.quizmaker.services.StudentService;
 import ir.maktab.quizmaker.services.TeacherService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -88,7 +89,7 @@ public class HomeController {
     }
 
     @PostMapping("/sign-up/teacher")
-    public String teacherSignUp(@Valid @ModelAttribute TeacherDTO teacher, Model model) {
+    public String teacherSignUp(@NotNull @Valid @ModelAttribute TeacherDTO teacher, Model model) {
         try {
             teacherService.signUp(teacherService.convertToEntity(teacher));
         } catch (Exception ex) {

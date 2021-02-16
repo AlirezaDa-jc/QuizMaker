@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +38,13 @@ public class TeacherAspect {
 //    }
 
     @Before(value = "@annotation(Authentication)")
-    public void checkAuthorization(JoinPoint point) {
+    public void checkAuthorization(@NotNull JoinPoint point) {
         logger.info(point.getSignature().getName() + " called...");
         Long arg = (Long) point.getArgs()[0];
         Course byId = courseService.findById(arg);
 
         if(!SecurityContextHolder.getContext().getAuthentication().getName().equals(byId.getTeacher().getUserName())){
-            throw new BadCredentialsException("incorrect password!!!");
+            throw new BadCredentialsException("Not The Correct Course");
         }
     }
 

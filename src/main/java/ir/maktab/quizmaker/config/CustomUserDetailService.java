@@ -7,9 +7,9 @@ import ir.maktab.quizmaker.services.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class CustomUserDetailService implements UserDetailsService {
 
     private static int state;
@@ -25,9 +25,20 @@ public class CustomUserDetailService implements UserDetailsService {
     public static void setState(int state) {
         CustomUserDetailService.state = state;
     }
-
+/*
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		if ("javainuse".equals(username)) {
+			return new User("javainuse", "$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6",
+					new ArrayList<>());
+		} else {
+			throw new UsernameNotFoundException("User not found with username: " + username);
+		}
+	}
+ */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         User user = userService.findByUsername(username);
         if (user == null) {
             state=1;

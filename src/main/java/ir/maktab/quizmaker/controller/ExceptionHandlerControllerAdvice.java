@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ExceptionHandlerControllerAdvice {
     public static final String DEFAULT_ERROR_VIEW = "exception";
 
-    @ExceptionHandler(value = {MethodArgumentNotValidException.class, javax.validation.UnexpectedTypeException.class, org.springframework.validation.BindException.class})
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class,NullPointerException.class, javax.validation.UnexpectedTypeException.class, org.springframework.validation.BindException.class})
     public String defaultErrorHandler(HttpServletRequest req, Exception e, Model model) throws Exception {
         if (AnnotationUtils.findAnnotation
                 (e.getClass(), ResponseStatus.class) != null)

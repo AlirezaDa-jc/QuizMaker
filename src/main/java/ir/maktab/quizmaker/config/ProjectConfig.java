@@ -15,10 +15,13 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableAspectJAutoProxy
 public class ProjectConfig extends WebSecurityConfigurerAdapter {
 
+    private CustomUserDetailService userDetailsService;
+
     private final CustomAuthenticationProvider authenticationProvider;
 
     @Lazy
-    public ProjectConfig(CustomAuthenticationProvider authenticationProvider) {
+    public ProjectConfig(CustomUserDetailService userDetailsService, CustomAuthenticationProvider authenticationProvider) {
+        this.userDetailsService = userDetailsService;
         this.authenticationProvider = authenticationProvider;
     }
 
@@ -32,7 +35,7 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
@@ -41,7 +44,6 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
 
 
         http.httpBasic();

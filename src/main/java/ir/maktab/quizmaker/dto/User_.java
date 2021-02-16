@@ -16,7 +16,7 @@ public class User_ {
     public static final String ID = "id";
     public static volatile SingularAttribute<User, String> username;
     public static volatile SingularAttribute<User, String> password;
-    public static volatile SingularAttribute<User, String> is_allowed;
+    public static volatile SingularAttribute<User, String> isAllowed;
     public static volatile SingularAttribute<User, String> role;
     public static volatile SingularAttribute<User, String> id;
 

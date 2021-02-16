@@ -3,6 +3,7 @@ package ir.maktab.quizmaker.controller;
 import ir.maktab.quizmaker.base.CustomTimer;
 import ir.maktab.quizmaker.domains.*;
 import ir.maktab.quizmaker.services.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,7 +64,7 @@ public class StudentController {
     }
 
     @GetMapping("home")
-    public String showHome(Model model, HttpSession session) {
+    public String showHome(Model model, @NotNull HttpSession session) {
         student = (Student) userService.findByUsername(
                 (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()
         );
@@ -184,7 +185,7 @@ public class StudentController {
     }
 
     @PostMapping("correct-exam")
-    public String correctExam(@ModelAttribute StudentQuestionScore studentQuestionScore) {
+    public String correctExam(@NotNull @ModelAttribute StudentQuestionScore studentQuestionScore) {
         studentQuestionScoreService.correctAnswer(studentQuestionScore);
         QuestionExamScore questionExamScore = studentQuestionScore.getQuestionExamScore();
         Long examId = questionExamScore.getExam().getId();
